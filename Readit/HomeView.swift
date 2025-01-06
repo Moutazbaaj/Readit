@@ -8,12 +8,16 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State private var animateContent: Bool = false // State variable for animation
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
                 Text("Choose an Option")
                     .font(.largeTitle)
                     .padding()
+                    .offset(y: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
+                    .animation(.easeOut(duration: 0.6), value: animateContent) // Animate position
 
                 NavigationLink(destination: TextToSpeechView()) {
                     Text("Text-to-Speech")
@@ -24,6 +28,8 @@ struct HomeView: View {
                         .foregroundColor(.white)
                         .cornerRadius(10)
                         .padding(.horizontal)
+                        .offset(x: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
+                        .animation(.easeOut(duration: 0.8).delay(0.2), value: animateContent) // Delay for staggered effect
                 }
 
                 NavigationLink(destination: ImageRecognitionView()) {
@@ -35,9 +41,14 @@ struct HomeView: View {
                         .foregroundColor(.white)
                         .cornerRadius(10)
                         .padding(.horizontal)
+                        .offset(y: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
+                        .animation(.easeOut(duration: 0.8).delay(0.4), value: animateContent) // Delay for staggered effect
                 }
             }
             .navigationTitle("Home")
+            .onAppear {
+                animateContent = true // Trigger animation when the view appears
+            }
         }
     }
 }
