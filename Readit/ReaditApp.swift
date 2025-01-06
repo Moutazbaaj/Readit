@@ -11,7 +11,16 @@ import SwiftUI
 struct ReaditApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            TabView {
+                HomeView()
+                    .tabItem {
+                        Label("Home", systemImage: "house")
+                    }
+                ContentView()
+                    .tabItem {
+                        Label("View2", systemImage: "gear")
+                    }
+            }
         }
     }
 }
