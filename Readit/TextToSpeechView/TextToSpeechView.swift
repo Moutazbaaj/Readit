@@ -13,7 +13,7 @@ struct TextToSpeechView: View {
     var body: some View {
         VStack(spacing: 20) {
             Spacer()
-            TextField("Type your text here", text: $viewModel.inputText)
+            TextField("Type your text here", text: $viewModel.inputText, axis: .vertical)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
             
