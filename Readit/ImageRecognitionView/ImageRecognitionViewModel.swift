@@ -39,6 +39,16 @@ class ImageRecognitionViewModel: ObservableObject {
         if let text = extractedText, !text.isEmpty {
             let utterance = AVSpeechUtterance(string: text)
             utterance.voice = AVSpeechSynthesisVoice(language: language.rawValue)
+            
+            // Configure audio session
+            do {
+                let audioSession = AVAudioSession.sharedInstance()
+                try audioSession.setCategory(.playback, mode: .default, options: [])
+                try audioSession.setActive(true)
+            } catch {
+                print("Failed to configure audio session: \(error.localizedDescription)")
+            }
+            
             synthesizer.speak(utterance)
         }
     }
