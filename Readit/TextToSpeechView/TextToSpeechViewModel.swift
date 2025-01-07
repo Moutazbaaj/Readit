@@ -14,10 +14,10 @@ class TextToSpeechViewModel: ObservableObject {
 
     private let synthesizer = AVSpeechSynthesizer()
 
-    func readTextAloud() {
+    func readTextAloud(in language: Language) {
         guard !inputText.isEmpty else { return }
         let utterance = AVSpeechUtterance(string: inputText)
-        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        utterance.voice = AVSpeechSynthesisVoice(language: language.rawValue)
         synthesizer.speak(utterance)
     }
     
