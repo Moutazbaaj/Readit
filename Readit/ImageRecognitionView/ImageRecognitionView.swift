@@ -6,13 +6,16 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct ImageRecognitionView: View {
     @StateObject private var viewModel = ImageRecognitionViewModel()
-    
+    @State private var selectedItem: PhotosPickerItem? // For the selected image from the picker
+
     var body: some View {
         VStack(spacing: 20) {
             Spacer()
+            
             // Display the selected image
             if let selectedImage = viewModel.selectedImage {
                 Image(uiImage: selectedImage)
@@ -33,20 +36,22 @@ struct ImageRecognitionView: View {
                         .background(Color.gray.opacity(0.1))
                         .cornerRadius(10)
                 } else {
-                    ScrollView { // Add a ScrollView for long text
+                    ScrollView {
                         Text(extractedText)
                             .padding()
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(10)
                     }
-                    .frame(maxHeight: 300) // Optional: Limit the scroll area height
+                    .frame(maxHeight: 300)
                 }
             }
             
-            Button(action: {
-                viewModel.showImagePicker = true
-                viewModel.stopSpeaking()
-            }) {
+            // PhotosPicker to select an image
+            PhotosPicker(
+                selection: $selectedItem,
+                matching: .images, // Show only images in the picker
+                photoLibrary: .shared()
+            ) {
                 Text("Select Photo")
                     .font(.headline)
                     .padding()
@@ -54,6 +59,15 @@ struct ImageRecognitionView: View {
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(10)
+            }
+            .onChange(of: selectedItem) {_ , newItem in
+                Task {
+                    if let data = try? await newItem?.loadTransferable(type: Data.self),
+                       let uiImage = UIImage(data: data) {
+                        viewModel.selectedImage = uiImage
+                        viewModel.processImage(image: uiImage)
+                    }
+                }
             }
             
             Button(action: {
@@ -70,16 +84,15 @@ struct ImageRecognitionView: View {
         }
         .padding()
         .navigationTitle("Image Recognition")
-        .sheet(isPresented: $viewModel.showImagePicker) {
-            ImagePicker(selectedImage: $viewModel.selectedImage, onImagePicked: viewModel.processImage)
-        }
         .onDisappear {
             viewModel.stopSpeaking()
         }
     }
 }
 
-
+#Preview {
+    ImageRecognitionView()
+}
 
 #Preview {
     ImageRecognitionView()
