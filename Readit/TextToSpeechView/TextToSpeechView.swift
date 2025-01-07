@@ -9,6 +9,9 @@ import SwiftUI
 
 struct TextToSpeechView: View {
     @StateObject private var viewModel = TextToSpeechViewModel()
+    @State private var selectedLanguage: Language = .english
+    @State private var showLanguagePicker: Bool = false
+    
     
     var body: some View {
         VStack {
@@ -24,10 +27,19 @@ struct TextToSpeechView: View {
                             .stroke(Color.gray, lineWidth: 1)
                     )
             }
-            .padding()
+            .padding(.horizontal)
+            
+            HStack {
+                Spacer()
+                Text(selectedLanguage.displayName)
+                
+            }
+            .padding(.horizontal)
+            
             VStack {
                 Button(action: {
-                    viewModel.readTextAloud()
+                    viewModel.stopSpeaking()
+                    viewModel.readTextAloud(in: selectedLanguage)
                 }) {
                     Text("Read Text")
                         .font(.headline)
@@ -43,6 +55,52 @@ struct TextToSpeechView: View {
         }
         .navigationTitle("Text to Speech")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                
+                Button(action: {
+                    showLanguagePicker = true // Show the language picker sheet
+                }) {
+                    Label("Language", systemImage: "globe")
+                }
+                
+                //                Menu {
+                //                    Picker("Language", selection: $selectedLanguage) {
+                //                        ForEach(Language.allCases, id: \.self) { language in
+                //                            Text(language.displayName).tag(language)
+                //                        }
+                //                    }
+                //                } label: {
+                //                    Label("Language", systemImage: "globe")
+                //                }
+            }
+        }
+        .sheet(isPresented: $showLanguagePicker) {
+            VStack {
+                Text("Select Language")
+                    .font(.headline)
+                    .padding()
+                
+                Picker("Language", selection: $selectedLanguage) {
+                    ForEach(Language.allCases, id: \.self) { language in
+                        Text(language.displayName).tag(language)
+                    }
+                }
+                .pickerStyle(WheelPickerStyle()) // Use WheelPicker style
+                .frame(height: 200) // Adjust height for better appearance
+                
+                Button("Done") {
+                    showLanguagePicker = false // Dismiss the sheet
+                }
+                .font(.headline)
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                .padding()
+            }
+            .presentationDetents([.medium])
+        }
         .onDisappear {
             viewModel.stopSpeaking()
         }
