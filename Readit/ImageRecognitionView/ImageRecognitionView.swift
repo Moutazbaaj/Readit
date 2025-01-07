@@ -11,6 +11,9 @@ import PhotosUI
 struct ImageRecognitionView: View {
     @StateObject private var viewModel = ImageRecognitionViewModel()
     @State private var selectedItem: PhotosPickerItem? // For the selected image from the picker
+    @State private var showLanguagePicker: Bool = false
+    @State private var selectedLanguage: Language = .english
+
     
     var body: some View {
         VStack() {
@@ -51,6 +54,13 @@ struct ImageRecognitionView: View {
                 }
             }
             
+            HStack {
+                Spacer()
+                Text(selectedLanguage.displayName)
+                
+            }
+            .padding(.horizontal)
+            
             // PhotosPicker to select an image
             PhotosPicker(
                 selection: $selectedItem,
@@ -71,12 +81,15 @@ struct ImageRecognitionView: View {
                        let uiImage = UIImage(data: data) {
                         viewModel.selectedImage = uiImage
                         viewModel.processImage(image: uiImage)
+                        viewModel.stopSpeaking()
+
                     }
                 }
             }
             
             Button(action: {
-                viewModel.readTextAloud()
+                viewModel.stopSpeaking()
+                viewModel.readTextAloud(in: selectedLanguage)
             }) {
                 Text("Read Text")
                     .font(.headline)
@@ -89,6 +102,53 @@ struct ImageRecognitionView: View {
         }
         .padding()
         .navigationTitle("Image Recognition")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                
+                Button(action: {
+                    showLanguagePicker = true // Show the language picker sheet
+                }) {
+                    Label("Language", systemImage: "globe")
+                }
+                
+                //                Menu {
+                //                    Picker("Language", selection: $selectedLanguage) {
+                //                        ForEach(Language.allCases, id: \.self) { language in
+                //                            Text(language.displayName).tag(language)
+                //                        }
+                //                    }
+                //                } label: {
+                //                    Label("Language", systemImage: "globe")
+                //                }
+            }
+        }
+        .sheet(isPresented: $showLanguagePicker) {
+            VStack {
+                Text("Select Language")
+                    .font(.headline)
+                    .padding()
+                
+                Picker("Language", selection: $selectedLanguage) {
+                    ForEach(Language.allCases, id: \.self) { language in
+                        Text(language.displayName).tag(language)
+                    }
+                }
+                .pickerStyle(WheelPickerStyle()) // Use WheelPicker style
+                .frame(height: 200) // Adjust height for better appearance
+                
+                Button("Done") {
+                    showLanguagePicker = false // Dismiss the sheet
+                }
+                .font(.headline)
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                .padding()
+            }
+            .presentationDetents([.medium])
+        }
         .onDisappear {
             viewModel.stopSpeaking()
         }
@@ -99,6 +159,3 @@ struct ImageRecognitionView: View {
     ImageRecognitionView()
 }
 
-#Preview {
-    ImageRecognitionView()
-}
