@@ -9,36 +9,45 @@ import SwiftUI
 
 struct TextToSpeechView: View {
     @StateObject private var viewModel = TextToSpeechViewModel()
-
+    
     var body: some View {
-        VStack(spacing: 20) {
-            Spacer()
-            TextField("Type your text here", text: $viewModel.inputText, axis: .vertical)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-            
-            Button(action: {
-                viewModel.readTextAloud()
-            }) {
-                Text("Read Text")
-                    .font(.headline)
+        VStack {
+            VStack() {
+                
+                // Expandable TextEditor for user input
+                TextEditor(text: $viewModel.inputText)
                     .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.orange)
-                    .foregroundColor(.white)
+                    .frame(maxHeight: .infinity)
                     .cornerRadius(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
             }
-
+            .padding()
+            VStack {
+                Button(action: {
+                    viewModel.readTextAloud()
+                }) {
+                    Text("Read Text")
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.orange)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+            }
+            .padding(.horizontal)
+            .padding(.bottom)
         }
-        .padding()
-        .navigationTitle("Text-to-Speech")
+        .navigationTitle("Text to Speech")
+        .navigationBarTitleDisplayMode(.inline)
         .onDisappear {
-                viewModel.stopSpeaking()
-            }
+            viewModel.stopSpeaking()
+        }
     }
 }
-
-
 
 #Preview {
     TextToSpeechView()
