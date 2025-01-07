@@ -16,8 +16,8 @@ struct HomeView: View {
                 Text("Choose an Option")
                     .font(.largeTitle)
                     .padding()
-                    .offset(y: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
-                    .animation(.easeOut(duration: 0.6), value: animateContent) // Animate position
+//                    .offset(y: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
+//                    .animation(.easeOut(duration: 0.6), value: animateContent) // Animate position
                 Spacer()
                 Text("text implmnted latert")
                     .cornerRadius(10)
@@ -56,7 +56,6 @@ struct HomeView: View {
                 }
             }
             .padding()
-            .navigationTitle("Home")
             .onAppear {
                 animateContent = true
             }
