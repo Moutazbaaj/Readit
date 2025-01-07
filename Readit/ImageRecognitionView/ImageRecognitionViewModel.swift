@@ -35,13 +35,14 @@ class ImageRecognitionViewModel: ObservableObject {
         }
     }
     
-    func readTextAloud() {
+    func readTextAloud(in language: Language) {
         if let text = extractedText, !text.isEmpty {
             let utterance = AVSpeechUtterance(string: text)
-            utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+            utterance.voice = AVSpeechSynthesisVoice(language: language.rawValue)
             synthesizer.speak(utterance)
         }
     }
+    
     
     func stopSpeaking() {
         if synthesizer.isSpeaking {
