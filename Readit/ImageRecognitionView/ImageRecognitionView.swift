@@ -11,9 +11,9 @@ import PhotosUI
 struct ImageRecognitionView: View {
     @StateObject private var viewModel = ImageRecognitionViewModel()
     @State private var selectedItem: PhotosPickerItem? // For the selected image from the picker
-
+    
     var body: some View {
-        VStack(spacing: 20) {
+        VStack() {
             Spacer()
             
             // Display the selected image
@@ -39,10 +39,15 @@ struct ImageRecognitionView: View {
                     ScrollView {
                         Text(extractedText)
                             .padding()
-                            .background(Color.gray.opacity(0.1))
-                            .cornerRadius(10)
+                            .padding(.horizontal)
+
                     }
-                    .frame(maxHeight: 300)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
+                    .frame(maxHeight: 350)
+                    
                 }
             }
             
