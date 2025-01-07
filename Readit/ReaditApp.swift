@@ -16,9 +16,13 @@ struct ReaditApp: App {
                     .tabItem {
                         Label("Home", systemImage: "house")
                     }
-                ContentView()
+                SettingsView()
                     .tabItem {
-                        Label("View2", systemImage: "gear")
+                        Label("My Library", systemImage: "gear")
+                    }
+                SettingsView()
+                    .tabItem {
+                        Label("More", systemImage: "gear")
                     }
             }
         }
