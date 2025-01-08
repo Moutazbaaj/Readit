@@ -52,9 +52,15 @@ struct TextsListView: View {
                     .font(.headline)
                     .padding()
 
-                TextField("Enter Text Content", text: $newTextContent, axis: .vertical)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                // Expandable TextEditor for user input
+                TextEditor(text: $newTextContent)
                     .padding()
+                    .frame(maxHeight: .infinity)
+                    .cornerRadius(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
 
                 Button(action: {
                     if !newTextContent.isEmpty {
