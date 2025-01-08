@@ -14,7 +14,6 @@ struct FireText: Codable, Identifiable {
     @DocumentID var id: String? // Unique identifier for the bee report.
 
     let userId: String     // User ID of the person who reported the bee.
-    let userName: String     // UserName of the person who reported the bee.
     let text: String     // Title of the bee report.
     let timestamp: Timestamp     // Timestamp of the bee report.
     let editTimestamp: Timestamp?    // Timestamp of the bee report.

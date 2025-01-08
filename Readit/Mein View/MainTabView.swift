@@ -26,6 +26,14 @@ struct MainTabView: View {
             .tabItem {
                 Label("My Library", systemImage: "books.vertical")
             }
+            
+            // Scan Tab
+            NavigationStack {
+                ScanView()
+            }
+            .tabItem {
+                Label("Scans", systemImage: "document.viewfinder.fill")
+            }
 
             // Settings Tab
             NavigationStack {
