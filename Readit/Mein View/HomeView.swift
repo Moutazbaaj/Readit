@@ -16,8 +16,8 @@ struct HomeView: View {
                 Text("Choose an Option")
                     .font(.largeTitle)
                     .padding()
-//                    .offset(y: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
-//                    .animation(.easeOut(duration: 0.6), value: animateContent) // Animate position
+                //                    .offset(y: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
+                //                    .animation(.easeOut(duration: 0.6), value: animateContent) // Animate position
                 Spacer()
                 Text("text implmnted latert")
                     .cornerRadius(10)
@@ -27,33 +27,36 @@ struct HomeView: View {
                             .stroke(Color.gray, lineWidth: 1)
                     )
                     .frame(maxHeight: 350)
-
+                
                 Spacer()
+                
+                HStack {
                 NavigationLink(destination: TextToSpeechView()) {
-                    Text("Text to Speech")
-                        .font(.headline)
+                    Image(systemName: "bubble.and.pencil")
+                        .font(.title)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.blue)
+                        .background(Color.black)
                         .foregroundColor(.white)
                         .cornerRadius(10)
-                        .padding(.horizontal)
-//                        .offset(x: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
-//                        .animation(.easeOut(duration: 0.8).delay(0.2), value: animateContent) // Delay for staggered effect
+                        .padding()
+                    //                        .offset(x: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
+                    //                        .animation(.easeOut(duration: 0.8).delay(0.2), value: animateContent) // Delay for staggered effect
                 }
-
+                
                 NavigationLink(destination: ImageRecognitionView()) {
-                    Text("Image Recognition")
-                        .font(.headline)
+                    Image(systemName: "photo.badge.plus.fill")
+                        .font(.largeTitle)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.green)
+                        .background(Color.black)
                         .foregroundColor(.white)
                         .cornerRadius(10)
-                        .padding(.horizontal)
-//                        .offset(y: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
-//                        .animation(.easeOut(duration: 0.8).delay(0.4), value: animateContent) // Delay for staggered effect
+                        .padding()
+                    //                        .offset(y: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
+                    //                        .animation(.easeOut(duration: 0.8).delay(0.4), value: animateContent) // Delay for staggered effect
                 }
+            }
             }
             .padding()
 //            .onAppear {
