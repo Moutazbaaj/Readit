@@ -13,6 +13,7 @@ import AVFAudio
 
 class ImageRecognitionViewModel: ObservableObject {
     
+    static let shared = ImageRecognitionViewModel()
     private let synthesizer = AVSpeechSynthesizer()
 
     @Published var showImagePicker = false

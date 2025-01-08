@@ -7,9 +7,14 @@
 
 import SwiftUI
 import PhotosUI
+import FirebaseCore
 
 struct ImageRecognitionView: View {
-    @StateObject private var viewModel = ImageRecognitionViewModel()
+    
+    @StateObject private var viewModel = ImageRecognitionViewModel.shared
+    @StateObject private var libViewModel = LibraryViewModel.shared
+    
+    
     @State private var selectedItem: PhotosPickerItem? // For the selected image from the picker
     @State private var showLanguagePicker: Bool = false
     @State private var selectedLanguage: Language = .english
@@ -151,6 +156,12 @@ struct ImageRecognitionView: View {
         }
         .onDisappear {
             viewModel.stopSpeaking()
+            
+            guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
+                return
+            }
+            
+            libViewModel.createText(text: extractedText, timestamp: Timestamp())
         }
     }
 }
