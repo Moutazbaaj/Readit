@@ -39,7 +39,7 @@ struct LibraryCard: View {
         .frame(width: 175 , height : 170)
         .background(
             LinearGradient(
-                gradient: Gradient(colors: [Color.blue, Color.purple]),
+                gradient: Gradient(colors: [Color.blue, Color.black]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
