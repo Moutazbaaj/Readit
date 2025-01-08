@@ -16,7 +16,8 @@ class LibraryViewModel: ObservableObject {
     
     static let shared = LibraryViewModel()
     
-    @Published var texts = [FireText]()
+    @Published var texts : [FireText] = []
+    @Published var libreries : [FireLibrary] = []
     
     // Listener for Firestore updates.
     private var listener: ListenerRegistration?
@@ -31,40 +32,73 @@ class LibraryViewModel: ObservableObject {
     private let firebaseStorage = Storage.storage()
     
     init() {
-//        self.fetchMyTexts()
+        self.fetchLibraries()
     }
     
-    // Creates a new bee report.
-    func createText(text: String, timestamp: Timestamp) {
+    // Creates a new librery.
+    func createLibrary(libraryTitle: String) {
         guard let userId = self.firebaseAuthentication.currentUser?.uid else {
             print("User is not signed in")
             return
         }
         
-        let newText = FireText(userId: userId, text: text, timestamp: timestamp, editTimestamp: nil)
+        let newLibrary = FireLibrary(
+            userId: userId,
+            libraryTitle: libraryTitle,
+            timestamp: Timestamp(),
+            textIds: [] // Start with no texts
+        )
         
         do {
-            try self.firebaseFirestore.collection("texts").addDocument(from: newText) { error in
+            try self.firebaseFirestore.collection("Librarys").addDocument(from: newLibrary) { error in
                 if let error = error {
-                    print("Error adding document: \(error.localizedDescription)")
+                    print("Error adding Library: \(error.localizedDescription)")
                 } else {
-                    print("Document added successfully")
+                    print("Library added successfully")
                 }
             }
         } catch {
-            print("Error encoding document: \(error.localizedDescription)")
+            print("Error encoding Library: \(error.localizedDescription)")
         }
     }
     
-    // Fetches all bee reports.
-    func fetchMyTexts() {
+    // Creates a new text.
+    func createText(text: String, libraryId: String) {
         guard let userId = self.firebaseAuthentication.currentUser?.uid else {
             print("User is not signed in")
             return
         }
         
-        self.listener = self.firebaseFirestore.collection("texts")
-            .whereField("userId", isEqualTo: userId)
+        let newText = FireText(
+            userId: userId,
+            text: text,
+            timestamp: Timestamp(),
+            editTimestamp: nil,
+            libraryId: libraryId
+        )
+        
+        do {
+            let docRef = try self.firebaseFirestore.collection("texts").addDocument(from: newText)
+            
+            // Update library with new text ID
+            firebaseFirestore.collection("Librarys").document(libraryId).updateData([
+                "textIds": FieldValue.arrayUnion([docRef.documentID])
+            ]) { error in
+                if let error = error {
+                    print("Error updating library: \(error.localizedDescription)")
+                } else {
+                    print("Text added and library updated successfully")
+                }
+            }
+        } catch {
+            print("Error encoding Text: \(error.localizedDescription)")
+        }
+    }
+    
+    // Fetches all my text
+    func fetchTexts(forLibraryId libraryId: String) {
+        self.firebaseFirestore.collection("texts")
+            .whereField("libraryId", isEqualTo: libraryId)
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
                 if let error = error {
@@ -73,26 +107,53 @@ class LibraryViewModel: ObservableObject {
                 }
                 
                 guard let snapshot = snapshot else {
-                    print("Snapshot is empty")
+                    print("No texts found.")
                     return
                 }
                 
-                let texts = snapshot.documents.compactMap { document -> FireText? in
-                    do {
-                        var text = try document.data(as: FireText.self)
-                        text.id = document.documentID
-                        return text
-                    } catch {
-                        print("Error decoding Bee: \(error)")
-                        return nil
-                    }
+                self.texts = snapshot.documents.compactMap { document in
+                    try? document.data(as: FireText.self)
                 }
-                self.texts = texts
             }
     }
     
-    // Edit bee report.
-    func editText(withId id: String, newText: String, editTimestamp: Timestamp) {
+    // Fetches all my Librareis
+    func fetchLibraries() {
+        guard let userId = self.firebaseAuthentication.currentUser?.uid else {
+            print("User is not signed in")
+            return
+        }
+        
+        self.listener = firebaseFirestore.collection("Librarys")
+            .whereField("userId", isEqualTo: userId)
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let self = self else { return }
+                if let error = error {
+                    print("Error fetching libraries: \(error.localizedDescription)")
+                    return
+                }
+                
+                guard let snapshot = snapshot else {
+                    print("No libraries found.")
+                    return
+                }
+                
+                let libraries = snapshot.documents.compactMap { document -> FireLibrary? in
+                    do {
+                        var library = try document.data(as: FireLibrary.self)
+                        library.id = document.documentID
+                        return library
+                    } catch {
+                        print("Error decoding library: \(error)")
+                        return nil
+                    }
+                }
+                self.libreries = libraries
+            }
+    }
+        
+    // Edit text.
+    func editText(withId id: String, newText: String) {
         let beeReport = firebaseFirestore.collection("texts").document(id)
         
         beeReport.updateData(["text": newText,
@@ -106,7 +167,7 @@ class LibraryViewModel: ObservableObject {
         }
     }
     
-    // Deletes a bee report with the given ID.
+    // Deletes a text with the given ID.
     func deleteText(withId id: String?) {
         guard let id = id else {
             print("Item has no id!")
@@ -123,4 +184,18 @@ class LibraryViewModel: ObservableObject {
         }
     }
     
+    func deleteLibrary(withId id: String?) {
+        guard let id = id else {
+            print("Library has no id!")
+            return
+        }
+        
+        firebaseFirestore.collection("Librarys").document(id).delete { error in
+            if let error = error {
+                print("Error deleting library: \(error.localizedDescription)")
+            } else {
+                print("Library deleted successfully")
+            }
+        }
+    }
 }

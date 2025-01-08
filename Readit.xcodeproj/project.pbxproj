@@ -56,20 +56,42 @@
 		47728B5B2D2C337D00C8F821 /* ReaditUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReaditUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		47DF05702D2F067600AF4549 /* Exceptions for "Readit" folder in "Readit" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ReaditTests/ReaditTests.swift,
+				ReaditUITests/ReaditUITests.swift,
+				ReaditUITests/ReaditUITestsLaunchTests.swift,
+			);
+			target = 47728B402D2C337C00C8F821 /* Readit */;
+		};
+		47DF05712D2F067600AF4549 /* Exceptions for "Readit" folder in "ReaditTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ReaditTests/ReaditTests.swift,
+			);
+			target = 47728B502D2C337D00C8F821 /* ReaditTests */;
+		};
+		47DF05772D2F067C00AF4549 /* Exceptions for "Readit" folder in "ReaditUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ReaditUITests/ReaditUITests.swift,
+				ReaditUITests/ReaditUITestsLaunchTests.swift,
+			);
+			target = 47728B5A2D2C337D00C8F821 /* ReaditUITests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		47728B432D2C337C00C8F821 /* Readit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				47DF05702D2F067600AF4549 /* Exceptions for "Readit" folder in "Readit" target */,
+				47DF05712D2F067600AF4549 /* Exceptions for "Readit" folder in "ReaditTests" target */,
+				47DF05772D2F067C00AF4549 /* Exceptions for "Readit" folder in "ReaditUITests" target */,
+			);
 			path = Readit;
-			sourceTree = "<group>";
-		};
-		47728B542D2C337D00C8F821 /* ReaditTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ReaditTests;
-			sourceTree = "<group>";
-		};
-		47728B5E2D2C337D00C8F821 /* ReaditUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ReaditUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -127,8 +149,6 @@
 			isa = PBXGroup;
 			children = (
 				47728B432D2C337C00C8F821 /* Readit */,
-				47728B542D2C337D00C8F821 /* ReaditTests */,
-				47728B5E2D2C337D00C8F821 /* ReaditUITests */,
 				47728B422D2C337C00C8F821 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -205,9 +225,6 @@
 			dependencies = (
 				47728B532D2C337D00C8F821 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				47728B542D2C337D00C8F821 /* ReaditTests */,
-			);
 			name = ReaditTests;
 			packageProductDependencies = (
 			);
@@ -227,9 +244,6 @@
 			);
 			dependencies = (
 				47728B5D2D2C337D00C8F821 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				47728B5E2D2C337D00C8F821 /* ReaditUITests */,
 			);
 			name = ReaditUITests;
 			packageProductDependencies = (

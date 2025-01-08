@@ -165,7 +165,7 @@ struct ImageRecognitionView: View {
                 return
             }
             
-            libViewModel.createText(text: extractedText, timestamp: Timestamp())
+            libViewModel.createText(text: extractedText, libraryId: " ")
         }
     }
 }

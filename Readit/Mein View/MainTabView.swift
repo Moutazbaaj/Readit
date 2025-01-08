@@ -24,7 +24,7 @@ struct MainTabView: View {
                 LibraryView()
             }
             .tabItem {
-                Label("My Library", systemImage: "books.vertical")
+                Label("My libreries", systemImage: "books.vertical")
             }
             
             // Scan Tab
@@ -32,7 +32,7 @@ struct MainTabView: View {
                 ScanView()
             }
             .tabItem {
-                Label("Scans", systemImage: "document.viewfinder.fill")
+                Label("History", systemImage: "document.viewfinder.fill")
             }
 
             // Settings Tab

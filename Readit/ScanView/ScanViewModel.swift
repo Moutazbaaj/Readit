@@ -39,13 +39,13 @@ class ScanViewModel: ObservableObject {
     }
     
     // Creates a new bee report.
-    func createText(text: String, timestamp: Timestamp) {
+    func createText(text: String) {
         guard let userId = self.firebaseAuthentication.currentUser?.uid else {
             print("User is not signed in")
             return
         }
         
-        let newText = FireText(userId: userId, text: text, timestamp: timestamp, editTimestamp: nil)
+        let newText = FireText(userId: userId, text: text, timestamp: Timestamp(), editTimestamp: nil, libraryId: " ")
         
         do {
             try self.firebaseFirestore.collection("texts").addDocument(from: newText) { error in
@@ -69,6 +69,7 @@ class ScanViewModel: ObservableObject {
         
         self.listener = self.firebaseFirestore.collection("texts")
             .whereField("userId", isEqualTo: userId)
+            .whereField("libraryId", isEqualTo: " ")
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
                 if let error = error {
@@ -96,7 +97,7 @@ class ScanViewModel: ObservableObject {
     }
     
     // Edit bee report.
-    func editText(withId id: String, newText: String, editTimestamp: Timestamp) {
+    func editText(withId id: String, newText: String) {
         let beeReport = firebaseFirestore.collection("texts").document(id)
         
         beeReport.updateData(["text": newText,

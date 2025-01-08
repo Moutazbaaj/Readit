@@ -107,7 +107,7 @@ struct TextToSpeechView: View {
         .onDisappear {
             textViewModel.stopSpeaking()
             if !textViewModel.inputText.isEmpty {
-                libViewModel.createText(text: textViewModel.inputText, timestamp: Timestamp())
+                libViewModel.createText(text: textViewModel.inputText)
             }
             textViewModel.inputText = ""
         }
