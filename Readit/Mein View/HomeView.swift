@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State private var animateContent: Bool = false // State variable for animation
+//    @State private var animateContent: Bool = false // State variable for animation
 
     var body: some View {
         NavigationStack {
@@ -38,8 +38,8 @@ struct HomeView: View {
                         .foregroundColor(.white)
                         .cornerRadius(10)
                         .padding(.horizontal)
-                        .offset(x: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
-                        .animation(.easeOut(duration: 0.8).delay(0.2), value: animateContent) // Delay for staggered effect
+//                        .offset(x: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
+//                        .animation(.easeOut(duration: 0.8).delay(0.2), value: animateContent) // Delay for staggered effect
                 }
 
                 NavigationLink(destination: ImageRecognitionView()) {
@@ -51,14 +51,14 @@ struct HomeView: View {
                         .foregroundColor(.white)
                         .cornerRadius(10)
                         .padding(.horizontal)
-                        .offset(y: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
-                        .animation(.easeOut(duration: 0.8).delay(0.4), value: animateContent) // Delay for staggered effect
+//                        .offset(y: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
+//                        .animation(.easeOut(duration: 0.8).delay(0.4), value: animateContent) // Delay for staggered effect
                 }
             }
             .padding()
-            .onAppear {
-                animateContent = true
-            }
+//            .onAppear {
+//                animateContent = true
+//            }
         }
     }
 }
