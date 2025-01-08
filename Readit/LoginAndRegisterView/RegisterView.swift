@@ -1,6 +1,6 @@
 //
 //  RegisterView.swift
-//  FireBee warning
+//  FireText warning
 //
 //  Created by Moutaz Baaj on 29.06.24.
 //

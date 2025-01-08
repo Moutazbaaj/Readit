@@ -93,14 +93,6 @@ struct ProfileCreatingView: View {
                                                 if let data = data, let uiImage = UIImage(data: data) {
                                                     selectedImage = uiImage
                                                     profileViewModel.saveProfileImage(image: uiImage)
-                                                    profileViewModel.uploadProfileImage(image: uiImage) { result in
-                                                        switch result {
-                                                        case .success(let url):
-                                                            print("Image uploaded successfully. Download URL: \(url)")
-                                                        case .failure(let error):
-                                                            print("Failed to upload image: \(error.localizedDescription)")
-                                                        }
-                                                    }
                                                 }
                                             case .failure(let error):
                                                 print("Failed to load image: \(error.localizedDescription)")

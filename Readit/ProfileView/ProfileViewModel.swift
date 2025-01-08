@@ -1,6 +1,6 @@
 //
 //  ProfileViewModel.swift
-//  FireBee warning
+//  FireText warning
 //
 //  Created by Moutaz Baaj on 06.07.24.
 //
@@ -10,7 +10,6 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
 import CoreData
-import UIKit
 
 /// ViewModel to manage user authentication and profile data.
 class ProfileViewModel: ObservableObject {
@@ -150,93 +149,93 @@ class ProfileViewModel: ObservableObject {
         }
     }
     
-    /// Compress the image to ensure it's under 100KB.
-    private func compressImage(_ image: UIImage, targetSizeKB: Int = 100) -> Data? {
-        let maxSize = targetSizeKB * 1024 // 100KB in bytes
-        var compressionQuality: CGFloat = 1.0
-        var imageData = image.jpegData(compressionQuality: compressionQuality)
-        
-        while imageData?.count ?? 0 > maxSize && compressionQuality > 0 {
-            compressionQuality -= 0.1
-            imageData = image.jpegData(compressionQuality: compressionQuality)
-        }
-        
-        // Additional step to check if the image needs to be resized
-        if imageData?.count ?? 0 > maxSize {
-            // Resize image to further reduce size
-            if let resizedImage = resizeImage(image, maxSizeKB: targetSizeKB) {
-                imageData = resizedImage.jpegData(compressionQuality: compressionQuality)
-            }
-        }
-        
-        return imageData
-    }
     
-    /// Resize image to ensure it is under the maximum file size.
-    private func resizeImage(_ image: UIImage, maxSizeKB: Int) -> UIImage? {
-        let maxSize = maxSizeKB * 1024 // 100KB in bytes
-        var originalSize = image.jpegData(compressionQuality: 1.0)?.count ?? 0
-        
-        if originalSize <= maxSize {
-            return image
-        }
-        
-        var newSize = image.size
-        var _: CGFloat = max(newSize.width, newSize.height)
-        
-        while originalSize > maxSize {
-            let scaleFactor = sqrt(CGFloat(maxSize) / CGFloat(originalSize))
-            newSize.width *= scaleFactor
-            newSize.height *= scaleFactor
-            
-            UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
-            image.draw(in: CGRect(origin: .zero, size: newSize))
-            let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            
-            if let resizedImageData = resizedImage?.jpegData(compressionQuality: 1.0) {
-                originalSize = resizedImageData.count
-                if originalSize <= maxSize {
-                    return resizedImage
-                }
-            }
-        }
-        
-        return nil
-    }
-    
-    /// Upload the user's profile image to Firebase Storage.
-    func uploadProfileImage(image: UIImage, completion: @escaping (Result<URL, Error>) -> Void) {
-        guard let userID = firebaseAuthntication.currentUser?.uid else {
-            print("No user is currently signed in.")
-            return
-        }
-
-        // Create a reference to the Firebase Storage
-        let storageRef = firebaseStorage.reference().child("profile_images/\(userID).png")
-        
-        // Compress the image
-        guard let imageData = compressImage(image) else {
-            print("Failed to compress image.")
-            return
-        }
-
-        // Upload the image data to Firebase Storage
-        _ = storageRef.putData(imageData, metadata: nil) { _, error in
-            if let error = error {
-                completion(.failure(error))
-                print("Error uploading image: \(error.localizedDescription)")
-            } else {
-                // Get the download URL for the uploaded image
-                storageRef.downloadURL { url, error in
-                    if let error = error {
-                        completion(.failure(error))
-                        print("Error getting download URL: \(error.localizedDescription)")
-                    } else if let url = url {
-                        completion(.success(url))
-                    }
-                }
-            }
-        }
-    }
+//    ///Compress the image to ensure it's under 100KB.
+//    private func compressImage(_ image: UIImage, targetSizeKB: Int = 100) -> Data? {
+//        let maxSize = targetSizeKB * 1024 // 100KB in bytes
+//        var compressionQuality: CGFloat = 1.0
+//        var imageData = image.jpegData(compressionQuality: compressionQuality)
+//        
+//        while imageData?.count ?? 0 > maxSize && compressionQuality > 0 {
+//            compressionQuality -= 0.1
+//            imageData = image.jpegData(compressionQuality: compressionQuality)
+//        }
+//        
+//        // Additional step to check if the image needs to be resized
+//        if imageData?.count ?? 0 > maxSize {
+//            // Resize image to further reduce size
+//            if let resizedImage = resizeImage(image, maxSizeKB: targetSizeKB) {
+//                imageData = resizedImage.jpegData(compressionQuality: compressionQuality)
+//            }
+//        }
+//        
+//        return imageData
+//    }
+//    
+//    /// Resize image to ensure it is under the maximum file size.
+//    private func resizeImage(_ image: UIImage, maxSizeKB: Int) -> UIImage? {
+//        let maxSize = maxSizeKB * 1024 // 100KB in bytes
+//        var originalSize = image.jpegData(compressionQuality: 1.0)?.count ?? 0
+//        
+//        if originalSize <= maxSize {
+//            return image
+//        }
+//        
+//        var newSize = image.size
+//        var _: CGFloat = max(newSize.width, newSize.height)
+//        
+//        while originalSize > maxSize {
+//            let scaleFactor = sqrt(CGFloat(maxSize) / CGFloat(originalSize))
+//            newSize.width *= scaleFactor
+//            newSize.height *= scaleFactor
+//            
+//            UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+//            image.draw(in: CGRect(origin: .zero, size: newSize))
+//            let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+//            UIGraphicsEndImageContext()
+//            
+//            if let resizedImageData = resizedImage?.jpegData(compressionQuality: 1.0) {
+//                originalSize = resizedImageData.count
+//                if originalSize <= maxSize {
+//                    return resizedImage
+//                }
+//            }
+//        }
+//        
+//        return nil
+//    }
+//    /// Upload the user's profile image to Firebase Storage.
+//    func uploadProfileImage(image: UIImage, completion: @escaping (Result<URL, Error>) -> Void) {
+//        guard let userID = firebaseAuthntication.currentUser?.uid else {
+//            print("No user is currently signed in.")
+//            return
+//        }
+//
+//        // Create a reference to the Firebase Storage
+//        let storageRef = firebaseStorage.reference().child("profile_images/\(userID).png")
+//        
+//        // Compress the image
+//        guard let imageData = compressImage(image) else {
+//            print("Failed to compress image.")
+//            return
+//        }
+//
+//        // Upload the image data to Firebase Storage
+//        _ = storageRef.putData(imageData, metadata: nil) { _, error in
+//            if let error = error {
+//                completion(.failure(error))
+//                print("Error uploading image: \(error.localizedDescription)")
+//            } else {
+//                // Get the download URL for the uploaded image
+//                storageRef.downloadURL { url, error in
+//                    if let error = error {
+//                        completion(.failure(error))
+//                        print("Error getting download URL: \(error.localizedDescription)")
+//                    } else if let url = url {
+//                        completion(.success(url))
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
