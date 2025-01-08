@@ -2,8 +2,9 @@
 //  LibraryViewModel.swift
 //  Readit
 //
-//  Created by Moutaz Baaj on 07.01.25.
+//  Created by Moutaz Baaj on 08.01.25.
 //
+
 
 import Foundation
 import FirebaseFirestore
@@ -30,19 +31,17 @@ class LibraryViewModel: ObservableObject {
     private let firebaseStorage = Storage.storage()
     
     init() {
-        self.fetchTexts()
+//        self.fetchMyTexts()
     }
     
-    
-    
     // Creates a new bee report.
-    func createText(userName: String, text: String, timestamp: Timestamp) {
+    func createText(text: String, timestamp: Timestamp) {
         guard let userId = self.firebaseAuthentication.currentUser?.uid else {
             print("User is not signed in")
             return
         }
         
-        let newText = FireText(userId: userId, userName: userName, text: text, timestamp: timestamp, editTimestamp: nil)
+        let newText = FireText(userId: userId, text: text, timestamp: timestamp, editTimestamp: nil)
         
         do {
             try self.firebaseFirestore.collection("texts").addDocument(from: newText) { error in
@@ -58,13 +57,14 @@ class LibraryViewModel: ObservableObject {
     }
     
     // Fetches all bee reports.
-    func fetchTexts() {
-        guard (self.firebaseAuthentication.currentUser?.uid) != nil else {
+    func fetchMyTexts() {
+        guard let userId = self.firebaseAuthentication.currentUser?.uid else {
             print("User is not signed in")
             return
         }
         
         self.listener = self.firebaseFirestore.collection("texts")
+            .whereField("userId", isEqualTo: userId)
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
                 if let error = error {
@@ -88,7 +88,6 @@ class LibraryViewModel: ObservableObject {
                     }
                 }
                 self.texts = texts
-                //                self.deleteOldReports()
             }
     }
     
