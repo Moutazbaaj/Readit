@@ -6,36 +6,24 @@
 //
 
 import SwiftUI
+import FirebaseCore
 
 @main
 struct ReaditApp: App {
+    @StateObject private var authViewModel = AuthViewModel()  // Shared instance of AuthViewModel
+
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+
+    init() {
+        FirebaseConfiguration.shared.setLoggerLevel(.min)
+        FirebaseApp.configure()
+    }
+    
     var body: some Scene {
+    
         WindowGroup {
-            TabView {
-                // Home Tab
-                NavigationStack {
-                    HomeView()
-                }
-                .tabItem {
-                    Label("Home", systemImage: "house")
-                }
-
-                // Library Tab
-                NavigationStack {
-                    LibraryView()
-                }
-                .tabItem {
-                    Label("My Library", systemImage: "books.vertical")
-                }
-
-                // Settings Tab
-                NavigationStack {
-                    SettingsView()
-                }
-                .tabItem {
-                    Label("More", systemImage: "ellipsis.circle")
-                }
-            }
+            MainContentView()
+                .environmentObject(authViewModel)
         }
     }
 }
