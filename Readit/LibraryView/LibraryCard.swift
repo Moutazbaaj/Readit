@@ -22,15 +22,20 @@ struct LibraryCard: View {
             HStack {
                 Text("Created:")
                     .font(.caption2)
+                    .foregroundColor(.white)
+
                 Text(library.timestamp.dateValue(), style: .time)
                     .font(.caption2)
+                    .foregroundColor(.white)
+
             }
             
             Text(library.timestamp.dateValue(), style: .date)
                 .font(.caption2)
+                .foregroundColor(.white)
                 .foregroundColor(.white.opacity(0.8))
             
-            Text("Texts:")
+            Text("Pages: \(library.textIds!.count)")
                 .font(.caption2)
                 .foregroundColor(.white.opacity(0.7))
             
@@ -39,9 +44,9 @@ struct LibraryCard: View {
         .frame(width: 175 , height : 170)
         .background(
             LinearGradient(
-                gradient: Gradient(colors: [Color.blue, Color.black]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
+                gradient: Gradient(colors: [Color.blue, Color.black.opacity(0.6)]),
+                startPoint: .top,
+                endPoint: .bottom
             )
         )
         .cornerRadius(12)
