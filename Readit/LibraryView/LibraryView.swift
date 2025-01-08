@@ -87,6 +87,7 @@ struct LibraryView: View {
                         }
                     }
                 )
+                .presentationDetents([.height(200)])
             }
             .sheet(isPresented: $showEditSheet) {
                 //TODO: sheet for edits
