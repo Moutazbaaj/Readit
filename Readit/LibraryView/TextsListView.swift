@@ -52,7 +52,7 @@ struct TextsListView: View {
                     .font(.headline)
                     .padding()
 
-                TextField("Enter Text Content", text: $newTextContent)
+                TextField("Enter Text Content", text: $newTextContent, axis: .vertical)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
 
