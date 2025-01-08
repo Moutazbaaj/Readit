@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import FirebaseCore
 
 struct TextToSpeechView: View {
-    @StateObject private var viewModel = TextToSpeechViewModel()
+    @StateObject private var textViewModel = TextToSpeechViewModel.shared
+    @StateObject private var libViewModel = ScanViewModel.shared
+    
     @State private var selectedLanguage: Language = .english
     @State private var showLanguagePicker: Bool = false
     
@@ -18,7 +21,7 @@ struct TextToSpeechView: View {
             VStack() {
                 
                 // Expandable TextEditor for user input
-                TextEditor(text: $viewModel.inputText)
+                TextEditor(text: $textViewModel.inputText)
                     .padding()
                     .frame(maxHeight: .infinity)
                     .cornerRadius(10)
@@ -38,8 +41,8 @@ struct TextToSpeechView: View {
             
             VStack {
                 Button(action: {
-                    viewModel.stopSpeaking()
-                    viewModel.readTextAloud(in: selectedLanguage)
+                    textViewModel.stopSpeaking()
+                    textViewModel.readTextAloud(in: selectedLanguage)
                 }) {
                     Text("Read Text")
                         .font(.headline)
@@ -102,7 +105,11 @@ struct TextToSpeechView: View {
             .presentationDetents([.medium])
         }
         .onDisappear {
-            viewModel.stopSpeaking()
+            textViewModel.stopSpeaking()
+            if !textViewModel.inputText.isEmpty {
+                libViewModel.createText(text: textViewModel.inputText, timestamp: Timestamp())
+            }
+            textViewModel.inputText = ""
         }
     }
 }

@@ -10,6 +10,9 @@ import AVFAudio
 
 
 class TextToSpeechViewModel: ObservableObject {
+    
+    static let shared = TextToSpeechViewModel()
+    
     @Published var inputText: String = ""
 
     private let synthesizer = AVSpeechSynthesizer()
