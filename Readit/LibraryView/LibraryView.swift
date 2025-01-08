@@ -20,81 +20,78 @@ struct LibraryView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color(.systemGroupedBackground).edgesIgnoringSafeArea(.all) // Background color
-                
-                VStack {
-                    if viewModel.libreries.isEmpty {
-                        Text("Your library is empty")
-                            .font(.headline)
-                            .foregroundColor(.gray)
-                            .padding()
-                    } else {
-                        ScrollView {
-                            LazyVGrid(columns: gridItems, spacing: 20) {
-                                ForEach(viewModel.libreries.sorted(by: {
-                                    $0.timestamp.dateValue() > $1.timestamp.dateValue()
-                                })) { library in
-                                    NavigationLink(destination: TextsListView(library: library)) {
-                                        LibraryCard(library: library)
+            VStack {
+                Text(" ")
+                if viewModel.libreries.isEmpty {
+                    Text("Your library is empty")
+                        .font(.headline)
+                        .foregroundColor(.gray)
+                        .padding()
+                } else {
+                    ScrollView {
+                        LazyVGrid(columns: gridItems, spacing: 20) {
+                            ForEach(viewModel.libreries.sorted(by: {
+                                $0.timestamp.dateValue() > $1.timestamp.dateValue()
+                            })) { library in
+                                NavigationLink(destination: TextsListView(library: library)) {
+                                    LibraryCard(library: library)
+                                }
+                                .contextMenu {
+                                    Button("Edit") {
+                                        libraryItem = library
+                                        showEditSheet = true
                                     }
-                                    .contextMenu {
-                                        Button("Edit") {
-                                            libraryItem = library
-                                            showEditSheet = true
-                                        }
-                                        Button(role: .destructive) {
-                                            libraryItem = library
-                                            showAlert = true
-                                        } label: {
-                                            Text("Delete")
-                                        }
+                                    Button(role: .destructive) {
+                                        libraryItem = library
+                                        showAlert = true
+                                    } label: {
+                                        Text("Delete")
                                     }
                                 }
                             }
-                            .padding(.horizontal)
                         }
+                        .padding(.horizontal)
                     }
                 }
             }
-            .navigationTitle("My libreries")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(trailing: Button(action: {
-                showAddLibrarySheet = true
-            }) {
-                Image(systemName: "plus")
-            })
-            .alert(isPresented: $showAlert) {
-                Alert(
-                    title: Text("Confirm Delete"),
-                    message: Text("Are you sure you want to delete this library?"),
-                    primaryButton: .destructive(Text("Delete")) {
-                        if let library = libraryItem {
-                            viewModel.deleteLibrary(withId: library.id)
-                        }
-                    },
-                    secondaryButton: .cancel()
-                )
-            }
-            .sheet(isPresented: $showAddLibrarySheet) {
-                AddLibrarySheet(
-                    newLibraryTitle: $newLibraryTitle,
-                    onAdd: {
-                        if !newLibraryTitle.isEmpty {
-                            viewModel.createLibrary(libraryTitle: newLibraryTitle)
-                            newLibraryTitle = ""
-                            showAddLibrarySheet = false
-                        }
+        }
+        .navigationTitle("My libreries")
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarItems(trailing: Button(action: {
+            showAddLibrarySheet = true
+        }) {
+            Image(systemName: "plus")
+        })
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("Confirm Delete"),
+                message: Text("Are you sure you want to delete this library?"),
+                primaryButton: .destructive(Text("Delete")) {
+                    if let library = libraryItem {
+                        viewModel.deleteLibrary(withId: library.id)
                     }
-                )
-                .presentationDetents([.height(200)])
-            }
-            .sheet(isPresented: $showEditSheet) {
-                //TODO: sheet for edits
-            }
-            .onAppear {
-                viewModel.fetchLibraries()
-            }
+                },
+                secondaryButton: .cancel()
+            )
+        }
+        .sheet(isPresented: $showAddLibrarySheet) {
+            AddLibrarySheet(
+                newLibraryTitle: $newLibraryTitle,
+                onAdd: {
+                    if !newLibraryTitle.isEmpty {
+                        viewModel.createLibrary(libraryTitle: newLibraryTitle)
+                        newLibraryTitle = ""
+                        showAddLibrarySheet = false
+                    }
+                }
+            )
+            .presentationDetents([.height(200)])
+        }
+        .sheet(isPresented: $showEditSheet) {
+            //TODO: sheet for edits
+        }
+        .onAppear {
+            viewModel.fetchLibraries()
         }
     }
 }
