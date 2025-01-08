@@ -154,6 +154,10 @@ struct ImageRecognitionView: View {
             }
             .presentationDetents([.medium])
         }
+        .onAppear {
+            viewModel.selectedImage = nil
+            viewModel.extractedText = nil
+        }
         .onDisappear {
             viewModel.stopSpeaking()
             
