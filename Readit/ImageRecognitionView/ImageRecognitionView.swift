@@ -88,7 +88,8 @@ struct ImageRecognitionView: View {
                     matching: .images, // Show only images in the picker
                     photoLibrary: .shared()
                 ) {
-                    Text("Select Photo")
+                    Label("Select Photo", systemImage: "photo")
+
                         .font(.headline)
                         .padding()
                         .frame(maxWidth: .infinity)
@@ -114,7 +115,7 @@ struct ImageRecognitionView: View {
                 viewModel.stopSpeaking()
                 viewModel.readTextAloud(in: selectedLanguage)
             }) {
-                Text("Read Text")
+                Label("Read Text", systemImage: "waveform.badge.microphone")
                     .font(.headline)
                     .padding()
                     .frame(maxWidth: .infinity)
