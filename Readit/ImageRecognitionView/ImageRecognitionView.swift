@@ -18,19 +18,33 @@ struct ImageRecognitionView: View {
     @State private var selectedItem: PhotosPickerItem? // For the selected image from the picker
     @State private var showLanguagePicker: Bool = false
     @State private var selectedLanguage: Language = .english
+    @State private var showCamera: Bool = false // To trigger the camera
+    @State private var capturedImage: UIImage? // To hold the captured image
 
     
     var body: some View {
         VStack() {
             Spacer()
             
-            // Display the selected image
+            // Display the selected or captured image
             if let selectedImage = viewModel.selectedImage {
                 Image(uiImage: selectedImage)
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: 300, maxHeight: 300)
                     .cornerRadius(10)
+            } else if let capturedImage = capturedImage {
+                Image(uiImage: capturedImage)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: 300, maxHeight: 300)
+                    .cornerRadius(10)
+                    .onAppear {
+                        // Process the captured image
+                        viewModel.selectedImage = capturedImage
+                        viewModel.processImage(image: capturedImage)
+                    }
+                
             }
             
             if let extractedText = viewModel.extractedText {
@@ -65,6 +79,11 @@ struct ImageRecognitionView: View {
                 
             }
             .padding(.horizontal)
+            
+            HStack {
+                CameraCaptureButton(capturedImage: $capturedImage)
+                
+            }
             
             // PhotosPicker to select an image
             PhotosPicker(
@@ -116,16 +135,6 @@ struct ImageRecognitionView: View {
                 }) {
                     Label("Language", systemImage: "globe")
                 }
-                
-                //                Menu {
-                //                    Picker("Language", selection: $selectedLanguage) {
-                //                        ForEach(Language.allCases, id: \.self) { language in
-                //                            Text(language.displayName).tag(language)
-                //                        }
-                //                    }
-                //                } label: {
-                //                    Label("Language", systemImage: "globe")
-                //                }
             }
         }
         .sheet(isPresented: $showLanguagePicker) {
@@ -166,6 +175,12 @@ struct ImageRecognitionView: View {
             }
             
             libViewModel.createText(text: extractedText, libraryId: " ")
+        }
+        .onChange(of: capturedImage) {_, newImage in
+            if let newImage = newImage {
+                viewModel.selectedImage = newImage
+                viewModel.processImage(image: newImage)
+            }
         }
     }
 }

@@ -22,7 +22,14 @@ class ImageRecognitionViewModel: ObservableObject {
 
     func processImage(image: UIImage?) {
         guard let image = image, let cgImage = image.cgImage else { return }
+        
+        // Specify the languages you want to recognize
         let request = VNRecognizeTextRequest { request, error in
+            if let error = error {
+                print("Text recognition failed with error: \(error.localizedDescription)")
+                return
+            }
+            
             if let results = request.results as? [VNRecognizedTextObservation] {
                 let recognizedText = results.compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
                 DispatchQueue.main.async {
@@ -30,6 +37,13 @@ class ImageRecognitionViewModel: ObservableObject {
                 }
             }
         }
+        
+        // Set recognition languages
+        request.recognitionLanguages = ["en", "ar", "ja", "zh-Hans", "zh-Hant"] // English, Arabic, Japanese, Simplified and Traditional Chinese
+        
+        // Fallback to automatic language detection if needed
+        request.usesLanguageCorrection = true
+
         let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
         DispatchQueue.global(qos: .userInitiated).async {
             try? handler.perform([request])
@@ -54,11 +68,9 @@ class ImageRecognitionViewModel: ObservableObject {
         }
     }
     
-    
     func stopSpeaking() {
         if synthesizer.isSpeaking {
             synthesizer.stopSpeaking(at: .immediate)
         }
     }
 }
-

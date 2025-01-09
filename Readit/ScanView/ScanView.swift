@@ -11,11 +11,8 @@ struct ScanView: View {
     
     // View model to manage the list of bee reports.
     @StateObject private var viewModel = ScanViewModel.shared
-    
-    
+
     @State private var showAlert = false // State variable to control the display of the alert.
-    @State private var showEditSheet = false // State variable to control the display of the edit sheet.
-    @State private var showBeeReportSheet = false  // State to control the visibility of the bee report sheet
     @State private var textItem: FireText? // State variable to keep track of the text to edit or delete.
     
     @State private var selectedLanguage: Language = .english
@@ -67,14 +64,14 @@ struct ScanView: View {
                                 Label("Delete", systemImage: "trash")
                             }
                             .tint(.red)
-                            
-                            Button {
-                                textItem = text
-                                showEditSheet = true
-                            } label: {
-                                Label("Edit", systemImage: "pencil")
-                            }
-                            .tint(.blue)
+//                            
+//                            Button {
+//                                textItem = text
+//                                showEditSheet = true
+//                            } label: {
+//                                Label("Edit", systemImage: "pencil")
+//                            }
+//                            .tint(.blue)
                         }
                     }
                     .listStyle(.insetGrouped)
@@ -137,20 +134,6 @@ struct ScanView: View {
                     },
                     secondaryButton: .cancel()
                 )
-            }
-            .sheet(isPresented: $showEditSheet) {
-                if let text = textItem {
-                    //                        EditBeeReportSheetView(
-                    //                            beeViewModel: beeViewModel,
-                    //                            reportsViewModel: ReportsViewModel(),
-                    //                            bee: bee
-                    //                        )
-                    //                        .presentationDetents([.medium, .large])
-                }
-            }
-            .sheet(isPresented: $showBeeReportSheet) {
-                //                    BeeReportSheetView(beeViewModel: beeViewModel)
-                //                        .presentationDetents([.large])
             }
         }
     }
