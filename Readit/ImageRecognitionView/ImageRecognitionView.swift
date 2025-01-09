@@ -20,7 +20,7 @@ struct ImageRecognitionView: View {
     @State private var selectedLanguage: Language = .english
     @State private var showCamera: Bool = false // To trigger the camera
     @State private var capturedImage: UIImage? // To hold the captured image
-
+    
     
     var body: some View {
         VStack() {
@@ -62,7 +62,7 @@ struct ImageRecognitionView: View {
                         Text(extractedText)
                             .padding()
                             .padding(.horizontal)
-
+                        
                     }
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
@@ -82,34 +82,33 @@ struct ImageRecognitionView: View {
             
             HStack {
                 CameraCaptureButton(capturedImage: $capturedImage)
+                // PhotosPicker to select an image
+                PhotosPicker(
+                    selection: $selectedItem,
+                    matching: .images, // Show only images in the picker
+                    photoLibrary: .shared()
+                ) {
+                    Text("Select Photo")
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .onChange(of: selectedItem) {_ , newItem in
+                    Task {
+                        if let data = try? await newItem?.loadTransferable(type: Data.self),
+                           let uiImage = UIImage(data: data) {
+                            viewModel.selectedImage = uiImage
+                            viewModel.processImage(image: uiImage)
+                            viewModel.stopSpeaking()
+                        }
+                    }
+                }
                 
             }
             
-            // PhotosPicker to select an image
-            PhotosPicker(
-                selection: $selectedItem,
-                matching: .images, // Show only images in the picker
-                photoLibrary: .shared()
-            ) {
-                Text("Select Photo")
-                    .font(.headline)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
-            .onChange(of: selectedItem) {_ , newItem in
-                Task {
-                    if let data = try? await newItem?.loadTransferable(type: Data.self),
-                       let uiImage = UIImage(data: data) {
-                        viewModel.selectedImage = uiImage
-                        viewModel.processImage(image: uiImage)
-                        viewModel.stopSpeaking()
-
-                    }
-                }
-            }
             
             Button(action: {
                 viewModel.stopSpeaking()
