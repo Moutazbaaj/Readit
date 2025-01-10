@@ -82,6 +82,7 @@ struct ImageRecognitionView: View {
             
             HStack {
                 CameraCaptureButton(capturedImage: $capturedImage)
+                
                 // PhotosPicker to select an image
                 PhotosPicker(
                     selection: $selectedItem,
@@ -104,6 +105,11 @@ struct ImageRecognitionView: View {
                             viewModel.selectedImage = uiImage
                             viewModel.processImage(image: uiImage)
                             viewModel.stopSpeaking()
+                            guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
+                                return
+                            }
+                            
+                            libViewModel.createText(text: extractedText, libraryId: " ")
                         }
                     }
                 }
@@ -180,6 +186,11 @@ struct ImageRecognitionView: View {
             if let newImage = newImage {
                 viewModel.selectedImage = newImage
                 viewModel.processImage(image: newImage)
+                guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
+                    return
+                }
+                
+                libViewModel.createText(text: extractedText, libraryId: " ")
             }
         }
     }
