@@ -89,7 +89,3 @@ struct TextsListView: View {
         }
     }
 }
-
-//#Preview {
-//    TextsListView()
-//}
