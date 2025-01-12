@@ -11,6 +11,8 @@ import FirebaseFirestore
 import FirebaseAuth
 import CoreLocation
 import FirebaseStorage
+import AVFAudio
+
 
 class LibraryViewModel: ObservableObject {
     
@@ -196,6 +198,37 @@ class LibraryViewModel: ObservableObject {
             } else {
                 print("Library deleted successfully")
             }
+        }
+    }
+    
+    
+    //____________________________
+    
+    
+    private let synthesizer = AVSpeechSynthesizer()
+
+    func readTextAloud(in language: Language) {
+        guard !libreries.isEmpty else { return }
+        let utterance = AVSpeechUtterance(string: libreries.)
+        utterance.voice = AVSpeechSynthesisVoice(language: language.rawValue)
+        
+        // Configure audio session
+    
+        do {
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setCategory(.playback, mode: .default, options: [])
+            try audioSession.setActive(true)
+        } catch {
+            print("Failed to configure audio session: \(error.localizedDescription)")
+        }
+        
+        synthesizer.speak(utterance)
+    }
+    
+    
+    func stopSpeaking() {
+        if synthesizer.isSpeaking {
+            synthesizer.stopSpeaking(at: .immediate)
         }
     }
 }
