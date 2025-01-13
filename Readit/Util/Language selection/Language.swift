@@ -61,4 +61,30 @@ enum Language: String, CaseIterable {
         case .hindi: return "हिंदी (Hindi)"
         }
     }
+    
+    var pageTranslation: String {
+        switch self {
+        case .english: return "Page"
+        case .japanese: return "ページ"
+        case .french: return "Page"
+        case .german: return "Seite"
+        case .spanish: return "Página"
+        case .italian: return "Pagina"
+        case .chineseMandarin, .chineseHongKong, .chineseTaiwan: return "页"
+        case .korean: return "페이지"
+        case .arabic: return "صفحة"
+        case .russian: return "Страница"
+        case .portugueseBrazil, .portuguesePortugal: return "Página"
+        case .dutch: return "Pagina"
+        case .swedish: return "Sida"
+        case .norwegian: return "Side"
+        case .danish: return "Side"
+        case .finnish: return "Sivu"
+        case .polish: return "Strona"
+        case .greek: return "Σελίδα"
+        case .turkish: return "Sayfa"
+        case .thai: return "หน้า"
+        case .hindi: return "पृष्ठ"
+        }
+    }
 }
