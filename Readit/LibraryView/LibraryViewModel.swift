@@ -206,8 +206,6 @@ class LibraryViewModel: ObservableObject {
     }
     
     
-    //____________________________
-    
     
     func readTextAloud(from library: FireLibrary, in language: Language) {
         guard !texts.isEmpty else {
@@ -222,7 +220,7 @@ class LibraryViewModel: ObservableObject {
             })
             .enumerated() // Enumerate to get both index and content
             .map { index, text in
-                "Page \(index + 1). \(text.text)" // Add "Page X" prefix before each text
+                "\(language.pageTranslation) \(index + 1). \(text.text)" // Add "Page X" prefix before each text
             }
             .joined(separator: ". ") // Concatenate texts with a separator
                
