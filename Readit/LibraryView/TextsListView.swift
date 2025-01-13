@@ -12,6 +12,8 @@ struct TextsListView: View {
     let library: FireLibrary
     @StateObject private var viewModel = LibraryViewModel.shared
     @State private var showAddTextSheet = false
+    @State private var showLanguagePicker = false
+    @State private var selectedLanguage: Language = .english
     @State private var newTextContent = ""
 
     var body: some View {
@@ -23,7 +25,7 @@ struct TextsListView: View {
                     .padding()
             } else {
                 List(viewModel.texts.sorted(by: {
-                    $0.timestamp.dateValue() > $1.timestamp.dateValue()
+                    $0.timestamp.dateValue() < $1.timestamp.dateValue()
                 })) { text in
                     VStack(alignment: .leading) {
                         Text(text.text)
@@ -36,15 +38,26 @@ struct TextsListView: View {
                     .background(Color.black.opacity(0.05))
                     .cornerRadius(8)
                 }
-                .listStyle(InsetGroupedListStyle())
+                .listStyle(.plain)
             }
+            
+            HStack {
+                Spacer()
+                Text(selectedLanguage.displayName)
+                Button(action: {
+                    showLanguagePicker = true // Show the language picker sheet
+                }) {
+                    Label("Language", systemImage: "globe")
+                }
+            }
+            .padding()
         }
         .navigationTitle(library.libraryTitle)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(trailing: HStack {
             Button(action: {
                 viewModel.stopSpeaking()
-                viewModel.readTextAloud(from: library, in: Language.english) //  TODO: lang
+                viewModel.readTextAloud(from: library, in: Language(rawValue: selectedLanguage.rawValue) ?? Language.english)
             }) {
                 Image(systemName: "speaker.wave.2.fill")
             }
@@ -93,6 +106,33 @@ struct TextsListView: View {
             .padding()
             .presentationDetents([.medium, .large])
         }
+        .sheet(isPresented: $showLanguagePicker) {
+            VStack {
+                Text("Select Language")
+                    .font(.headline)
+                    .padding()
+                
+                Picker("Language", selection: $selectedLanguage) {
+                    ForEach(Language.allCases, id: \.self) { language in
+                        Text(language.displayName).tag(language)
+                    }
+                }
+                .pickerStyle(WheelPickerStyle()) // Use WheelPicker style
+                .frame(height: 200) // Adjust height for better appearance
+                
+                Button("Done") {
+                    showLanguagePicker = false // Dismiss the sheet
+                }
+                .font(.headline)
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                .padding()
+            }
+            .presentationDetents([.medium])
+        }
+
         .onAppear {
             viewModel.fetchTexts(forLibraryId: library.id ?? "")
         }
