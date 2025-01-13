@@ -33,6 +33,10 @@ class LibraryViewModel: ObservableObject {
     /// Firebase Storage instance.
     private let firebaseStorage = Storage.storage()
     
+    
+    private let synthesizer = AVSpeechSynthesizer()
+
+    
     init() {
         self.fetchLibraries()
     }
@@ -205,11 +209,25 @@ class LibraryViewModel: ObservableObject {
     //____________________________
     
     
-    private let synthesizer = AVSpeechSynthesizer()
-
-    func readTextAloud(in language: Language) {
-        guard !libreries.isEmpty else { return }
-        let utterance = AVSpeechUtterance(string: libreries.)
+    func readTextAloud(from library: FireLibrary, in language: Language) {
+        guard !texts.isEmpty else {
+            print("No texts available to read aloud.")
+            return
+        }
+        
+        let textsToRead = texts
+            .filter { $0.libraryId == library.id } // Ensure the texts belong to the specified library
+            .sorted(by: {
+                $0.timestamp.dateValue() < $1.timestamp.dateValue() // Sort by timestamp in ascending order
+            })
+            .enumerated() // Enumerate to get both index and content
+            .map { index, text in
+                "Page \(index + 1). \(text.text)" // Add "Page X" prefix before each text
+            }
+            .joined(separator: ". ") // Concatenate texts with a separator
+               
+        
+        let utterance = AVSpeechUtterance(string: textsToRead)
         utterance.voice = AVSpeechSynthesisVoice(language: language.rawValue)
         
         // Configure audio session

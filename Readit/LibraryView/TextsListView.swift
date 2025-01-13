@@ -41,10 +41,19 @@ struct TextsListView: View {
         }
         .navigationTitle(library.libraryTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarItems(trailing: Button(action: {
-            showAddTextSheet = true
-        }) {
-            Image(systemName: "plus")
+        .navigationBarItems(trailing: HStack {
+            Button(action: {
+                viewModel.stopSpeaking()
+                viewModel.readTextAloud(from: library, in: Language.english) //  TODO: lang
+            }) {
+                Image(systemName: "speaker.wave.2.fill")
+            }
+            
+            Button(action: {
+                showAddTextSheet = true
+            }) {
+                Image(systemName: "plus")
+            }
         })
         .sheet(isPresented: $showAddTextSheet) {
             VStack {
@@ -86,6 +95,10 @@ struct TextsListView: View {
         }
         .onAppear {
             viewModel.fetchTexts(forLibraryId: library.id ?? "")
+        }
+        .onDisappear {
+            viewModel.stopSpeaking()
+
         }
     }
 }
