@@ -72,7 +72,7 @@ struct ProfileView: View {
                     // Display user information
                     HStack {
                         Text("Username: ")
-                            .foregroundStyle(.white)
+//                            .foregroundStyle(.white)
                             .shadow(color: .blue, radius: 0.5)
                         Text("\(String(authViewModel.user?.username ?? "unknown"))")
                             .foregroundColor(Color(from: authViewModel.user?.color ?? "black"))
@@ -82,7 +82,7 @@ struct ProfileView: View {
                     .padding(.vertical)
                     
                     Text("Birthday: \(authViewModel.user?.birthday ?? Date(), style: .date)")
-                        .foregroundStyle(.white)
+//                        .foregroundStyle(.white)
                         .shadow(color: .blue, radius: 0.5)
                         .padding(.vertical)
                     
