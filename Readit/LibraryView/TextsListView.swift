@@ -26,6 +26,9 @@ struct TextsListView: View {
     var body: some View {
         VStack {
             if viewModel.texts.isEmpty {
+                
+                Spacer()
+
                 Text("No texts in this library.")
                     .font(.headline)
                     .foregroundColor(.gray)
@@ -65,6 +68,8 @@ struct TextsListView: View {
                 }
                 .listStyle(.plain)
             }
+            
+            Spacer()
             
             HStack {
                 Spacer()
@@ -215,3 +220,4 @@ struct TextsListView: View {
         }
     }
 }
+
