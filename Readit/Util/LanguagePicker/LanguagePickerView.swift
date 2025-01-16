@@ -5,6 +5,8 @@
 //  Created by Moutaz Baaj on 16.01.25.
 //
 
+import SwiftUI
+
 
 struct LanguagePickerView: View {
     @Binding var selectedLanguage: Language
