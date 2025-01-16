@@ -21,41 +21,52 @@ struct TextsListView: View {
     @State private var selectedLanguage: Language = .english
     @State private var newTextContent = ""
     @State private var editingTextContent = ""
-
-
+    
     var body: some View {
-        VStack {
-            if viewModel.texts.isEmpty {
-                
-                Spacer()
-
-                Text("No texts in this library.")
-                    .font(.headline)
-                    .foregroundColor(.gray)
-                    .padding()
-            } else {
-                List(viewModel.texts.sorted(by: {
-                    $0.timestamp.dateValue() < $1.timestamp.dateValue()
-                })) { text in
-                    VStack(alignment: .leading) {
-                        Text(text.text)
-                            .font(.headline)
-                        Text(text.timestamp.dateValue(), style: .date)
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                    }
-                    .padding()
-                    .background(Color.black.opacity(0.05))
-                    .cornerRadius(8)
-                    .swipeActions {
-                        Button(role: .destructive) {
-                            textItem = text
-                            showAlert = true
-                        } label: {
-                            Label("Delete", systemImage: "trash")
+        ZStack {
+            LinearGradient(
+                gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .edgesIgnoringSafeArea(.all)
+            
+            VStack {
+                if viewModel.texts.isEmpty {
+                    Spacer()
+                    
+                    Text("No texts in this library.")
+                        .font(.headline)
+                        .foregroundColor(.gray)
+                        .padding()
+                } else {
+                    List(viewModel.texts.sorted(by: {
+                        $0.timestamp.dateValue() < $1.timestamp.dateValue()
+                    })) { text in
+                        VStack(alignment: .leading) {
+                            Text(text.text)
+                                .font(.headline)
+                                .padding(5)
+                                .background(Color.white.opacity(0.2))
+                                .cornerRadius(10)
+                            
+                            Text(text.timestamp.dateValue(), style: .date)
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
                         }
-                        .tint(.red)
-
+                        .padding()
+                        .background(Color.clear) // Clear background for the row
+                        .listRowBackground(Color.clear) // Ensure no opaque row background
+                        .cornerRadius(10)
+                        .swipeActions {
+                            Button(role: .destructive) {
+                                textItem = text
+                                showAlert = true
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                            .tint(.red)
+                            
                             Button {
                                 textItem = text
                                 editingTextContent = text.text
@@ -64,30 +75,34 @@ struct TextsListView: View {
                                 Label("Edit", systemImage: "pencil")
                             }
                             .tint(.blue)
+                        }
                     }
+                    .listStyle(.plain)
+                    .background(Color.clear) // Transparent list background
                 }
-                .listStyle(.plain)
-            }
-            
-            Spacer()
-            
-            HStack {
+                
                 Spacer()
-                Text(selectedLanguage.displayName)
-                Button(action: {
-                    showLanguagePicker = true // Show the language picker sheet
-                }) {
-                    Label("Language", systemImage: "globe")
+                
+                HStack {
+                    Text("Language:")
+                        .font(.subheadline)
+                    Spacer()
+                    Text(selectedLanguage.displayName)
+                        .foregroundColor(.blue)
+                        .onTapGesture {
+                            showLanguagePicker = true
+                        }
+                        .padding(.vertical)
                 }
+                .padding()
             }
-            .padding()
         }
         .navigationTitle(library.libraryTitle)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(trailing: HStack {
             Button(action: {
                 viewModel.stopSpeaking()
-                viewModel.readTextAloud(from: library, in: Language(rawValue: selectedLanguage.rawValue) ?? Language.english)
+                viewModel.readTextAloud(from: library, in: selectedLanguage)
             }) {
                 Image(systemName: "speaker.wave.2.fill")
             }
@@ -103,8 +118,7 @@ struct TextsListView: View {
                 Text("Add New Text")
                     .font(.headline)
                     .padding()
-
-                // Expandable TextEditor for user input
+                
                 TextEditor(text: $newTextContent)
                     .padding()
                     .frame(maxHeight: .infinity)
@@ -113,7 +127,7 @@ struct TextsListView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(Color.gray, lineWidth: 1)
                     )
-
+                
                 Button(action: {
                     if !newTextContent.isEmpty {
                         viewModel.createText(text: newTextContent, libraryId: library.id ?? "")
@@ -130,45 +144,21 @@ struct TextsListView: View {
                         .cornerRadius(10)
                 }
                 .disabled(newTextContent.isEmpty)
-
+                
                 Spacer()
             }
             .padding()
             .presentationDetents([.medium, .large])
         }
         .sheet(isPresented: $showLanguagePicker) {
-            VStack {
-                Text("Select Language")
-                    .font(.headline)
-                    .padding()
-                
-                Picker("Language", selection: $selectedLanguage) {
-                    ForEach(Language.allCases, id: \.self) { language in
-                        Text(language.displayName).tag(language)
-                    }
-                }
-                .pickerStyle(WheelPickerStyle()) // Use WheelPicker style
-                .frame(height: 200) // Adjust height for better appearance
-                
-                Button("Done") {
-                    showLanguagePicker = false // Dismiss the sheet
-                }
-                .font(.headline)
-                .padding()
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(10)
-                .padding()
-            }
-            .presentationDetents([.medium])
+            LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
         }
         .sheet(isPresented: $showEditTextSheet) {
             VStack {
                 Text("Edit Text")
                     .font(.headline)
                     .padding()
-
-                // TextEditor bound to editingTextContent
+                
                 TextEditor(text: $editingTextContent)
                     .padding()
                     .cornerRadius(10)
@@ -177,8 +167,7 @@ struct TextsListView: View {
                             .stroke(Color.gray, lineWidth: 1)
                     )
                     .frame(maxHeight: .infinity)
-
-                // Save button
+                
                 Button("Save Changes") {
                     if let textItem = textItem {
                         viewModel.editText(withId: textItem.id ?? "", newText: editingTextContent)
@@ -191,13 +180,14 @@ struct TextsListView: View {
                 .background(Color.blue)
                 .foregroundColor(.white)
                 .cornerRadius(10)
-                .disabled(editingTextContent.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) // Prevent saving empty content
-
+                .disabled(editingTextContent.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                
                 Spacer()
             }
             .padding()
             .presentationDetents([.medium, .large])
-        }        .alert(isPresented: $showAlert) {
+        }
+        .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("Confirm Delete"),
                 message: Text("Are you sure you want to delete this text?"),
@@ -209,15 +199,11 @@ struct TextsListView: View {
                 secondaryButton: .cancel()
             )
         }
-
-
         .onAppear {
             viewModel.fetchTexts(forLibraryId: library.id ?? "")
         }
         .onDisappear {
             viewModel.stopSpeaking()
-
         }
     }
 }
-
