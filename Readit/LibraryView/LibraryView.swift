@@ -14,6 +14,7 @@ struct LibraryView: View {
     @State private var showAddLibrarySheet = false
     @State private var newLibraryTitle = "" // Stores the new library title
     @State private var libraryItem: FireLibrary? // Selected library for actions (edit/delete)
+//    @State private var libID: String? = []
     
     // Define the grid layout with two columns.
     let gridItems = [GridItem(.flexible()), GridItem(.flexible())]
@@ -27,6 +28,7 @@ struct LibraryView: View {
                     endPoint: .bottom
                 )
                 .edgesIgnoringSafeArea(.all)
+                .blur(radius: 10) // Adding a subtle blur effect to the background
                 VStack {
                     Text(" ")
                     if viewModel.libreries.isEmpty {
@@ -36,6 +38,7 @@ struct LibraryView: View {
                             .padding()
                     } else {
                         ScrollView {
+                            Spacer()
                             LazyVGrid(columns: gridItems, spacing: 20) {
                                 ForEach(viewModel.libreries.sorted(by: {
                                     $0.timestamp.dateValue() > $1.timestamp.dateValue()
@@ -44,6 +47,9 @@ struct LibraryView: View {
                                         LibraryCard(library: library)
                                     }
                                     .contextMenu {
+                                        Button("Favorite") {
+                                            //TODO
+                                        }
                                         Button("Edit") {
                                             libraryItem = library
                                             showEditSheet = true
