@@ -8,10 +8,16 @@
 import SwiftUI
 
 struct HomeView: View {
-//    @State private var animateContent: Bool = false // State variable for animation
-
+    //    @State private var animateContent: Bool = false // State variable for animation
+    
     var body: some View {
-        NavigationStack {
+        ZStack {
+            LinearGradient(
+                gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .edgesIgnoringSafeArea(.all)
             VStack() {
                 Text("Choose an Option")
                     .font(.largeTitle)
@@ -31,37 +37,37 @@ struct HomeView: View {
                 Spacer()
                 
                 HStack {
-                NavigationLink(destination: TextToSpeechView()) {
-                    Image(systemName: "bubble.and.pencil")
-                        .font(.title)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.black)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                        .padding()
-                    //                        .offset(x: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
-                    //                        .animation(.easeOut(duration: 0.8).delay(0.2), value: animateContent) // Delay for staggered effect
+                    NavigationLink(destination: TextToSpeechView()) {
+                        Image(systemName: "bubble.and.pencil")
+                            .font(.title)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.black)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                            .padding()
+                        //                        .offset(x: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
+                        //                        .animation(.easeOut(duration: 0.8).delay(0.2), value: animateContent) // Delay for staggered effect
+                    }
+                    
+                    NavigationLink(destination: ImageRecognitionView()) {
+                        Image(systemName: "photo.badge.plus.fill")
+                            .font(.largeTitle)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.black)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                            .padding()
+                        //                        .offset(y: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
+                        //                        .animation(.easeOut(duration: 0.8).delay(0.4), value: animateContent) // Delay for staggered effect
+                    }
                 }
-                
-                NavigationLink(destination: ImageRecognitionView()) {
-                    Image(systemName: "photo.badge.plus.fill")
-                        .font(.largeTitle)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.black)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                        .padding()
-                    //                        .offset(y: animateContent ? 0 : UIScreen.main.bounds.height) // Start off-screen
-                    //                        .animation(.easeOut(duration: 0.8).delay(0.4), value: animateContent) // Delay for staggered effect
-                }
-            }
             }
             .padding()
-//            .onAppear {
-//                animateContent = true
-//            }
+            //            .onAppear {
+            //                animateContent = true
+            //            }
         }
     }
 }
