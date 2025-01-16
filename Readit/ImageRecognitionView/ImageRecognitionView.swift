@@ -73,13 +73,20 @@ struct ImageRecognitionView: View {
                 }
             }
             
+            // Language selection
             HStack {
+                Text("Language:")
+                    .font(.subheadline)
                 Spacer()
                 Text(selectedLanguage.displayName)
-                
+                    .foregroundColor(.blue)
+                    .onTapGesture {
+                        showLanguagePicker = true
+                    }
+                    .padding()
+
             }
-            .padding(.horizontal)
-            
+        
             HStack {
                 CameraCaptureButton(capturedImage: $capturedImage)
                 
@@ -90,7 +97,7 @@ struct ImageRecognitionView: View {
                     photoLibrary: .shared()
                 ) {
                     Label("Select Photo", systemImage: "photo")
-
+                    
                         .font(.headline)
                         .padding()
                         .frame(maxWidth: .infinity)
@@ -98,76 +105,54 @@ struct ImageRecognitionView: View {
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
-                .onChange(of: selectedItem) {_ , newItem in
-                    Task {
-                        if let data = try? await newItem?.loadTransferable(type: Data.self),
-                           let uiImage = UIImage(data: data) {
-                            viewModel.selectedImage = uiImage
-                            viewModel.processImage(image: uiImage)
-                            viewModel.stopSpeaking()
-                            guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
-                                return
-                            }
-                            
-                            libViewModel.createText(text: extractedText, libraryId: " ")
-                        }
-                    }
-                }
-                
             }
             
             
-            Button(action: {
-                viewModel.stopSpeaking()
-                viewModel.readTextAloud(in: selectedLanguage)
-            }) {
-                Label("Read Text", systemImage: "waveform.badge.microphone")
-                    .font(.headline)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.orange)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
+            // Action buttons
+           HStack {
+                Button(action: {
+                    viewModel.stopSpeaking()
+                    viewModel.readTextAloud(in: selectedLanguage)
+                }) {
+                    Label("Read Text", systemImage: "message.badge.waveform")
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.orange)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                
+                Button(action: {
+                    viewModel.stopSpeaking()
+                    viewModel.selectedImage = nil
+                    viewModel.extractedText = nil
+                }) {
+                    Label("Clear Text", systemImage: "xmark.circle")
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.red)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
             }
         }
         .padding()
         .navigationTitle("Image Recognition")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                
-                Button(action: {
-                    showLanguagePicker = true // Show the language picker sheet
-                }) {
-                    Label("Language", systemImage: "globe")
-                }
-            }
-        }
+//        .toolbar {
+//            ToolbarItem(placement: .navigationBarTrailing) {
+//                
+//                Button(action: {
+//                    showLanguagePicker = true // Show the language picker sheet
+//                }) {
+//                    Label("Language", systemImage: "globe")
+//                }
+//            }
+//        }
         .sheet(isPresented: $showLanguagePicker) {
-            VStack {
-                Text("Select Language")
-                    .font(.headline)
-                    .padding()
-                
-                Picker("Language", selection: $selectedLanguage) {
-                    ForEach(Language.allCases, id: \.self) { language in
-                        Text(language.displayName).tag(language)
-                    }
-                }
-                .pickerStyle(WheelPickerStyle()) // Use WheelPicker style
-                .frame(height: 200) // Adjust height for better appearance
-                
-                Button("Done") {
-                    showLanguagePicker = false // Dismiss the sheet
-                }
-                .font(.headline)
-                .padding()
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(10)
-                .padding()
-            }
-            .presentationDetents([.medium])
+            LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
         }
         .onAppear {
             viewModel.selectedImage = nil
@@ -191,6 +176,21 @@ struct ImageRecognitionView: View {
                 }
                 
                 libViewModel.createText(text: extractedText, libraryId: " ")
+            }
+        }
+        .onChange(of: selectedItem) {_ , newItem in
+            Task {
+                if let data = try? await newItem?.loadTransferable(type: Data.self),
+                   let uiImage = UIImage(data: data) {
+                    viewModel.selectedImage = uiImage
+                    viewModel.processImage(image: uiImage)
+                    viewModel.stopSpeaking()
+                    guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
+                        return
+                    }
+                    
+                    libViewModel.createText(text: extractedText, libraryId: " ")
+                }
             }
         }
     }
