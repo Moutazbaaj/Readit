@@ -127,6 +127,7 @@ struct ImageRecognitionView: View {
                     viewModel.stopSpeaking()
                     viewModel.selectedImage = nil
                     viewModel.extractedText = nil
+                    capturedImage = nil
                 }) {
                     Label("Clear Text", systemImage: "xmark.circle")
                         .font(.headline)
