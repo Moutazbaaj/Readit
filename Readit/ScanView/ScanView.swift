@@ -25,6 +25,7 @@ struct ScanView: View {
                 endPoint: .bottom
             )
             .edgesIgnoringSafeArea(.all)
+            .blur(radius: 10) // Adding a subtle blur effect to the background
 
             VStack {
                 if viewModel.texts.isEmpty {
@@ -91,8 +92,11 @@ struct ScanView: View {
                 .padding(.vertical)
             }
             .padding()
+            .onDisappear {
+                viewModel.stopSpeaking()
+            }
         }
-        .navigationTitle("My Library")
+        .navigationTitle("History")
         .navigationBarTitleDisplayMode(.inline)
 //        .toolbar {
 //            ToolbarItem(placement: .navigationBarTrailing) {
@@ -106,7 +110,6 @@ struct ScanView: View {
         .sheet(isPresented: $showLanguagePicker) {
             LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
         }
-
         .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("Confirm Delete"),
