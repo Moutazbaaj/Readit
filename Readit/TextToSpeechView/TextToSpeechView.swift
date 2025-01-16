@@ -16,7 +16,15 @@ struct TextToSpeechView: View {
     @State private var showLanguagePicker: Bool = false
     
     var body: some View {
-        NavigationStack {
+        
+        ZStack {
+            LinearGradient(
+                gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .edgesIgnoringSafeArea(.all)
+            
             VStack() {
                 // Input text area
                 VStack {
@@ -26,7 +34,6 @@ struct TextToSpeechView: View {
                     
                     TextEditor(text: $textViewModel.inputText)
                         .padding()
-                        .background(Color(.secondarySystemBackground))
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -45,11 +52,11 @@ struct TextToSpeechView: View {
                             showLanguagePicker = true
                         }
                         .padding()
-
+                    
                 }
                 
                 // Action buttons
-               HStack {
+                HStack {
                     Button(action: {
                         textViewModel.stopSpeaking()
                         textViewModel.readTextAloud(in: selectedLanguage)
@@ -78,18 +85,17 @@ struct TextToSpeechView: View {
                 }
             }
             .padding()
-            .background(Color(.systemGroupedBackground))
             .navigationTitle("Text to Speech")
             .navigationBarTitleDisplayMode(.inline)
-//            .toolbar {
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    Button(action: {
-//                        showLanguagePicker = true
-//                    }) {
-//                        Label("Language", systemImage: "globe")
-//                    }
-//                }
-//            }
+            //            .toolbar {
+            //                ToolbarItem(placement: .navigationBarTrailing) {
+            //                    Button(action: {
+            //                        showLanguagePicker = true
+            //                    }) {
+            //                        Label("Language", systemImage: "globe")
+            //                    }
+            //                }
+            //            }
             .sheet(isPresented: $showLanguagePicker) {
                 LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
             }
