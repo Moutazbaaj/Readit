@@ -44,13 +44,18 @@ struct LibraryCard: View {
         .frame(width: 175 , height : 170)
         .background(
             LinearGradient(
-                gradient: Gradient(colors: [Color.black, Color.blue]),
+                gradient: Gradient(colors: [Color.blue.opacity(0.3), .purple.opacity(0.3)]),
                 startPoint: .top,
                 endPoint: .bottom
             )
         )
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 5)
+        .cornerRadius(20)
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(Color.white.opacity(0.3), lineWidth: 1) // Add a subtle border to highlight the edges
+        )
+        .shadow(color: Color.black.opacity(0.4), radius: 15, x: 0, y: 10) // Deep shadow for floating effect
+        .padding([.leading, .trailing], 10) // Padding to space out from other elements
     }
 }
 
