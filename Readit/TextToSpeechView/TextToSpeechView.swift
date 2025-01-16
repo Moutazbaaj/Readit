@@ -15,104 +15,96 @@ struct TextToSpeechView: View {
     @State private var selectedLanguage: Language = .english
     @State private var showLanguagePicker: Bool = false
     
-    
     var body: some View {
-        VStack {
+        NavigationStack {
             VStack() {
-                
-                // Expandable TextEditor for user input
-                TextEditor(text: $textViewModel.inputText)
-                    .padding()
-                    .frame(maxHeight: .infinity)
-                    .cornerRadius(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.gray, lineWidth: 1)
-                    )
-            }
-            .padding(.horizontal)
-            
-            HStack {
-                Spacer()
-                Text(selectedLanguage.displayName)
-                
-            }
-            .padding(.horizontal)
-            
-            VStack {
-                Button(action: {
-                    textViewModel.stopSpeaking()
-                    textViewModel.readTextAloud(in: selectedLanguage)
-                }) {
-                    Text("Read Text")
+                // Input text area
+                VStack {
+                    Text("Enter Text:")
                         .font(.headline)
+                        .padding(.horizontal)
+                    
+                    TextEditor(text: $textViewModel.inputText)
                         .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.orange)
-                        .foregroundColor(.white)
+                        .background(Color(.secondarySystemBackground))
                         .cornerRadius(10)
-                }
-            }
-            .padding(.horizontal)
-            .padding(.bottom)
-        }
-        .navigationTitle("Text to Speech")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                
-                Button(action: {
-                    showLanguagePicker = true // Show the language picker sheet
-                }) {
-                    Label("Language", systemImage: "globe")
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                        )
                 }
                 
-                //                Menu {
-                //                    Picker("Language", selection: $selectedLanguage) {
-                //                        ForEach(Language.allCases, id: \.self) { language in
-                //                            Text(language.displayName).tag(language)
-                //                        }
-                //                    }
-                //                } label: {
-                //                    Label("Language", systemImage: "globe")
-                //                }
-            }
-        }
-        .sheet(isPresented: $showLanguagePicker) {
-            VStack {
-                Text("Select Language")
-                    .font(.headline)
-                    .padding()
+                // Language selection
+                HStack {
+                    Text("Language:")
+                        .font(.subheadline)
+                    Spacer()
+                    Text(selectedLanguage.displayName)
+                        .foregroundColor(.blue)
+                        .onTapGesture {
+                            showLanguagePicker = true
+                        }
+                        .padding()
+
+                }
                 
-                Picker("Language", selection: $selectedLanguage) {
-                    ForEach(Language.allCases, id: \.self) { language in
-                        Text(language.displayName).tag(language)
+                // Action buttons
+               HStack {
+                    Button(action: {
+                        textViewModel.stopSpeaking()
+                        textViewModel.readTextAloud(in: selectedLanguage)
+                    }) {
+                        Label("Read Text", systemImage: "message.badge.waveform")
+                            .font(.headline)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.orange)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                    
+                    Button(action: {
+                        textViewModel.stopSpeaking()
+                        textViewModel.inputText = ""
+                    }) {
+                        Label("Clear Text", systemImage: "xmark.circle")
+                            .font(.headline)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.red)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
                     }
                 }
-                .pickerStyle(WheelPickerStyle()) // Use WheelPicker style
-                .frame(height: 200) // Adjust height for better appearance
-                
-                Button("Done") {
-                    showLanguagePicker = false // Dismiss the sheet
+            }
+            .padding()
+            .background(Color(.systemGroupedBackground))
+            .navigationTitle("Text to Speech")
+            .navigationBarTitleDisplayMode(.inline)
+//            .toolbar {
+//                ToolbarItem(placement: .navigationBarTrailing) {
+//                    Button(action: {
+//                        showLanguagePicker = true
+//                    }) {
+//                        Label("Language", systemImage: "globe")
+//                    }
+//                }
+//            }
+            .sheet(isPresented: $showLanguagePicker) {
+                LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
+            }
+            .onDisappear {
+                textViewModel.stopSpeaking()
+                if !textViewModel.inputText.isEmpty {
+                    libViewModel.createText(text: textViewModel.inputText)
                 }
-                .font(.headline)
-                .padding()
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(10)
-                .padding()
+                textViewModel.inputText = ""
             }
-            .presentationDetents([.medium])
-        }
-        .onDisappear {
-            textViewModel.stopSpeaking()
-            if !textViewModel.inputText.isEmpty {
-                libViewModel.createText(text: textViewModel.inputText)
-            }
-            textViewModel.inputText = ""
         }
     }
 }
+
+
 
 #Preview {
     TextToSpeechView()
