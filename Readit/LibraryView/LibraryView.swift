@@ -20,37 +20,45 @@ struct LibraryView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                Text(" ")
-                if viewModel.libreries.isEmpty {
-                    Text("Your library is empty")
-                        .font(.headline)
-                        .foregroundColor(.gray)
-                        .padding()
-                } else {
-                    ScrollView {
-                        LazyVGrid(columns: gridItems, spacing: 20) {
-                            ForEach(viewModel.libreries.sorted(by: {
-                                $0.timestamp.dateValue() > $1.timestamp.dateValue()
-                            })) { library in
-                                NavigationLink(destination: TextsListView(library: library)) {
-                                    LibraryCard(library: library)
-                                }
-                                .contextMenu {
-                                    Button("Edit") {
-                                        libraryItem = library
-                                        showEditSheet = true
+            ZStack {
+                LinearGradient(
+                    gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .edgesIgnoringSafeArea(.all)
+                VStack {
+                    Text(" ")
+                    if viewModel.libreries.isEmpty {
+                        Text("Your library is empty")
+                            .font(.headline)
+                            .foregroundColor(.gray)
+                            .padding()
+                    } else {
+                        ScrollView {
+                            LazyVGrid(columns: gridItems, spacing: 20) {
+                                ForEach(viewModel.libreries.sorted(by: {
+                                    $0.timestamp.dateValue() > $1.timestamp.dateValue()
+                                })) { library in
+                                    NavigationLink(destination: TextsListView(library: library)) {
+                                        LibraryCard(library: library)
                                     }
-                                    Button(role: .destructive) {
-                                        libraryItem = library
-                                        showAlert = true
-                                    } label: {
-                                        Text("Delete")
+                                    .contextMenu {
+                                        Button("Edit") {
+                                            libraryItem = library
+                                            showEditSheet = true
+                                        }
+                                        Button(role: .destructive) {
+                                            libraryItem = library
+                                            showAlert = true
+                                        } label: {
+                                            Text("Delete")
+                                        }
                                     }
                                 }
                             }
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
                     }
                 }
             }
