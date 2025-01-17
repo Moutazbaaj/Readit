@@ -50,7 +50,11 @@ struct LibraryView: View {
                             .foregroundColor(.gray)
                             .padding()
                     } else {
+                        
+                        Text("  ")
+
                         ScrollView {
+                            
                             LazyVGrid(columns: gridItems, spacing: 20) {
                                 ForEach(sortedLibraries) { library in
                                     NavigationLink(destination: TextsListView(library: library)) {
@@ -63,6 +67,8 @@ struct LibraryView: View {
                             }
                             .padding(.horizontal)
                         }
+                        
+                        Text("")
                     }
                 }
             }
@@ -117,13 +123,13 @@ struct LibraryView: View {
                 print("Error: Library ID is missing")
             }
         }
-
+        
         // Edit button
         Button("Edit") {
             libraryItem = library
             showEditSheet = true
         }
-
+        
         // Delete button
         Button(role: .destructive) {
             libraryItem = library

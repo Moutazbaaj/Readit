@@ -64,7 +64,7 @@ struct ScanView: View {
                                 }
                                 .padding()
                             }
-                            .padding()
+//                            .padding()
 
                             // Text display
                             Text(text.text)
