@@ -34,7 +34,6 @@ struct HomeView: View {
             .edgesIgnoringSafeArea(.all)
             .blur(radius: animateText ? 10 : 0) // Add blur effect during animation
             
-            
             VStack {
                 
                 Text("Hello, \(authViewModel.user?.username ?? "User")")
@@ -86,36 +85,35 @@ struct HomeView: View {
                     }
                 }
                 .padding()
-                VStack {
+                
+                if viewModel.favLibreries.isEmpty {
+                    Text("Your Have no Favorites")
+                        .font(.headline)
+                        .foregroundColor(.gray)
+                        .padding()
                     
-                    if viewModel.favLibreries.isEmpty {
-                        Text("Your Have no Favorites")
-                            .font(.headline)
-                            .foregroundColor(.gray)
-                            .padding()
+                } else {
+                    ScrollView(.vertical, showsIndicators: false) {
                         
-                    } else {
-                        ScrollView(.vertical, showsIndicators: false) {
-                            
-                            Divider()
-                                .hidden()
-                            
-                            LazyVGrid(columns: gridItems, spacing: 20) {
-                                ForEach(viewModel.favLibreries.sorted(by: {
-                                    $0.editTimestamp?.dateValue() ?? Date() > $1.editTimestamp?.dateValue() ?? Date()
-                                })) { library in
-                                    NavigationLink(destination: TextsListView(library: library)) {
-                                        LibraryCard(library: library)
-                                            .frame(width: 175, height: 170)
-                                    }
+                        Divider()
+                            .hidden()
+                        
+                        LazyVGrid(columns: gridItems, spacing: 20) {
+                            ForEach(viewModel.favLibreries.sorted(by: {
+                                $0.editTimestamp?.dateValue() ?? Date() > $1.editTimestamp?.dateValue() ?? Date()
+                            })) { library in
+                                NavigationLink(destination: TextsListView(library: library)) {
+                                    LibraryCard(library: library)
+                                        .frame(width: 175, height: 170)
                                 }
                             }
                         }
                     }
-                    Spacer()
-                    
-                    // Show navigation buttons if hideButton is true
-                    if hideButton {
+                }
+                Spacer()
+                
+                // Show navigation buttons if hideButton is true
+                if hideButton {
                         VStack {
                             // First Navigation Button
                             NavigationLink(destination: TextToSpeechView()) {
@@ -146,36 +144,33 @@ struct HomeView: View {
                             }
                             
                         }
-                        .transition(.scale) // Smooth animation when appearing/disappearing
-                        .padding()
-                    }
-                    
-                    // Floating button at the bottom
-                    VStack {
-                        Button(action: {
-                            withAnimation {
-                                hideButton.toggle()
-                            }
-                        }) {
-                            Image(systemName: "plus.circle.dashed")
-                                .font(.largeTitle)
-                                .foregroundColor(.white) // Icon color
-                                .shadow(color: .black.opacity(0.3), radius: 10) // Subtle shadow
-                                .background(
-                                    Circle()
-                                        .fill(Color.clear) // Fully transparent background
-                                        .frame(width: 70, height: 70)
-                                        .overlay(
-                                            Circle()
-                                                .stroke(Color.white.opacity(0.3), lineWidth: 1) // Transparent border
-                                        )
-                                )
-                        }
-                        .padding(.bottom, 20) // Space from the bottom of the screen
-                    }
+                    .transition(.scale) // Smooth animation when appearing/disappearing
+                    .padding()
                 }
-
-            }
+                
+                // Floating button at the bottom
+                VStack {
+                    Button(action: {
+                        withAnimation {
+                            hideButton.toggle()
+                        }
+                    }) {
+                        Image(systemName: "plus.circle.dashed")
+                            .font(.largeTitle)
+                            .foregroundColor(.white) // Icon color
+                            .shadow(color: .black.opacity(0.3), radius: 10) // Subtle shadow
+                            .background(
+                                Circle()
+                                    .fill(Color.clear) // Fully transparent background
+                                    .frame(width: 70, height: 70)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(Color.white.opacity(0.3), lineWidth: 1) // Transparent border
+                                    )
+                            )
+                    }
+                    .padding(.bottom, 20) // Space from the bottom of the screen
+                }            }
             .padding()
         }
     }
