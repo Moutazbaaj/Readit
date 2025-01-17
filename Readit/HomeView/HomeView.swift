@@ -52,125 +52,144 @@ struct HomeView: View {
                 
                 HStack {
                     Text("last Books")
-                        .padding()
+                        .padding(.top)
                     Spacer()
                 }
                 ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(spacing: 5) {
-                        ForEach(viewModel.libreries.sorted(by: {
-                            $0.timestamp.dateValue() > $1.timestamp.dateValue()
-                        }).prefix(6)) { library in
-                            NavigationLink(destination: TextsListView(library: library)) {
-                                HomeCard(library: library)
-                                    .frame(width: 110, height: 110)
+                    if viewModel.libreries.isEmpty {
+                        Text("Your Have no Books")
+                            .font(.headline)
+                            .foregroundColor(.gray)
+                            .padding()
+                    } else {
+                        LazyHStack(spacing: 5) {
+                            ForEach(viewModel.libreries.sorted(by: {
+                                $0.timestamp.dateValue() > $1.timestamp.dateValue()
+                            }).prefix(6)) { library in
+                                NavigationLink(destination: TextsListView(library: library)) {
+                                    HomeCard(library: library)
+                                        .frame(width: 110, height: 110)
+                                }
                             }
                         }
+                        .padding(.horizontal, 1)
                     }
-                    .padding(.horizontal, 1)
                 }
                 .frame(height: 110)
-                
+                .padding(.horizontal, 4)
                 
                 VStack {
+                    // Content above the scroll view
                     HStack {
                         Text("Favorites")
                         Spacer()
                     }
-                    
                     HStack {
-                        
                         Text("\(viewModel.favLibreries.count) items ")
                             .font(.caption2)
                         Spacer()
                     }
-                }
-                .padding()
-                
-                if viewModel.favLibreries.isEmpty {
-                    Text("Your Have no Favorites")
-                        .font(.headline)
-                        .foregroundColor(.gray)
-                        .padding()
                     
-                } else {
-                    ScrollView(.vertical, showsIndicators: false) {
-                        
-                        Divider()
-                            .hidden()
-                        
-                        LazyVGrid(columns: gridItems, spacing: 20) {
-                            ForEach(viewModel.favLibreries.sorted(by: {
-                                $0.editTimestamp?.dateValue() ?? Date() > $1.editTimestamp?.dateValue() ?? Date()
-                            })) { library in
-                                NavigationLink(destination: TextsListView(library: library)) {
-                                    LibraryCard(library: library)
-                                        .frame(width: 175, height: 170)
+                    ZStack {
+                        // ScrollView with favorite libraries
+                        ScrollView(.vertical, showsIndicators: false) {
+                            if viewModel.favLibreries.isEmpty {
+                                Text("Your Have no Favorites")
+                                    .font(.headline)
+                                    .foregroundColor(.gray)
+                                    .padding()
+                            } else {
+                                Divider().hidden()
+                                LazyVGrid(columns: gridItems, spacing: 20) {
+                                    ForEach(viewModel.favLibreries.sorted(by: {
+                                        $0.editTimestamp?.dateValue() ?? Date() > $1.editTimestamp?.dateValue() ?? Date()
+                                    })) { library in
+                                        NavigationLink(destination: TextsListView(library: library)) {
+                                            LibraryCard(library: library)
+                                                .frame(width: 175, height: 170)
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
-                }
-                Spacer()
-                
-                // Show navigation buttons if hideButton is true
-                if hideButton {
+                        
+                        
+                        ///////
+                        ///
                         VStack {
-                            // First Navigation Button
-                            NavigationLink(destination: TextToSpeechView()) {
-                                VStack {
-                                    Image(systemName: "bubble.and.pencil")
-                                        .font(.title)
-                                        .foregroundColor(.white)
-                                        .shadow(radius: 10)
-                                    Text("Text to Speech")
-                                        .font(.caption)
-                                        .foregroundColor(.white)
-                                }
-                                .padding()
-                            }
+                            Spacer()
                             
-                            // Second Navigation Button
-                            NavigationLink(destination: ImageRecognitionView()) {
-                                VStack {
-                                    Image(systemName: "photo.badge.plus.fill")
-                                        .font(.title)
-                                        .foregroundColor(.white)
-                                        .shadow(radius: 10)
-                                    Text("Image Recognition")
-                                        .font(.caption)
-                                        .foregroundColor(.white)
-                                }
-                                .padding()
-                            }
-                            
-                        }
-                    .transition(.scale) // Smooth animation when appearing/disappearing
-                    .padding()
-                }
-                
-                // Floating button at the bottom
-                VStack {
-                    Button(action: {
-                        withAnimation {
-                            hideButton.toggle()
-                        }
-                    }) {
-                        Image(systemName: "plus.circle.dashed")
-                            .font(.largeTitle)
-                            .foregroundColor(.white) // Icon color
-                            .shadow(color: .black.opacity(0.3), radius: 10) // Subtle shadow
-                            .background(
-                                Circle()
-                                    .fill(Color.clear) // Fully transparent background
-                                    .frame(width: 70, height: 70)
-                                    .overlay(
-                                        Circle()
-                                            .stroke(Color.white.opacity(0.3), lineWidth: 1) // Transparent border
+                            VStack {
+                                Spacer()
+                                // Navigation buttons shown when `hideButton` is true
+                                if hideButton {
+                                    VStack {
+                                        // Navigation Buttons
+                                        NavigationLink(destination: TextToSpeechView()) {
+                                            VStack {
+                                                Image(systemName: "bubble.and.pencil")
+                                                    .font(.title)
+                                                    .foregroundColor(.white)
+                                                    .shadow(radius: 10)
+                                                Text("Text to Speech")
+                                                    .font(.caption)
+                                                    .foregroundColor(.white)
+                                            }
+                                            .padding()
+                                        }
+                                        NavigationLink(destination: ImageRecognitionView()) {
+                                            VStack {
+                                                Image(systemName: "photo.badge.plus.fill")
+                                                    .font(.title)
+                                                    .foregroundColor(.white)
+                                                    .shadow(radius: 10)
+                                                Text("Image Recognition")
+                                                    .font(.caption)
+                                                    .foregroundColor(.white)
+                                            }
+                                            .padding()
+                                        }
+                                    }
+                                    .transition(.scale) // Smooth animation when appearing/disappearing
+                                    .padding() // Space from the bottom
+                                    .background(
+                                        LinearGradient(
+                                            gradient: Gradient(colors: [Color.black.opacity(0.6), Color.black.opacity(0.7)]),
+                                            startPoint: .top,
+                                            endPoint: .bottom
+                                        )
+                                        .cornerRadius(20)
+                                        .padding()
                                     )
-                            )
+                                }
+                                
+                                // Floating button at the bottom
+                                Button(action: {
+                                    withAnimation {
+                                        hideButton.toggle()
+                                    }
+                                }) {
+                                    Image(systemName: "plus.circle.dashed")
+                                        .font(.largeTitle)
+                                        .foregroundColor(.white) // Icon color
+                                        .shadow(color: .black.opacity(0.5), radius: 10) // Subtle shadow
+                                        .background(
+                                            Circle()
+                                                .fill(Color.black.opacity(0.3)) // Fully transparent background
+                                                .frame(width: 60, height: 60)
+                                                .overlay(
+                                                    Circle()
+                                                        .stroke(Color.white.opacity(0.3), lineWidth: 1) // Transparent border
+                                                )
+                                        )
+                                }
+                                .padding(.bottom, 5) // Space from the bottom of the screen
+                            }
+                        }
+                        .padding()
                     }
-                    .padding(.bottom, 20) // Space from the bottom of the screen
-                }            }
+                }
+            }
             .padding()
         }
     }
@@ -178,4 +197,5 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
+        .environmentObject(AuthViewModel())
 }
