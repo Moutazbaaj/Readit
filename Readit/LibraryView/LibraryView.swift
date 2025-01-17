@@ -5,6 +5,13 @@
 //  Created by Moutaz Baaj on 08.01.25.
 //
 
+//
+//  LibraryView.swift
+//  Readit
+//
+//  Created by Moutaz Baaj on 08.01.25.
+//
+
 import SwiftUI
 
 struct LibraryView: View {
@@ -14,10 +21,16 @@ struct LibraryView: View {
     @State private var showAddLibrarySheet = false
     @State private var newLibraryTitle = "" // Stores the new library title
     @State private var libraryItem: FireLibrary? // Selected library for actions (edit/delete)
-//    @State private var libID: String? = []
     
     // Define the grid layout with two columns.
     let gridItems = [GridItem(.flexible()), GridItem(.flexible())]
+    
+    // Computed property for sorted libraries
+    var sortedLibraries: [FireLibrary] {
+        viewModel.libreries.sorted {
+            $0.timestamp.dateValue() > $1.timestamp.dateValue()
+        }
+    }
     
     var body: some View {
         NavigationStack {
@@ -29,8 +42,8 @@ struct LibraryView: View {
                 )
                 .edgesIgnoringSafeArea(.all)
                 .blur(radius: 10) // Adding a subtle blur effect to the background
+                
                 VStack {
-                    Text(" ")
                     if viewModel.libreries.isEmpty {
                         Text("Your library is empty")
                             .font(.headline)
@@ -38,39 +51,23 @@ struct LibraryView: View {
                             .padding()
                     } else {
                         ScrollView {
-                            Spacer()
                             LazyVGrid(columns: gridItems, spacing: 20) {
-                                ForEach(viewModel.libreries.sorted(by: {
-                                    $0.timestamp.dateValue() > $1.timestamp.dateValue()
-                                })) { library in
+                                ForEach(sortedLibraries) { library in
                                     NavigationLink(destination: TextsListView(library: library)) {
                                         LibraryCard(library: library)
                                     }
                                     .contextMenu {
-                                        Button("Favorite") {
-                                            //TODO
-                                        }
-                                        Button("Edit") {
-                                            libraryItem = library
-                                            showEditSheet = true
-                                        }
-                                        Button(role: .destructive) {
-                                            libraryItem = library
-                                            showAlert = true
-                                        } label: {
-                                            Text("Delete")
-                                        }
+                                        contextMenu(for: library)
                                     }
                                 }
                             }
                             .padding(.horizontal)
                         }
                     }
-                    Text(" ")
                 }
             }
         }
-        .navigationTitle("My libreries")
+        .navigationTitle("My Libraries")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(trailing: Button(action: {
             showAddLibrarySheet = true
@@ -103,12 +100,37 @@ struct LibraryView: View {
             .presentationDetents([.height(200)])
         }
         .sheet(isPresented: $showEditSheet) {
-            //TODO: sheet for edits
+            // Implement editing sheet logic here.
         }
         .onAppear {
             viewModel.fetchLibraries()
         }
     }
-}
+    
+    @ViewBuilder
+    private func contextMenu(for library: FireLibrary) -> some View {
+        // Favorite/Unfavorite button
+        Button(library.isFavorites ? "Unfavorite" : "Favorite") {
+            if let libraryId = library.id {
+                viewModel.addLibraryToFav(withId: libraryId, isFavorites: !library.isFavorites)
+            } else {
+                print("Error: Library ID is missing")
+            }
+        }
 
+        // Edit button
+        Button("Edit") {
+            libraryItem = library
+            showEditSheet = true
+        }
+
+        // Delete button
+        Button(role: .destructive) {
+            libraryItem = library
+            showAlert = true
+        } label: {
+            Text("Delete")
+        }
+    }
+}
 
