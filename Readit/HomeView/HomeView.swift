@@ -16,10 +16,9 @@ struct HomeView: View {
     @EnvironmentObject private var authViewModel: AuthViewModel
     
     // Define the grid layout with two columns.
+    let gridItems = [GridItem(.flexible()), GridItem(.flexible())]
+
     
-    // Card dimensions
-    let libraryCardWidth: CGFloat = 220
-    let libraryCardHeight: CGFloat = 110
     
     var body: some View {
         ZStack {
@@ -59,33 +58,55 @@ struct HomeView: View {
                         }).prefix(5)) { library in
                             NavigationLink(destination: TextsListView(library: library)) {
                                 HomeCard(library: library)
-                                    .frame(width: libraryCardWidth, height: libraryCardHeight)
+                                    .frame(width: 220, height: 110)
                             }
                         }
                     }
                     .padding(.horizontal, 1)
                 }
-                .frame(height: libraryCardHeight)
+                .frame(height: 110)
                 
+                
+                VStack {
                 HStack {
                     Text("Favorites")
-                        .padding()
                     Spacer()
                 }
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(spacing: 10) {
-                        ForEach(viewModel.favLibreries.sorted(by: {
-                            ($0.editTimestamp!.dateValue()) > ($1.editTimestamp!.dateValue())
-                        })) { library in
-                            NavigationLink(destination: TextsListView(library: library)) {
-                                HomeCard(library: library)
-                                    .frame(width: libraryCardWidth, height: libraryCardHeight)
+                
+                HStack {
+                    
+                    Text("\(viewModel.favLibreries.count) items ")
+                        .font(.caption2)
+                    Spacer()
+                }
+            }
+            .padding()
+
+                if viewModel.favLibreries.isEmpty {
+                    Text("Your Have no Favorites")
+                        .font(.headline)
+                        .foregroundColor(.gray)
+                        .padding()
+                    
+                } else {
+                    
+                    ScrollView {
+                        
+                        Divider()
+                            .hidden()
+                        
+                        LazyVGrid(columns: gridItems, spacing: 20) {
+                            ForEach(viewModel.favLibreries.sorted(by: {
+                                $0.editTimestamp?.dateValue() ?? Date() > $1.editTimestamp?.dateValue() ?? Date()
+                            })) { library in
+                                NavigationLink(destination: TextsListView(library: library)) {
+                                    LibraryCard(library: library)
+                                        .frame(width: 175, height: 170)
+                                }
                             }
                         }
                     }
-                    .padding(.horizontal, 1)
                 }
-                .frame(height: libraryCardHeight)
                 Spacer()
                 
                 HStack {

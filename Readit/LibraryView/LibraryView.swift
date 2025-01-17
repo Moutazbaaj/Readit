@@ -51,9 +51,11 @@ struct LibraryView: View {
                             .padding()
                     } else {
                         
-                        Text("  ")
-
                         ScrollView {
+                            
+                            Divider()
+                                .hidden()
+                                .padding()
                             
                             LazyVGrid(columns: gridItems, spacing: 20) {
                                 ForEach(sortedLibraries) { library in
@@ -68,7 +70,17 @@ struct LibraryView: View {
                             .padding(.horizontal)
                         }
                         
-                        Text("")
+                        HStack {
+                            
+                            Spacer()
+                            
+                            Text("\(viewModel.libreries.count) items ")
+                                .font(.caption)
+                                .padding(.horizontal)
+                                .padding(.bottom)
+                            }
+                        .padding(.horizontal)
+                        .padding(.top)
                     }
                 }
             }
