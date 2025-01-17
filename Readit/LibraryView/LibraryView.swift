@@ -66,6 +66,7 @@ struct LibraryView: View {
                             .padding(.horizontal)
                         }
                     }
+                    Text(" ")
                 }
             }
         }
