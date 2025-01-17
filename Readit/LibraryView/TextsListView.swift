@@ -32,6 +32,16 @@ struct TextsListView: View {
             .edgesIgnoringSafeArea(.all)
             
             VStack {
+                HStack {
+
+                    Text(library.libraryTitle)
+                        .font(.largeTitle)
+                        .padding()
+                    
+                    Spacer()
+                    
+                }
+
                 if viewModel.texts.isEmpty {
                     Spacer()
                     
@@ -40,6 +50,9 @@ struct TextsListView: View {
                         .foregroundColor(.gray)
                         .padding()
                 } else {
+                    
+
+                    
                     List(viewModel.texts.sorted(by: {
                         $0.timestamp.dateValue() < $1.timestamp.dateValue()
                     })) { text in
@@ -97,7 +110,7 @@ struct TextsListView: View {
                 .padding()
             }
         }
-        .navigationTitle(library.libraryTitle)
+//        .navigationTitle(library.libraryTitle)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(trailing: HStack {
             Button(action: {
