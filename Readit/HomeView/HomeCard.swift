@@ -23,6 +23,9 @@ struct HomeCard: View {
                 .padding(.horizontal, 12)
                 .padding(.bottom, 10)
                 .padding(.top, 10)
+            
+            Spacer()
+            
             // Pages count
             HStack {
                 Text("Pages: \(library.textIds?.count ?? 0)") // Safely unwrap textIds
@@ -33,10 +36,10 @@ struct HomeCard: View {
             .padding(.horizontal, 12)
             .padding(.bottom, 10)
         }
-        .frame(width: 200, height: 100) // Adjusted height for better layout
+        .frame(width: 100, height: 100) // Adjusted height for better layout
         .background(
             LinearGradient(
-                gradient: Gradient(colors: [Color.blue.opacity(0.3), Color.purple.opacity(0.3)]),
+                gradient: Gradient(colors: [Color.gray.opacity(0.1), .gray.opacity(0.3)]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )

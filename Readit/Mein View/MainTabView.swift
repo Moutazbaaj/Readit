@@ -43,5 +43,7 @@ struct MainTabView: View {
                 Label("More", systemImage: "ellipsis.circle")
             }
         }
+        .tint(.white) // Set the selected icon and text color to grey
+
     }
 }

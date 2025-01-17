@@ -51,6 +51,7 @@ struct LibraryView: View {
                             .padding()
                     } else {
                         
+                        Text(" ")
                         ScrollView {
                             
                             Divider()

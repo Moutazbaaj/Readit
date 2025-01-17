@@ -61,7 +61,7 @@ struct LibraryCard: View {
         .frame(width: 175 , height : 170)
         .background(
             LinearGradient(
-                gradient: Gradient(colors: [Color.blue.opacity(0.3), .purple.opacity(0.3)]),
+                gradient: Gradient(colors: [Color.gray.opacity(0.1), .gray.opacity(0.3)]),
                 startPoint: .top,
                 endPoint: .bottom
             )
@@ -72,7 +72,6 @@ struct LibraryCard: View {
                 .stroke(Color.white.opacity(0.3), lineWidth: 2) // Add a subtle border to highlight the edges
         )
         .shadow(color: Color.black.opacity(0.4), radius: 15, x: 0, y: 10) // Deep shadow for floating effect
-//        .padding() // Padding to space out from other elements
     }
 }
 
