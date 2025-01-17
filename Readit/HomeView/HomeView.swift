@@ -33,6 +33,7 @@ struct HomeView: View {
             )
             .edgesIgnoringSafeArea(.all)
             .blur(radius: animateText ? 10 : 0) // Add blur effect during animation
+
             
             VStack {
                 
@@ -143,7 +144,7 @@ struct HomeView: View {
                                                     .font(.title)
                                                     .foregroundColor(.white)
                                                     .shadow(radius: 10)
-                                                Text("Image Recognition")
+                                                Text("Text Recognition")
                                                     .font(.caption)
                                                     .foregroundColor(.white)
                                             }
@@ -191,6 +192,13 @@ struct HomeView: View {
                 }
             }
             .padding()
+        }
+        .onTapGesture {
+            if hideButton {
+                withAnimation {
+                    hideButton = false // Hide the buttons when tapped outside
+                }
+            }
         }
     }
 }
