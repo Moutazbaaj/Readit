@@ -16,6 +16,7 @@ struct FireLibrary: Codable, Identifiable {
     let userId: String     // User ID of the person who reported the bee.
     var libraryTitle: String     // Title of the bee report.
     let timestamp: Timestamp     // Timestamp of the bee report.
+    let editTimestamp: Timestamp?     // Timestamp of the bee report.
     var textIds: [String]?      // List of text document IDs.
     var isFavorites: Bool
 

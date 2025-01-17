@@ -16,7 +16,10 @@ struct HomeView: View {
     @EnvironmentObject private var authViewModel: AuthViewModel
     
     // Define the grid layout with two columns.
-    let gridItems = [GridItem(.flexible()), GridItem(.flexible())]
+    
+    // Card dimensions
+    let libraryCardWidth: CGFloat = 175
+    let libraryCardHeight: CGFloat = 175
     
     var body: some View {
         ZStack {
@@ -28,7 +31,6 @@ struct HomeView: View {
             )
             .edgesIgnoringSafeArea(.all)
             .blur(radius: animateText ? 10 : 0) // Add blur effect during animation
-            
             VStack {
                 Text("Hello, \(authViewModel.user?.username ?? "User")")
                     .font(.largeTitle)
@@ -42,28 +44,46 @@ struct HomeView: View {
                             animateText = true
                         }
                     }
-                VStack {
-                    HStack {
-                        Text("last Books")
-                            .padding()
-                        Spacer()
-                    }
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        LazyHStack(spacing: 10) {
-                            ForEach(viewModel.libreries.sorted(by: {
-                                $0.timestamp.dateValue() > $1.timestamp.dateValue()
-                            }).prefix(5)) { library in
-                                NavigationLink(destination: TextsListView(library: library)) {
-                                    LibraryCard(library: library)
-                                        .frame(width: 175)
-                                }
+                
+                HStack {
+                    Text("last Books")
+                        .padding()
+                    Spacer()
+                }
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(spacing: 10) {
+                        ForEach(viewModel.libreries.sorted(by: {
+                            $0.timestamp.dateValue() > $1.timestamp.dateValue()
+                        }).prefix(5)) { library in
+                            NavigationLink(destination: TextsListView(library: library)) {
+                                LibraryCard(library: library)
+                                    .frame(width: libraryCardWidth, height: libraryCardHeight)
                             }
                         }
-                        .padding(.horizontal, 1)
                     }
-                    .frame(height: 175)
+                    .padding(.horizontal, 1)
                 }
+                .frame(height: libraryCardHeight)
                 
+                HStack {
+                    Text("Favorites")
+                        .padding()
+                    Spacer()
+                }
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(spacing: 10) {
+                        ForEach(viewModel.favLibreries.sorted(by: {
+                            ($0.editTimestamp!.dateValue()) > ($1.editTimestamp!.dateValue())
+                        })) { library in
+                            NavigationLink(destination: TextsListView(library: library)) {
+                                LibraryCard(library: library)
+                                    .frame(width: libraryCardWidth, height: libraryCardHeight)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 1)
+                }
+                .frame(height: libraryCardHeight)
                 Spacer()
                 
                 HStack {
@@ -91,8 +111,11 @@ struct HomeView: View {
                             .shadow(radius: 10)
                     }
                 }
+                
+                
             }
             .padding()
+            
         }
     }
 }

@@ -20,6 +20,7 @@ class LibraryViewModel: ObservableObject {
     
     @Published var texts : [FireText] = []
     @Published var libreries : [FireLibrary] = []
+    @Published var favLibreries : [FireLibrary] = []
     
     // Listener for Firestore updates.
     private var listener: ListenerRegistration?
@@ -39,6 +40,7 @@ class LibraryViewModel: ObservableObject {
     
     init() {
         self.fetchLibraries()
+        self.fetchFavLibraries()
     }
     
     // Creates a new librery.
@@ -52,6 +54,7 @@ class LibraryViewModel: ObservableObject {
             userId: userId,
             libraryTitle: libraryTitle,
             timestamp: Timestamp(),
+            editTimestamp: nil,
             textIds: [],
             isFavorites: false
         )
@@ -191,7 +194,7 @@ class LibraryViewModel: ObservableObject {
                         return nil
                     }
                 }
-                self.libreries = libraries
+                self.favLibreries = libraries
             }
     }
          
