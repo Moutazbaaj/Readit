@@ -52,7 +52,8 @@ class LibraryViewModel: ObservableObject {
             userId: userId,
             libraryTitle: libraryTitle,
             timestamp: Timestamp(),
-            textIds: [] // Start with no texts
+            textIds: [],
+            isFavorites: false
         )
         
         do {
@@ -157,12 +158,63 @@ class LibraryViewModel: ObservableObject {
                 self.libreries = libraries
             }
     }
+    
+    // Fetches all my Fav Librareis
+    func fetchFavLibraries() {
+        guard let userId = self.firebaseAuthentication.currentUser?.uid else {
+            print("User is not signed in")
+            return
+        }
         
+        self.listener = firebaseFirestore.collection("Librarys")
+            .whereField("userId", isEqualTo: userId)
+            .whereField("isFavorites", isEqualTo: true)
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let self = self else { return }
+                if let error = error {
+                    print("Error fetching libraries: \(error.localizedDescription)")
+                    return
+                }
+                
+                guard let snapshot = snapshot else {
+                    print("No libraries found.")
+                    return
+                }
+                
+                let libraries = snapshot.documents.compactMap { document -> FireLibrary? in
+                    do {
+                        var library = try document.data(as: FireLibrary.self)
+                        library.id = document.documentID
+                        return library
+                    } catch {
+                        print("Error decoding library: \(error)")
+                        return nil
+                    }
+                }
+                self.libreries = libraries
+            }
+    }
+         
     // Edit text.
     func editText(withId id: String, newText: String) {
-        let beeReport = firebaseFirestore.collection("texts").document(id)
+        let text = firebaseFirestore.collection("texts").document(id)
         
-        beeReport.updateData(["text": newText,
+        text.updateData(["text": newText,
+                              "editTimestamp": Timestamp()
+                             ]) { error in
+            if let error = error {
+                print("Error updating document: \(error.localizedDescription)")
+            } else {
+                print("Document successfully updated")
+            }
+        }
+    }
+    
+    
+    func addLibraryToFav(withId id: String, isFavorites: Bool) {
+        let library = firebaseFirestore.collection("Librarys").document(id)
+        
+        library.updateData(["isFavorites": isFavorites,
                               "editTimestamp": Timestamp()
                              ]) { error in
             if let error = error {
@@ -204,7 +256,6 @@ class LibraryViewModel: ObservableObject {
             }
         }
     }
-    
     
     
     func readTextAloud(from library: FireLibrary, in language: Language) {
