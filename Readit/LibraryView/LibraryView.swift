@@ -93,16 +93,7 @@ struct LibraryView: View {
             )
         }
         .sheet(isPresented: $showAddLibrarySheet) {
-            AddLibrarySheet(
-                newLibraryTitle: $newLibraryTitle,
-                onAdd: {
-                    if !newLibraryTitle.isEmpty {
-                        viewModel.createLibrary(libraryTitle: newLibraryTitle)
-                        newLibraryTitle = ""
-                        showAddLibrarySheet = false
-                    }
-                }
-            )
+            AddLibrarySheet(newLibraryTitle: $newLibraryTitle)
             .presentationDetents([.height(200)])
         }
         .sheet(isPresented: $showEditSheet) {
