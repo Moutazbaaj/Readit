@@ -24,6 +24,8 @@ struct ReaditApp: App {
         WindowGroup {
             MainContentView()
                 .environmentObject(authViewModel)
+                .environment(\.colorScheme, .dark)
+
         }
     }
 }
