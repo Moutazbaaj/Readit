@@ -62,6 +62,35 @@ enum Language: String, CaseIterable {
         }
     }
     
+    var displayTag: String {
+        switch self {
+        case .english: return "US"
+        case .japanese: return "JP"
+        case .french: return "FR"
+        case .german: return "DE"
+        case .spanish: return "ES"
+        case .italian: return "IT"
+        case .chineseMandarin: return "CN"
+        case .chineseHongKong: return "HK"
+        case .chineseTaiwan: return "TW"
+        case .korean: return "KR"
+        case .arabic: return "AR"
+        case .russian: return "RU"
+        case .portugueseBrazil: return "BR"
+        case .portuguesePortugal: return "PT"
+        case .dutch: return "NL"
+        case .swedish: return "SE"
+        case .norwegian: return "NO"
+        case .danish: return "DK"
+        case .finnish: return "FI"
+        case .polish: return "PL"
+        case .greek: return "GR"
+        case .turkish: return "TR"
+        case .thai: return "TH"
+        case .hindi: return "IN"
+        }
+    }
+    
     var pageTranslation: String {
         switch self {
         case .english: return "Page"
