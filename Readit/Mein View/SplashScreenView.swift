@@ -51,11 +51,13 @@ struct SplashScreenView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
-                LinearGradient(
-                    gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
+            LinearGradient(
+                gradient: Gradient(colors: [Color.blue.opacity(0.3), Color.purple.opacity(0.3)]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .edgesIgnoringSafeArea(.all)
+            .blur(radius: 10 ) // Add blur effect during animation
         )
         .edgesIgnoringSafeArea(.all)
     }
