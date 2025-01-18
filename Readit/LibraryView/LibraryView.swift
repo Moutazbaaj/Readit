@@ -44,14 +44,17 @@ struct LibraryView: View {
                 .blur(radius: 10) // Adding a subtle blur effect to the background
                 
                 VStack {
+                    
+                    Divider()
+                        .hidden()
+                    
                     if viewModel.libreries.isEmpty {
                         Text("Your library is empty")
                             .font(.headline)
                             .foregroundColor(.gray)
                             .padding()
                     } else {
-                        
-                        Text(" ")
+                                                
                         ScrollView {
                             
                             Divider()

@@ -35,7 +35,7 @@ enum Language: String, CaseIterable {
     
     var displayName: String {
         switch self {
-        case .english: return "English (US) - English"
+        case .english: return "English (US - English)"
         case .japanese: return "日本語 (Japanese)"
         case .french: return "Français (French)"
         case .german: return "Deutsch (German)"

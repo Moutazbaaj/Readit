@@ -45,7 +45,7 @@ struct HomeView: View {
                     .opacity(animateText ? 1 : 0) // Start with opacity 0 and fade in
                     .onAppear {
                         // Trigger the animation when the view appears
-                        withAnimation(.easeOut(duration: 1)) {
+                        withAnimation(.easeOut(duration: 2)) {
                             animateText = true
                         }
                     }
