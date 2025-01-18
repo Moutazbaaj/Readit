@@ -24,6 +24,8 @@ struct TextToSpeechView: View {
                 endPoint: .bottom
             )
             .edgesIgnoringSafeArea(.all)
+            .blur(radius: 10)
+
             
             VStack() {
                 // Input text area
@@ -42,18 +44,20 @@ struct TextToSpeechView: View {
                 }
                 
                 // Language selection
-                HStack {
-                    Text("Language:")
-                        .font(.subheadline)
-                    Spacer()
-                    Text(selectedLanguage.displayName)
-                        .foregroundColor(.blue)
-                        .onTapGesture {
-                            showLanguagePicker = true
-                        }
-                        .padding()
-                    
-                }
+//                HStack {
+//                    Text("Language:")
+//                        .font(.subheadline)
+//                        .padding()
+//
+//                    Spacer()
+//                    Text(selectedLanguage.displayName)
+//                        .foregroundColor(.blue)
+//                        .onTapGesture {
+//                            showLanguagePicker = true
+//                        }
+//                        .padding()
+//                    
+//                }
                 
                 // Action buttons
                 HStack {
@@ -65,7 +69,6 @@ struct TextToSpeechView: View {
                             .font(.headline)
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.orange)
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     }
@@ -74,11 +77,10 @@ struct TextToSpeechView: View {
                         textViewModel.stopSpeaking()
                         textViewModel.inputText = ""
                     }) {
-                        Label("Clear Text", systemImage: "xmark.circle")
+                        Label("Clear", systemImage: "xmark.circle")
                             .font(.headline)
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.red)
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     }
@@ -87,15 +89,19 @@ struct TextToSpeechView: View {
             .padding()
             .navigationTitle("Text to Speech")
             .navigationBarTitleDisplayMode(.inline)
-            //            .toolbar {
-            //                ToolbarItem(placement: .navigationBarTrailing) {
-            //                    Button(action: {
-            //                        showLanguagePicker = true
-            //                    }) {
-            //                        Label("Language", systemImage: "globe")
-            //                    }
-            //                }
-            //            }
+            .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            showLanguagePicker = true // Show the language picker sheet
+                        }) {
+                            HStack{
+                                Text(selectedLanguage.displayTag)
+                                Image(systemName: "globe")
+                            }
+                        }
+                    }
+                }
+
             .sheet(isPresented: $showLanguagePicker) {
                 LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
             }

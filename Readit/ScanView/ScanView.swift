@@ -90,17 +90,17 @@ struct ScanView: View {
                 }
                 Spacer()
                 
-                HStack {
-                    Text("Language:")
-                        .font(.subheadline)
-                    Spacer()
-                    Text(selectedLanguage.displayName)
-                        .foregroundColor(.blue)
-                        .onTapGesture {
-                            showLanguagePicker = true
-                        }
-                }
-                .padding(.vertical)
+//                HStack {
+//                    Text("Language:")
+//                        .font(.subheadline)
+//                    Spacer()
+//                    Text(selectedLanguage.displayName)
+//                        .foregroundColor(.blue)
+//                        .onTapGesture {
+//                            showLanguagePicker = true
+//                        }
+//                }
+//                .padding(.vertical)
             }
             .padding()
             .onDisappear {
@@ -109,6 +109,19 @@ struct ScanView: View {
         }
         .navigationTitle("History")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        showLanguagePicker = true // Show the language picker sheet
+                    }) {
+                        HStack{
+                            Text(selectedLanguage.displayTag)
+                            Image(systemName: "globe")
+                        }
+                    }
+                }
+            }
+
         .sheet(isPresented: $showLanguagePicker) {
             LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
         }

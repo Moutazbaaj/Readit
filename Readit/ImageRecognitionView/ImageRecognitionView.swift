@@ -31,6 +31,8 @@ struct ImageRecognitionView: View {
                 endPoint: .bottom
             )
             .edgesIgnoringSafeArea(.all)
+            .blur(radius: 10)
+            
             VStack() {
                 Spacer()
                 
@@ -82,17 +84,48 @@ struct ImageRecognitionView: View {
                 }
                 
                 // Language selection
+//                HStack {
+//                    Text("Language:")
+//                        .font(.subheadline)
+//                        .padding()
+//
+//                    Spacer()
+//                    Text(selectedLanguage.displayName)
+//                        .foregroundColor(.blue)
+//                        .onTapGesture {
+//                            showLanguagePicker = true
+//                        }
+//                        .padding()
+//                    
+//                }
+                
+                // Action buttons
                 HStack {
-                    Text("Language:")
-                        .font(.subheadline)
-                    Spacer()
-                    Text(selectedLanguage.displayName)
-                        .foregroundColor(.blue)
-                        .onTapGesture {
-                            showLanguagePicker = true
-                        }
-                        .padding()
+                    Button(action: {
+                        viewModel.stopSpeaking()
+                        viewModel.readTextAloud(in: selectedLanguage)
+                    }) {
+                        Label("Read Text", systemImage: "message.badge.waveform")
+                            .font(.headline)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
                     
+                    Button(action: {
+                        viewModel.stopSpeaking()
+                        viewModel.selectedImage = nil
+                        viewModel.extractedText = nil
+                        capturedImage = nil
+                    }) {
+                        Label("Clear", systemImage: "xmark.circle")
+                            .font(.headline)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
                 }
                 
                 HStack {
@@ -109,39 +142,6 @@ struct ImageRecognitionView: View {
                             .font(.headline)
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
-                }
-                
-                
-                // Action buttons
-                HStack {
-                    Button(action: {
-                        viewModel.stopSpeaking()
-                        viewModel.readTextAloud(in: selectedLanguage)
-                    }) {
-                        Label("Read Text", systemImage: "message.badge.waveform")
-                            .font(.headline)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.orange)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
-                    
-                    Button(action: {
-                        viewModel.stopSpeaking()
-                        viewModel.selectedImage = nil
-                        viewModel.extractedText = nil
-                        capturedImage = nil
-                    }) {
-                        Label("Clear Text", systemImage: "xmark.circle")
-                            .font(.headline)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.red)
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     }
@@ -150,16 +150,18 @@ struct ImageRecognitionView: View {
             .padding()
             .navigationTitle("Image Recognition")
             .navigationBarTitleDisplayMode(.inline)
-            //        .toolbar {
-            //            ToolbarItem(placement: .navigationBarTrailing) {
-            //
-            //                Button(action: {
-            //                    showLanguagePicker = true // Show the language picker sheet
-            //                }) {
-            //                    Label("Language", systemImage: "globe")
-            //                }
-            //            }
-            //        }
+            .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            showLanguagePicker = true // Show the language picker sheet
+                        }) {
+                            HStack{
+                                Text(selectedLanguage.displayTag)
+                                Image(systemName: "globe")
+                            }
+                        }
+                    }
+                }
             .sheet(isPresented: $showLanguagePicker) {
                 LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
             }
