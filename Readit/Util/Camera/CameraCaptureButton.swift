@@ -23,7 +23,6 @@ struct CameraCaptureButton: View {
                 .font(.headline)
                 .padding()
                 .frame(maxWidth: .infinity)
-                .background(Color.green)
                 .foregroundColor(.white)
                 .cornerRadius(10)
         }
