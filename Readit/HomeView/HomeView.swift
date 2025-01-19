@@ -41,7 +41,7 @@ struct HomeView: View {
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
-                    .scaleEffect(animateText ? 1 : 0.5) // Start from smaller size and scale up
+                    .scaleEffect(animateText ? 1 : 0.3) // Start from smaller size and scale up
                     .opacity(animateText ? 1 : 0) // Start with opacity 0 and fade in
                     .onAppear {
                         // Trigger the animation when the view appears
