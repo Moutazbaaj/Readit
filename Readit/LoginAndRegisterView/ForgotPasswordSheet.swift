@@ -17,7 +17,7 @@ struct ForgotPasswordSheet: View {
             ZStack {
                 // Background color
                 LinearGradient(
-                    gradient: Gradient(colors: [Color.blue, Color.black]),
+                    gradient: Gradient(colors: [Color.blue, Color.purple]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
