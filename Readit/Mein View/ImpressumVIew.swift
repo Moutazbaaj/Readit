@@ -13,7 +13,7 @@ struct ImpressumView: View {
             ZStack {
                 // Gradient background
                 LinearGradient(
-                    gradient: Gradient(colors: [Color.blue, Color.black]),
+                    gradient: Gradient(colors: [Color.blue.opacity(0.3), Color.purple.opacity(0.3)]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
@@ -163,10 +163,7 @@ extension View {
     }
 }
 
-// Preview
-#Preview {
-    ImpressumView()
-}
+
 // Preview
 #Preview {
     ImpressumView()
