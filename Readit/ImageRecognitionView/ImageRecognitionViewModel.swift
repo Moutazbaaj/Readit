@@ -16,7 +16,7 @@ class ImageRecognitionViewModel: ObservableObject {
     static let shared = ImageRecognitionViewModel()
     private let synthesizer = AVSpeechSynthesizer()
 
-    @Published var showImagePicker = false
+//    @Published var showImagePicker = false
     @Published var selectedImage: UIImage?
     @Published var extractedText: String?
 
