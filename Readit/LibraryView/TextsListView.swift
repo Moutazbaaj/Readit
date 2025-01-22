@@ -7,6 +7,8 @@
 
 import Foundation
 import SwiftUI
+import PhotosUI
+
 
 struct TextsListView: View {
     
@@ -14,6 +16,8 @@ struct TextsListView: View {
     
     @State private var textItem: FireText? // State variable to keep track of the text to edit or delete.
     @State private var showEditTextSheet = false
+    @State private var showCameraCaptureView = false
+    @State private var showPhotoPicker = false
     @State private var showAlert = false // State variable to control the display of the alert.
     @StateObject private var viewModel = LibraryViewModel.shared
     @State private var showAddTextSheet = false
@@ -21,6 +25,10 @@ struct TextsListView: View {
     @State private var selectedLanguage: Language = .english
     @State private var newTextContent = ""
     @State private var editingTextContent = ""
+    @State private var capturedImage: UIImage? // To hold the captured image
+    @State private var selectedItem: PhotosPickerItem? // For the selected image from the picker
+    
+    
     
     var body: some View {
         ZStack {
@@ -33,7 +41,7 @@ struct TextsListView: View {
             
             VStack {
                 HStack {
-
+                    
                     Text(library.libraryTitle)
                         .font(.largeTitle)
                         .padding()
@@ -41,7 +49,7 @@ struct TextsListView: View {
                     Spacer()
                     
                 }
-
+                
                 if viewModel.texts.isEmpty {
                     Spacer()
                     
@@ -51,7 +59,7 @@ struct TextsListView: View {
                         .padding()
                 } else {
                     
-
+                    
                     
                     List(viewModel.texts.sorted(by: {
                         $0.timestamp.dateValue() < $1.timestamp.dateValue()
@@ -110,7 +118,7 @@ struct TextsListView: View {
                 .padding()
             }
         }
-//        .navigationTitle(library.libraryTitle)
+        //        .navigationTitle(library.libraryTitle)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(trailing: HStack {
             Button(action: {
@@ -120,12 +128,67 @@ struct TextsListView: View {
                 Image(systemName: "speaker.wave.2.fill")
             }
             
-            Button(action: {
-                showAddTextSheet = true
-            }) {
-                Image(systemName: "plus")
+            Menu {
+                Button("Add New Text", action: {
+                    showAddTextSheet = true
+                })
+                Button("Scan Text") {
+                    showCameraCaptureView = true
+                }
+                .onChange(of: capturedImage) { _, newImage in
+                    if let newImage = newImage {
+                        viewModel.selectedImage = newImage
+                        viewModel.processImage(image: newImage)
+                        guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
+                            return
+                        }
+                        
+                        viewModel.createText(text: extractedText, libraryId: library.id ?? "")
+                    }
+                }
+                
+                Button("Extract Text From a Photo") {
+                    showPhotoPicker = true
+                }
+                .onChange(of: selectedItem) {_ , newItem in
+                    Task {
+                        if let data = try? await newItem?.loadTransferable(type: Data.self),
+                            let uiImage = UIImage(data: data) {
+                            viewModel.selectedImage = uiImage
+                            viewModel.processImage(image: uiImage)
+                            viewModel.stopSpeaking()
+                            guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
+                                return
+                            }
+                            
+                            viewModel.createText(text: extractedText, libraryId: library.id ?? "")
+                        }
+                    }
+                }
+            } label: {
+                Image(systemName: "ellipsis")
+                    .font(.title2)
             }
         })
+        .sheet(isPresented: $showCameraCaptureView) {
+            CameraView(image: $capturedImage)
+        }
+        .sheet(isPresented: $showPhotoPicker) {
+            PhotosPicker(
+                selection: $selectedItem,
+                matching: .images, // Show only images in the picker
+                photoLibrary: .shared()
+            ) {
+                Label("Select Photo", systemImage: "photo")
+                
+                    .font(.headline)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            .presentationDetents([.medium])
+        }
         .sheet(isPresented: $showAddTextSheet) {
             VStack {
                 Text("Add New Text")
