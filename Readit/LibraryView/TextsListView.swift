@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 import PhotosUI
 
-
 struct TextsListView: View {
     
     let library: FireLibrary
@@ -28,8 +27,6 @@ struct TextsListView: View {
     @State private var capturedImage: UIImage? // To hold the captured image
     @State private var selectedItem: PhotosPickerItem? // For the selected image from the picker
     
-    
-    
     var body: some View {
         ZStack {
             LinearGradient(
@@ -41,26 +38,20 @@ struct TextsListView: View {
             
             VStack {
                 HStack {
-                    
                     Text(library.libraryTitle)
                         .font(.largeTitle)
                         .padding()
                     
                     Spacer()
-                    
                 }
                 
                 if viewModel.texts.isEmpty {
                     Spacer()
-                    
                     Text("No texts in this library.")
                         .font(.headline)
                         .foregroundColor(.gray)
                         .padding()
                 } else {
-                    
-                    
-                    
                     List(viewModel.texts.sorted(by: {
                         $0.timestamp.dateValue() < $1.timestamp.dateValue()
                     })) { text in
@@ -103,7 +94,6 @@ struct TextsListView: View {
                 }
                 
                 Spacer()
-                
                 HStack {
                     Text("Language:")
                         .font(.subheadline)
@@ -118,7 +108,6 @@ struct TextsListView: View {
                 .padding()
             }
         }
-        //        .navigationTitle(library.libraryTitle)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(trailing: HStack {
             Button(action: {
@@ -142,28 +131,11 @@ struct TextsListView: View {
                         guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
                             return
                         }
-                        
                         viewModel.createText(text: extractedText, libraryId: library.id ?? "")
                     }
                 }
-                
                 Button("Extract Text From a Photo") {
                     showPhotoPicker = true
-                }
-                .onChange(of: selectedItem) {_ , newItem in
-                    Task {
-                        if let data = try? await newItem?.loadTransferable(type: Data.self),
-                            let uiImage = UIImage(data: data) {
-                            viewModel.selectedImage = uiImage
-                            viewModel.processImage(image: uiImage)
-                            viewModel.stopSpeaking()
-                            guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
-                                return
-                            }
-                            
-                            viewModel.createText(text: extractedText, libraryId: library.id ?? "")
-                        }
-                    }
                 }
             } label: {
                 Image(systemName: "ellipsis")
@@ -176,18 +148,28 @@ struct TextsListView: View {
         .sheet(isPresented: $showPhotoPicker) {
             PhotosPicker(
                 selection: $selectedItem,
-                matching: .images, // Show only images in the picker
+                matching: .images,
                 photoLibrary: .shared()
-            ) {
-                Label("Select Photo", systemImage: "photo")
-                
+            )
+            {
+                Text("Select Photo") // Placeholder label for the picker
                     .font(.headline)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
+                    .foregroundColor(.blue)
             }
-            .presentationDetents([.medium])
+            .onChange(of: selectedItem) { _, newItem in
+                Task {
+                    if let data = try? await newItem?.loadTransferable(type: Data.self),
+                       let uiImage = UIImage(data: data) {
+                        viewModel.selectedImage = uiImage
+                        viewModel.processImage(image: uiImage)
+                        viewModel.stopSpeaking()
+                        guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
+                            return
+                        }
+                        viewModel.createText(text: extractedText, libraryId: library.id ?? "")
+                    }
+                }
+            }
         }
         .sheet(isPresented: $showAddTextSheet) {
             VStack {
@@ -220,43 +202,6 @@ struct TextsListView: View {
                         .cornerRadius(10)
                 }
                 .disabled(newTextContent.isEmpty)
-                
-                Spacer()
-            }
-            .padding()
-            .presentationDetents([.medium, .large])
-        }
-        .sheet(isPresented: $showLanguagePicker) {
-            LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
-        }
-        .sheet(isPresented: $showEditTextSheet) {
-            VStack {
-                Text("Edit Text")
-                    .font(.headline)
-                    .padding()
-                
-                TextEditor(text: $editingTextContent)
-                    .padding()
-                    .cornerRadius(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.gray, lineWidth: 1)
-                    )
-                    .frame(maxHeight: .infinity)
-                
-                Button("Save Changes") {
-                    if let textItem = textItem {
-                        viewModel.editText(withId: textItem.id ?? "", newText: editingTextContent)
-                        showEditTextSheet = false
-                    }
-                }
-                .font(.headline)
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(10)
-                .disabled(editingTextContent.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 
                 Spacer()
             }
