@@ -236,18 +236,29 @@ class LibraryViewModel: ObservableObject {
     }
     
     // Deletes a text with the given ID.
-    func deleteText(withId id: String?) {
-        guard let id = id else {
-            print("Item has no id!")
+    func deleteText(withId textId: String?, fromLibrary libraryId: String) {
+        guard let textId = textId else {
+            print("Text has no id!")
             return
         }
         
-        // delete the bee report
-        firebaseFirestore.collection("texts").document(id).delete { error in
+        // Step 1: Remove the text document from the "texts" collection
+        firebaseFirestore.collection("texts").document(textId).delete { error in
             if let error = error {
-                print("Error deleting document: \(error.localizedDescription)")
-            } else {
-                print("text deleted successfully")
+                print("Error deleting text: \(error.localizedDescription)")
+                return
+            }
+            print("Text deleted successfully")
+            
+            // Step 2: Remove the text ID from the library's "textIds" field
+            self.firebaseFirestore.collection("Librarys").document(libraryId).updateData([
+                "textIds": FieldValue.arrayRemove([textId])
+            ]) { error in
+                if let error = error {
+                    print("Error updating library: \(error.localizedDescription)")
+                } else {
+                    print("Text ID removed from library successfully")
+                }
             }
         }
     }
