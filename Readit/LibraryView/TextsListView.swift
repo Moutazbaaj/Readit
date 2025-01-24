@@ -16,7 +16,6 @@ struct TextsListView: View {
     @State private var textItem: FireText? // State variable to keep track of the text to edit or delete.
     @State private var showEditTextSheet = false
     @State private var showCameraCaptureView = false
-    @State private var showPhotoPicker = false
     @State private var showAlert = false // State variable to control the display of the alert.
     @StateObject private var viewModel = LibraryViewModel.shared
     @State private var showAddTextSheet = false
@@ -25,7 +24,6 @@ struct TextsListView: View {
     @State private var newTextContent = ""
     @State private var editingTextContent = ""
     @State private var capturedImage: UIImage? // To hold the captured image
-    @State private var selectedItem: PhotosPickerItem? // For the selected image from the picker
     
     var body: some View {
         ZStack {
@@ -118,10 +116,11 @@ struct TextsListView: View {
             }
             
             Menu {
-                Button("Add New Text", action: {
+                Button("Add New Text") {
                     showAddTextSheet = true
-                })
-                Button("Scan Text") {
+                }
+                Button("Scan a Document") {
+                    capturedImage = nil
                     showCameraCaptureView = true
                 }
                 .onChange(of: capturedImage) { _, newImage in
@@ -134,42 +133,17 @@ struct TextsListView: View {
                         viewModel.createText(text: extractedText, libraryId: library.id ?? "")
                     }
                 }
-                Button("Extract Text From a Photo") {
-                    showPhotoPicker = true
-                }
+                
             } label: {
-                Image(systemName: "ellipsis")
+                Image(systemName: "ellipsis.circle")
                     .font(.title2)
             }
         })
         .sheet(isPresented: $showCameraCaptureView) {
             CameraView(image: $capturedImage)
         }
-        .sheet(isPresented: $showPhotoPicker) {
-            PhotosPicker(
-                selection: $selectedItem,
-                matching: .images,
-                photoLibrary: .shared()
-            )
-            {
-                Text("Select Photo") // Placeholder label for the picker
-                    .font(.headline)
-                    .foregroundColor(.blue)
-            }
-            .onChange(of: selectedItem) { _, newItem in
-                Task {
-                    if let data = try? await newItem?.loadTransferable(type: Data.self),
-                       let uiImage = UIImage(data: data) {
-                        viewModel.selectedImage = uiImage
-                        viewModel.processImage(image: uiImage)
-                        viewModel.stopSpeaking()
-                        guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
-                            return
-                        }
-                        viewModel.createText(text: extractedText, libraryId: library.id ?? "")
-                    }
-                }
-            }
+        .sheet(isPresented: $showLanguagePicker) {
+                LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
         }
         .sheet(isPresented: $showAddTextSheet) {
             VStack {
@@ -208,6 +182,44 @@ struct TextsListView: View {
             .padding()
             .presentationDetents([.medium, .large])
         }
+        .sheet(isPresented: $showEditTextSheet) {
+                VStack {
+                    Text("Edit Text")
+                        .font(.headline)
+                        .padding()
+                    
+                    TextEditor(text: $editingTextContent)
+                        .padding()
+                        .frame(maxHeight: .infinity)
+                        .cornerRadius(10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.gray, lineWidth: 1)
+                        )
+                    
+                    Button(action: {
+                        if !editingTextContent.isEmpty {
+                            viewModel.editText(withId: textItem?.id ?? " ", newText: editingTextContent)
+                            editingTextContent = ""
+                            showEditTextSheet = false
+                        }
+                    }) {
+                        Text("Done")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                    .disabled(editingTextContent.isEmpty)
+                    
+                    Spacer()
+                }
+                .padding()
+                .presentationDetents([.medium, .large])
+            }
+
         .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("Confirm Delete"),
@@ -225,6 +237,7 @@ struct TextsListView: View {
         }
         .onDisappear {
             viewModel.stopSpeaking()
+            capturedImage = nil
         }
     }
 }
