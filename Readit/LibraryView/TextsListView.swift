@@ -226,7 +226,7 @@ struct TextsListView: View {
                 message: Text("Are you sure you want to delete this text?"),
                 primaryButton: .destructive(Text("Delete")) {
                     if let text = textItem {
-                        viewModel.deleteText(withId: text.id)
+                        viewModel.deleteText(withId: text.id, fromLibrary: library.id ?? "")
                     }
                 },
                 secondaryButton: .cancel()
