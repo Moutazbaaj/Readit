@@ -43,7 +43,6 @@ struct ProfileView: View {
 
                 
                 // Custom layout replacing Form
-                ScrollView {
                     VStack {
                         // Profile Image Section
                         ZStack {
@@ -139,7 +138,6 @@ struct ProfileView: View {
                         }
                     }
                     .padding()
-                }
                 .navigationBarItems(trailing:
                     Button(action: {
                         showSettingSheet = true
