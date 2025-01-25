@@ -17,7 +17,7 @@ struct MainContentView: View {
             if isSplashScreenShown {
                 SplashScreenView()
                     .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                             isSplashScreenShown = false
                         }
                     }
