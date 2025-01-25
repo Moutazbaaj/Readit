@@ -21,70 +21,105 @@ struct LibraryView: View {
     @State private var showAddLibrarySheet = false
     @State private var newLibraryTitle = "" // Stores the new library title
     @State private var libraryItem: FireLibrary? // Selected library for actions (edit/delete)
+    @State private var searchQuery = "" // State for search input
+    
+    
+    private var filteredLibraries: [FireLibrary] {
+        if searchQuery.isEmpty {
+            return viewModel.libreries
+        } else {
+            return viewModel.libreries.filter { $0.libraryTitle.localizedCaseInsensitiveContains(searchQuery) }
+        }
+    }
     
     // Define the grid layout with two columns.
     let gridItems = [GridItem(.flexible()), GridItem(.flexible())]
     
-    // Computed property for sorted libraries
-    var sortedLibraries: [FireLibrary] {
-        viewModel.libreries.sorted {
-            $0.timestamp.dateValue() > $1.timestamp.dateValue()
-        }
-    }
     
     var body: some View {
         NavigationStack {
             ZStack {
+                
                 LinearGradient(
                     gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
+                .blur(radius: 10)
                 .edgesIgnoringSafeArea(.all)
-                .blur(radius: 10) // Adding a subtle blur effect to the background
                 
                 VStack {
+                    // Search bar
+                    VStack {
+                        TextField("Search libraries...", text: $searchQuery)
+                            .padding()
+                            .background(Color.black.opacity(0.4))
+                            .cornerRadius(10)
+                            .shadow(radius: 2)
+                    }
+                    .padding()
                     
-                    Divider()
-                        .hidden()
+                    Spacer()
                     
                     if viewModel.libreries.isEmpty {
-                        Text("Your library is empty")
-                            .font(.headline)
+                        Image(systemName: "tray")
+                            .font(.largeTitle)
                             .foregroundColor(.gray)
                             .padding()
+                        Text(" You have No libraries yet")
+                            .font(.headline)
+                            .foregroundColor(.gray)
+                        Text("Click on the Plus (+) button to start")
+                            .font(.headline)
+                            .foregroundColor(.gray)
+                        
+                        Spacer()
+                        
                     } else {
-                                                
-                        ScrollView {
-                            
-                            Divider()
-                                .hidden()
-                                .padding()
-                            
-                            LazyVGrid(columns: gridItems, spacing: 20) {
-                                ForEach(sortedLibraries) { library in
-                                    NavigationLink(destination: TextsListView(library: library)) {
-                                        LibraryCard(library: library)
-                                    }
-                                    .contextMenu {
-                                        contextMenu(for: library)
+                        
+                        if filteredLibraries.isEmpty {
+                            VStack {
+                                Text("No results found")
+                                    .font(.headline)
+                                    .foregroundColor(.gray)
+                                    .padding()
+                                Spacer()
+                            }
+                        } else {
+                            ScrollView {
+                                
+                                Divider()
+                                    .hidden()
+                                    .padding()
+                                
+                                LazyVGrid(columns: gridItems, spacing: 20) {
+                                    ForEach(filteredLibraries.sorted {
+                                        $0.timestamp.dateValue() > $1.timestamp.dateValue()
+                                    }) { library in
+                                        NavigationLink(destination: TextsListView(library: library)) {
+                                            LibraryCard(library: library)
+                                        }
+                                        .contextMenu {
+                                            contextMenu(for: library)
+                                        }
                                     }
                                 }
+                                .padding(.horizontal)
+                            }
+                            HStack {
+                                
+                                Spacer()
+                                
+                                Text("\(filteredLibraries.count) items ")
+                                    .font(.caption)
+                                    .padding(.horizontal)
+                                    .padding(.bottom)
                             }
                             .padding(.horizontal)
+                            .padding(.top)
+                            
                         }
                         
-                        HStack {
-                            
-                            Spacer()
-                            
-                            Text("\(viewModel.libreries.count) items ")
-                                .font(.caption)
-                                .padding(.horizontal)
-                                .padding(.bottom)
-                            }
-                        .padding(.horizontal)
-                        .padding(.top)
                     }
                 }
             }
@@ -110,7 +145,7 @@ struct LibraryView: View {
         }
         .sheet(isPresented: $showAddLibrarySheet) {
             AddLibrarySheet(newLibraryTitle: $newLibraryTitle)
-            .presentationDetents([.height(200)])
+                .presentationDetents([.height(200)])
         }
         .sheet(isPresented: $showEditSheet) {
             // Implement editing sheet logic here.
