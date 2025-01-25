@@ -56,6 +56,7 @@ struct HomeView: View {
                         .padding(.top)
                     Spacer()
                 }
+                
                 ScrollView(.horizontal, showsIndicators: false) {
                     if viewModel.libreries.isEmpty {
                         Text("Your Have no Books")
@@ -77,7 +78,9 @@ struct HomeView: View {
                     }
                 }
                 .frame(height: 110)
-                .padding(.horizontal, 4)
+                .padding(.horizontal, 2)
+                
+
                 
                 VStack {
                     // Content above the scroll view
