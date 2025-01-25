@@ -32,6 +32,7 @@ struct TextsListView: View {
                 startPoint: .top,
                 endPoint: .bottom
             )
+            .blur(radius: 10)
             .edgesIgnoringSafeArea(.all)
             
             VStack {
@@ -56,9 +57,9 @@ struct TextsListView: View {
                         VStack(alignment: .leading) {
                             Text(text.text)
                                 .font(.headline)
-                                .padding(5)
+                                .padding()
                                 .background(Color.white.opacity(0.2))
-                                .cornerRadius(10)
+                                .cornerRadius(15)
                             
                             Text(text.timestamp.dateValue(), style: .date)
                                 .font(.subheadline)
@@ -67,7 +68,7 @@ struct TextsListView: View {
                         .padding()
                         .background(Color.clear) // Clear background for the row
                         .listRowBackground(Color.clear) // Ensure no opaque row background
-                        .cornerRadius(10)
+                        .cornerRadius(15)
                         .swipeActions {
                             Button(role: .destructive) {
                                 textItem = text
