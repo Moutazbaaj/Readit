@@ -38,8 +38,8 @@ struct ProfileView: View {
                     startPoint: .top,
                     endPoint: .bottom
                 )
-                .edgesIgnoringSafeArea(.all)
                 .blur(radius: 10)
+                .edgesIgnoringSafeArea(.all)
 
                 
                 // Custom layout replacing Form
@@ -149,8 +149,6 @@ struct ProfileView: View {
                             .imageScale(.large)
                     }
                 )
-                .navigationTitle("Settings")
-                .navigationBarTitleDisplayMode(.inline)
                 .sheet(isPresented: $showSettingSheet) {
                     ProfileSheetView(
                         authViewModel: authViewModel,
@@ -159,7 +157,7 @@ struct ProfileView: View {
                         showSettingSheet: $showSettingSheet,
                         selectedColor: $newColor
                     )
-                    .presentationDetents([.large])
+                    .presentationDetents([.medium, .large])
                 }
                 .alert(isPresented: $showAlert) {
                     switch alertType {
