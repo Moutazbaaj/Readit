@@ -25,10 +25,11 @@ struct ProfileSheetView: View {
         NavigationStack {
             ZStack {
                 LinearGradient(
-                    gradient: Gradient(colors: [Color.blue, Color.black]),
+                    gradient: Gradient(colors: [Color.blue.opacity(0.1), Color.purple.opacity(0.3)]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
+                .blur(radius: 10)
                 .edgesIgnoringSafeArea(.all)
                 
                 VStack {
@@ -37,6 +38,7 @@ struct ProfileSheetView: View {
                         selectedItem: $selectedItem,
                         selectedImage: $selectedImage
                     )
+                    .padding(.top, 10)
                     
                     UserDetailsSection(
                         newUsername: $newUsername,
@@ -49,8 +51,6 @@ struct ProfileSheetView: View {
                 }
                 .padding()
             }
-            .navigationTitle("Profile Edit")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .automatic) {
                     Button("Cancel") {
