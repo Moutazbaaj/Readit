@@ -28,81 +28,76 @@ struct ScanView: View {
             .blur(radius: 10) // Adding a subtle blur effect to the background
 
             VStack {
-                if viewModel.texts.isEmpty {
-                    Text("There is no History yet!")
-                        .font(.headline)
-                        .foregroundColor(.gray)
-                } else {
-                    List(viewModel.texts.sorted(by: { $0.timestamp.dateValue() > $1.timestamp.dateValue() })) { text in
-                        VStack(alignment: .leading) {
-                            // Date and time display
-                            HStack() {
-                                
-                            // TODO: fix buttons
-                                
-                                Text(text.timestamp.dateValue(), style: .date)
-                                    .font(.callout)
+                ScrollView {
+                    if viewModel.texts.isEmpty {
+                        Text("There is no History yet!")
+                            .font(.headline)
+                            .foregroundColor(.gray)
+                    } else {
+                        ForEach(viewModel.texts.sorted(by: { $0.timestamp.dateValue() > $1.timestamp.dateValue() })) { text in
+                            VStack(alignment: .leading) {
+                                // Date and time display
+                                Divider()
+                                HStack() {
+                                    
+                                    Text(text.timestamp.dateValue(), style: .date)
+                                        .font(.callout)
+                                    
+                                    Text(text.timestamp.dateValue(), style: .time)
+                                        .font(.callout)
+                                    
+                                    Spacer()
+                                    
+                                    Divider()
+                                        .padding()
+                                    // Read text button
+                                    Button(action: {
+                                        viewModel.stopSpeaking()
+                                    }) {
+                                        Image(systemName: "stop")
+                                    }
+                                    .padding()
+                                    
+                                    Divider()
+                                        .padding()
+                                    
+                                    // Read text button
+                                    Button(action: {
+                                        viewModel.stopSpeaking()
+                                        textItem = text
+                                        viewModel.readTextAloud(in: selectedLanguage, text: textItem?.text ?? "no text")
+                                    }) {
+                                        Image(systemName: "speaker.wave.2")
+                                    }
+                                    .padding()
 
-                                Text(text.timestamp.dateValue(), style: .time)
-                                    .font(.callout)
-
-                                Spacer()
-                                // Read text button
-                                Button(action: {
-                                    viewModel.stopSpeaking()
-                                }) {
-                                    Image(systemName: "stop")
                                 }
-                                .padding()
-                                // Read text button
-                                Button(action: {
-                                    viewModel.stopSpeaking()
+                                // Text display
+                                Text(text.text)
+                                    .font(.headline)
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color.white.opacity(0.2))
+                                    .cornerRadius(20)
+                                    .shadow(radius: 5)
+                            }
+                            .swipeActions {
+                                Button(role: .destructive) {
                                     textItem = text
-                                    viewModel.readTextAloud(in: selectedLanguage, text: textItem?.text ?? "no text")
-                                }) {
-                                    Image(systemName: "speaker.wave.2")
+                                    showAlert = true
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
                                 }
-                                .padding()
+                                .tint(.red)
                             }
-//                            .padding()
-
-                            // Text display
-                            Text(text.text)
-                                .font(.headline)
-                                .padding()
-                                .background(Color.white.opacity(0.2))
-                                .cornerRadius(10)
-                                .shadow(radius: 5)
                         }
-                        .swipeActions {
-                            Button(role: .destructive) {
-                                textItem = text
-                                showAlert = true
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                            .tint(.red)
-                        }
-                        .listRowBackground(Color.clear) // Ensure list rows have no default background
+                        .padding()
                     }
-                    .listStyle(.plain)
-                    .background(Color.clear) // Transparent list background
+                    Spacer()
                 }
-                Spacer()
-                
-//                HStack {
-//                    Text("Language:")
-//                        .font(.subheadline)
-//                    Spacer()
-//                    Text(selectedLanguage.displayName)
-//                        .foregroundColor(.blue)
-//                        .onTapGesture {
-//                            showLanguagePicker = true
-//                        }
-//                }
-//                .padding(.vertical)
+                Divider()
+                    .hidden()
             }
-            .padding()
             .onDisappear {
                 viewModel.stopSpeaking()
             }
@@ -121,7 +116,6 @@ struct ScanView: View {
                     }
                 }
             }
-
         .sheet(isPresented: $showLanguagePicker) {
             LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
         }
