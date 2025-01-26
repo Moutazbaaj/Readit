@@ -44,4 +44,5 @@ struct CameraView: UIViewControllerRepresentable {
             parent.presentationMode.wrappedValue.dismiss()
         }
     }
+
 }

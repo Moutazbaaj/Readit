@@ -142,9 +142,12 @@ struct LibraryView: View {
         .sheet(isPresented: $showAddLibrarySheet) {
             AddLibrarySheet(newLibraryTitle: $newLibraryTitle)
                 .presentationDetents([.height(200)])
+                .presentationCornerRadius(50)
+
         }
         .sheet(isPresented: $showEditSheet) {
             // Implement editing sheet logic here.
+
         }
         .onAppear {
             viewModel.fetchLibraries()

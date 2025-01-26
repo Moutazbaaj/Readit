@@ -168,6 +168,8 @@ struct TextsListView: View {
         })
         .sheet(isPresented: $showCameraCaptureView) {
             CameraView(image: $capturedImage)
+                .presentationCornerRadius(20)
+
         }
         .sheet(isPresented: $showLanguagePicker) {
                 LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
@@ -211,6 +213,8 @@ struct TextsListView: View {
             }
             .padding()
             .presentationDetents([.medium, .large])
+            .presentationCornerRadius(50)
+
         }
         .sheet(isPresented: $showEditTextSheet) {
                 VStack {
@@ -248,6 +252,8 @@ struct TextsListView: View {
                 }
                 .padding()
                 .presentationDetents([.medium, .large])
+                .presentationCornerRadius(50)
+
             }
         .alert(isPresented: $showAlert) {
             Alert(
