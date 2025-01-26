@@ -17,6 +17,9 @@ class ProfileViewModel: ObservableObject {
     // Singleton instance for the ViewModel
     static let shared = ProfileViewModel()
 
+    @Published var preferences : [FirePreference] = []
+
+    
     /// Published variable to track the currently signed-in user.
     @Published private(set) var user: FireUser?
 
@@ -27,7 +30,7 @@ class ProfileViewModel: ObservableObject {
     private var listener: ListenerRegistration?
 
     /// Firebase Authentication instance.
-    private let firebaseAuthntication = Auth.auth()
+    private let firebaseAuthentication = Auth.auth()
 
     /// Firebase Firestore instance.
     private let firebaseFirestore = Firestore.firestore()
@@ -38,20 +41,89 @@ class ProfileViewModel: ObservableObject {
     init() {
         /// Initialize and check if the user is already signed in.
         checkAuth()
+        fetchPrefrences()
     }
 
     /// Check if the user is currently signed in.
     func checkAuth() {
-        guard let currentUser = self.firebaseAuthntication.currentUser else {
+        guard let currentUser = self.firebaseAuthentication.currentUser else {
             print("No user logged in!")
             return
         }
         self.fetchFirestoreUser(withId: currentUser.uid)
     }
+    
+    func createPrefrences(language: Language.RawValue) {
+        guard let userId = self.firebaseAuthentication.currentUser?.uid else {
+            print("User is not signed in")
+            return
+        }
+        
+        let newPrefrences = FirePreference(userId: userId, selectedLanguage: language)
+        
+        do {
+            try self.firebaseFirestore.collection("Prefrences").addDocument(from: newPrefrences) { error in
+                if let error = error {
+                    print("Error adding Prefrences: \(error.localizedDescription)")
+                } else {
+                    print("Prefrences added successfully")
+                }
+            }
+        } catch {
+            print("Error encoding Prefrences: \(error.localizedDescription)")
+        }
+    }
+
+    func fetchPrefrences() {
+        guard let userId = self.firebaseAuthentication.currentUser?.uid else {
+            print("User is not signed in")
+            return
+        }
+        
+        self.listener = firebaseFirestore.collection("Prefrences")
+            .whereField("userId", isEqualTo: userId)
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let self = self else { return }
+                if let error = error {
+                    print("Error fetching Prefrences: \(error.localizedDescription)")
+                    return
+                }
+                
+                guard let snapshot = snapshot else {
+                    print("No Prefrences found.")
+                    return
+                }
+                
+                let Prefrences = snapshot.documents.compactMap { document -> FirePreference? in
+                    do {
+                        var Prefrenc = try document.data(as: FirePreference.self)
+                        Prefrenc.id = document.documentID
+                        return Prefrenc
+                    } catch {
+                        print("Error decoding Prefrences: \(error)")
+                        return nil
+                    }
+                }
+                self.preferences = Prefrences
+            }
+    }
+    
+    func editPrefrences(withId id: String, newLanguage: Language.RawValue) {
+        let prefrence = firebaseFirestore.collection("Prefrences").document(id)
+        
+        prefrence.updateData(["selectedLanguage": newLanguage,
+                             ]) { error in
+            if let error = error {
+                print("Error updating prefrence: \(error.localizedDescription)")
+            } else {
+                print("prefrence successfully updated")
+            }
+        }
+    }
 
     /// Send a password reset email to the specified address.
     func recoverPassword(email: String) {
-        firebaseAuthntication.sendPasswordReset(withEmail: email) { error in
+        firebaseAuthentication.sendPasswordReset(withEmail: email) { error in
             if let error = error {
                 print("Failed to send password reset email: \(error.localizedDescription)")
             } else {
@@ -85,7 +157,7 @@ class ProfileViewModel: ObservableObject {
 
     /// Save the user's profile image to Core Data.
     func saveProfileImage(image: UIImage) {
-        guard let userID = firebaseAuthntication.currentUser?.uid else {
+        guard let userID = firebaseAuthentication.currentUser?.uid else {
             print("No user is currently signed in.")
             return
         }
@@ -122,7 +194,7 @@ class ProfileViewModel: ObservableObject {
 
     /// Load the user's profile image from Core Data.
     func loadProfileImage() {
-        guard let userID = firebaseAuthntication.currentUser?.uid else {
+        guard let userID = firebaseAuthentication.currentUser?.uid else {
             print("No user is currently signed in.")
             return
         }
@@ -206,7 +278,7 @@ class ProfileViewModel: ObservableObject {
 //    }
 //    /// Upload the user's profile image to Firebase Storage.
 //    func uploadProfileImage(image: UIImage, completion: @escaping (Result<URL, Error>) -> Void) {
-//        guard let userID = firebaseAuthntication.currentUser?.uid else {
+//        guard let userID = firebaseAuthentication.currentUser?.uid else {
 //            print("No user is currently signed in.")
 //            return
 //        }
