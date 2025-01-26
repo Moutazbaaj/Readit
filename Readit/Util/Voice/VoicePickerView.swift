@@ -44,7 +44,7 @@ struct VoicePickerView: View {
             .frame(maxWidth: .infinity)
             .background(Color.black.opacity(0.6))
             .foregroundColor(.white)
-            .cornerRadius(10)
+            .cornerRadius(20)
             .padding()
         }
         .presentationDetents([.medium])
