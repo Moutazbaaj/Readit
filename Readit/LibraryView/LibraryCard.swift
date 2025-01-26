@@ -61,14 +61,14 @@ struct LibraryCard: View {
         .frame(width: 175 , height : 170)
         .background(
             LinearGradient(
-                gradient: Gradient(colors: [Color.gray.opacity(0.1), .gray.opacity(0.3)]),
+                gradient: Gradient(colors: [Color.gray.opacity(0.2), .gray.opacity(0.5)]),
                 startPoint: .top,
                 endPoint: .bottom
             )
         )
-        .cornerRadius(15)
+        .cornerRadius(30)
         .overlay(
-            RoundedRectangle(cornerRadius: 15)
+            RoundedRectangle(cornerRadius: 30)
                 .stroke(Color.white.opacity(0.3), lineWidth: 2) // Add a subtle border to highlight the edges
         )
         .shadow(color: Color.black.opacity(0.4), radius: 15, x: 0, y: 10) // Deep shadow for floating effect

@@ -17,6 +17,16 @@ struct HomeView: View {
     
     @State private var hideButton = false
     
+    @State private var searchQuery = "" // State for search input
+
+    private var filteredLibraries: [FireLibrary] {
+         if searchQuery.isEmpty {
+             return viewModel.libreries
+         } else {
+             return viewModel.libreries.filter { $0.libraryTitle.localizedCaseInsensitiveContains(searchQuery) }
+         }
+     }
+    
     
     // Define the grid layout with two columns.
     let gridItems = [GridItem(.flexible()), GridItem(.flexible())]
@@ -31,15 +41,15 @@ struct HomeView: View {
                 startPoint: .top,
                 endPoint: .bottom
             )
-            .edgesIgnoringSafeArea(.all)
             .blur(radius: animateText ? 10 : 0) // Add blur effect during animation
-
+            .edgesIgnoringSafeArea(.all)
             
             VStack {
                 
                 Text("Hello, \(authViewModel.user?.username ?? "User")")
                     .font(.largeTitle)
                     .fontWeight(.bold)
+                    .lineLimit(1)
                     .foregroundColor(.white)
                     .scaleEffect(animateText ? 1 : 0.3) // Start from smaller size and scale up
                     .opacity(animateText ? 1 : 0) // Start with opacity 0 and fade in
@@ -50,151 +60,169 @@ struct HomeView: View {
                         }
                     }
                 
-                
-                HStack {
-                    Text("last Books")
-                        .padding(.top)
-                    Spacer()
-                }
-                
-                ScrollView(.horizontal, showsIndicators: false) {
-                    if viewModel.libreries.isEmpty {
-                        Text("Your Have no Books")
-                            .font(.headline)
-                            .foregroundColor(.gray)
-                            .padding()
-                    } else {
-                        LazyHStack(spacing: 5) {
-                            ForEach(viewModel.libreries.sorted(by: {
-                                $0.timestamp.dateValue() > $1.timestamp.dateValue()
-                            }).prefix(6)) { library in
-                                NavigationLink(destination: TextsListView(library: library)) {
-                                    HomeCard(library: library)
-                                        .frame(width: 110, height: 110)
-                                }
-                            }
-                        }
-                        .padding(.horizontal, 1)
-                    }
-                }
-                .frame(height: 110)
-                .padding(.horizontal, 2)
-                
-
-                
                 VStack {
-                    // Content above the scroll view
+                    
+                    // Search bar
                     HStack {
-                        Text("Favorites")
-                        Spacer()
-                    }
-                    HStack {
-                        Text("\(viewModel.favLibreries.count) items ")
-                            .font(.caption2)
+                        TextField("Search libraries...", text: $searchQuery)
+                            .padding()
+                            .background(Color.black.opacity(0.4))
+                            .cornerRadius(10)
+                            .shadow(radius: 2)
                         Spacer()
                     }
                     
-                    ZStack {
-                        // ScrollView with favorite libraries
-                        ScrollView(.vertical, showsIndicators: false) {
-                            if viewModel.favLibreries.isEmpty {
-                                Text("Your Have no Favorites")
-                                    .font(.headline)
-                                    .foregroundColor(.gray)
-                                    .padding()
-                            } else {
-                                Divider().hidden()
-                                LazyVGrid(columns: gridItems, spacing: 20) {
-                                    ForEach(viewModel.favLibreries.sorted(by: {
-                                        $0.editTimestamp?.dateValue() ?? Date() > $1.editTimestamp?.dateValue() ?? Date()
-                                    })) { library in
-                                        NavigationLink(destination: TextsListView(library: library)) {
-                                            LibraryCard(library: library)
-                                                .frame(width: 175, height: 170)
+                    HStack {
+                        Text("last Books")
+                            .padding(.top)
+                        Spacer()
+                    }
+                    
+                    if viewModel.libreries.isEmpty {
+                        HStack {
+                            Spacer()
+                            Text("Your Have no Books")
+                                .font(.headline)
+                                .foregroundColor(.gray)
+                                .padding()
+                            Spacer()
+                        }
+                    } else {
+                        
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            LazyHStack(spacing: 5) {
+                                ForEach(viewModel.libreries.sorted(by: {
+                                    $0.timestamp.dateValue() > $1.timestamp.dateValue()
+                                }).prefix(6)) { library in
+                                    NavigationLink(destination: TextsListView(library: library)) {
+                                        HomeCard(library: library)
+                                            .frame(width: 110, height: 110)
+                                    }
+                                }
+                            }
+                            .padding(.horizontal, 1)
+                        }
+                        .frame(height: 110)
+                        .padding(.horizontal, 2)
+                    }
+                    
+                    
+                    
+                    
+                    VStack {
+                        // Content above the scroll view
+                        HStack {
+                            Text("Favorites")
+                            Spacer()
+                        }
+                        HStack {
+                            Text("\(viewModel.favLibreries.count) items ")
+                                .font(.caption2)
+                            Spacer()
+                        }
+                        
+                        ZStack {
+                            // ScrollView with favorite libraries
+                            ScrollView(.vertical, showsIndicators: false) {
+                                if viewModel.favLibreries.isEmpty {
+                                    Text("Your Have no Favorites")
+                                        .font(.headline)
+                                        .foregroundColor(.gray)
+                                        .padding()
+                                } else {
+                                    Divider().hidden()
+                                    LazyVGrid(columns: gridItems, spacing: 20) {
+                                        ForEach(viewModel.favLibreries.sorted(by: {
+                                            $0.editTimestamp?.dateValue() ?? Date() > $1.editTimestamp?.dateValue() ?? Date()
+                                        })) { library in
+                                            NavigationLink(destination: TextsListView(library: library)) {
+                                                LibraryCard(library: library)
+                                                    .frame(width: 175, height: 170)
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                        
-                        
-                        ///////
-                        ///
-                        VStack {
-                            Spacer()
                             
+                            
+                            ///////
+                            ///
                             VStack {
                                 Spacer()
-                                // Navigation buttons shown when `hideButton` is true
-                                if hideButton {
-                                    VStack {
-                                        // Navigation Buttons
-                                        NavigationLink(destination: TextToSpeechView()) {
-                                            VStack {
-                                                Image(systemName: "bubble.and.pencil")
-                                                    .font(.title)
-                                                    .foregroundColor(.white)
-                                                    .shadow(radius: 10)
-                                                Text("Text to Speech")
-                                                    .font(.caption)
-                                                    .foregroundColor(.white)
-                                            }
-                                            .padding()
-                                        }
-                                        NavigationLink(destination: ImageRecognitionView()) {
-                                            VStack {
-                                                Image(systemName: "photo.badge.plus.fill")
-                                                    .font(.title)
-                                                    .foregroundColor(.white)
-                                                    .shadow(radius: 10)
-                                                Text("Text Recognition")
-                                                    .font(.caption)
-                                                    .foregroundColor(.white)
-                                            }
-                                            .padding()
-                                        }
-                                    }
-                                    .transition(.scale) // Smooth animation when appearing/disappearing
-                                    .padding() // Space from the bottom
-                                    .background(
-                                        LinearGradient(
-                                            gradient: Gradient(colors: [Color.black.opacity(0.6), Color.black.opacity(0.7)]),
-                                            startPoint: .top,
-                                            endPoint: .bottom
-                                        )
-                                        .cornerRadius(20)
-                                        .padding()
-                                    )
-                                }
                                 
-                                // Floating button at the bottom
-                                Button(action: {
-                                    withAnimation {
-                                        hideButton.toggle()
-                                    }
-                                }) {
-                                    Image(systemName: "plus.circle.dashed")
-                                        .font(.largeTitle)
-                                        .foregroundColor(.white) // Icon color
-                                        .shadow(color: .black.opacity(0.5), radius: 10) // Subtle shadow
+                                VStack {
+                                    Spacer()
+                                    // Navigation buttons shown when `hideButton` is true
+                                    if hideButton {
+                                        VStack {
+                                            // Navigation Buttons
+                                            NavigationLink(destination: TextToSpeechView()) {
+                                                VStack {
+                                                    Image(systemName: "bubble.and.pencil")
+                                                        .font(.title)
+                                                        .foregroundColor(.white)
+                                                        .shadow(radius: 10)
+                                                    Text("Text to Speech")
+                                                        .font(.caption)
+                                                        .foregroundColor(.white)
+                                                }
+                                                .padding()
+                                            }
+                                            NavigationLink(destination: ImageRecognitionView()) {
+                                                VStack {
+                                                    Image(systemName: "photo.badge.plus.fill")
+                                                        .font(.title)
+                                                        .foregroundColor(.white)
+                                                        .shadow(radius: 10)
+                                                    Text("Text Recognition")
+                                                        .font(.caption)
+                                                        .foregroundColor(.white)
+                                                }
+                                                .padding()
+                                            }
+                                        }
+                                        .transition(.scale) // Smooth animation when appearing/disappearing
+                                        .padding() // Space from the bottom
                                         .background(
-                                            Circle()
-                                                .fill(Color.black.opacity(0.3)) // Fully transparent background
-                                                .frame(width: 60, height: 60)
-                                                .overlay(
-                                                    Circle()
-                                                        .stroke(Color.white.opacity(0.3), lineWidth: 1) // Transparent border
-                                                )
+                                            LinearGradient(
+                                                gradient: Gradient(colors: [Color.black.opacity(0.6), Color.black.opacity(0.7)]),
+                                                startPoint: .top,
+                                                endPoint: .bottom
+                                            )
+                                            .cornerRadius(20)
+                                            .padding()
                                         )
+                                    }
+                                    
+                                    // Floating button at the bottom
+                                    Button(action: {
+                                        withAnimation {
+                                            hideButton.toggle()
+                                        }
+                                    }) {
+                                        Image(systemName: "plus.circle.dashed")
+                                            .font(.largeTitle)
+                                            .foregroundColor(.white) // Icon color
+                                            .shadow(color: .black.opacity(0.5), radius: 10) // Subtle shadow
+                                            .background(
+                                                Circle()
+                                                    .fill(Color.black.opacity(0.3)) // Fully transparent background
+                                                    .frame(width: 60, height: 60)
+                                                    .overlay(
+                                                        Circle()
+                                                            .stroke(Color.white.opacity(0.3), lineWidth: 1) // Transparent border
+                                                    )
+                                            )
+                                    }
+                                    .padding(.bottom, 5) // Space from the bottom of the screen
                                 }
-                                .padding(.bottom, 5) // Space from the bottom of the screen
                             }
+                            .padding()
                         }
-                        .padding()
                     }
                 }
+                .padding()
             }
-            .padding()
         }
         .onTapGesture {
             if hideButton {
