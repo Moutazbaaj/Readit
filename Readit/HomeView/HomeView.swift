@@ -17,15 +17,15 @@ struct HomeView: View {
     
     @State private var hideButton = false
     
-    @State private var searchQuery = "" // State for search input
+//    @State private var searchQuery = "" // State for search input
 
-    private var filteredLibraries: [FireLibrary] {
-         if searchQuery.isEmpty {
-             return viewModel.libreries
-         } else {
-             return viewModel.libreries.filter { $0.libraryTitle.localizedCaseInsensitiveContains(searchQuery) }
-         }
-     }
+//    private var filteredLibraries: [FireLibrary] {
+//         if searchQuery.isEmpty {
+//             return viewModel.libreries
+//         } else {
+//             return viewModel.libreries.filter { $0.libraryTitle.localizedCaseInsensitiveContains(searchQuery) }
+//         }
+//     }
     
     
     // Define the grid layout with two columns.
@@ -46,7 +46,11 @@ struct HomeView: View {
             
             VStack {
                 
-                Text("Hello, \(authViewModel.user?.username ?? "User")")
+                Divider()
+                    .hidden()
+                
+//                Text("Hello, \(authViewModel.user?.username ?? "User")")
+                Text("Hello")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .lineLimit(1)
@@ -63,14 +67,15 @@ struct HomeView: View {
                 VStack {
                     
                     // Search bar
-                    HStack {
-                        TextField("Search libraries...", text: $searchQuery)
-                            .padding()
-                            .background(Color.black.opacity(0.4))
-                            .cornerRadius(10)
-                            .shadow(radius: 2)
-                        Spacer()
-                    }
+                    
+//                    HStack {
+//                        TextField("Search libraries...", text: $searchQuery)
+//                            .padding()
+//                            .background(Color.black.opacity(0.4))
+//                            .cornerRadius(10)
+//                            .shadow(radius: 2)
+//                        Spacer()
+//                    }
                     
                     HStack {
                         Text("last Books")
@@ -105,10 +110,7 @@ struct HomeView: View {
                         .frame(height: 110)
                         .padding(.horizontal, 2)
                     }
-                    
-                    
-                    
-                    
+
                     VStack {
                         // Content above the scroll view
                         HStack {
@@ -143,81 +145,6 @@ struct HomeView: View {
                                     }
                                 }
                             }
-                            
-                            
-                            ///////
-                            ///
-                            VStack {
-                                Spacer()
-                                
-                                VStack {
-                                    Spacer()
-                                    // Navigation buttons shown when `hideButton` is true
-                                    if hideButton {
-                                        VStack {
-                                            // Navigation Buttons
-                                            NavigationLink(destination: TextToSpeechView()) {
-                                                VStack {
-                                                    Image(systemName: "bubble.and.pencil")
-                                                        .font(.title)
-                                                        .foregroundColor(.white)
-                                                        .shadow(radius: 10)
-                                                    Text("Text to Speech")
-                                                        .font(.caption)
-                                                        .foregroundColor(.white)
-                                                }
-                                                .padding()
-                                            }
-                                            NavigationLink(destination: ImageRecognitionView()) {
-                                                VStack {
-                                                    Image(systemName: "photo.badge.plus.fill")
-                                                        .font(.title)
-                                                        .foregroundColor(.white)
-                                                        .shadow(radius: 10)
-                                                    Text("Text Recognition")
-                                                        .font(.caption)
-                                                        .foregroundColor(.white)
-                                                }
-                                                .padding()
-                                            }
-                                        }
-                                        .transition(.scale) // Smooth animation when appearing/disappearing
-                                        .padding() // Space from the bottom
-                                        .background(
-                                            LinearGradient(
-                                                gradient: Gradient(colors: [Color.black.opacity(0.6), Color.black.opacity(0.7)]),
-                                                startPoint: .top,
-                                                endPoint: .bottom
-                                            )
-                                            .cornerRadius(20)
-                                            .padding()
-                                        )
-                                    }
-                                    
-                                    // Floating button at the bottom
-                                    Button(action: {
-                                        withAnimation {
-                                            hideButton.toggle()
-                                        }
-                                    }) {
-                                        Image(systemName: "plus.circle.dashed")
-                                            .font(.largeTitle)
-                                            .foregroundColor(.white) // Icon color
-                                            .shadow(color: .black.opacity(0.5), radius: 10) // Subtle shadow
-                                            .background(
-                                                Circle()
-                                                    .fill(Color.black.opacity(0.3)) // Fully transparent background
-                                                    .frame(width: 60, height: 60)
-                                                    .overlay(
-                                                        Circle()
-                                                            .stroke(Color.white.opacity(0.3), lineWidth: 1) // Transparent border
-                                                    )
-                                            )
-                                    }
-                                    .padding(.bottom, 5) // Space from the bottom of the screen
-                                }
-                            }
-                            .padding()
                         }
                     }
                 }
