@@ -32,24 +32,26 @@ struct ProfileSheetView: View {
                 .blur(radius: 10)
                 .edgesIgnoringSafeArea(.all)
                 
-                VStack {
-                    ProfileImageSection(
-                        profileViewModel: profileViewModel,
-                        selectedItem: $selectedItem,
-                        selectedImage: $selectedImage
-                    )
-                    .padding(.top, 10)
-                    
-                    UserDetailsSection(
-                        newUsername: $newUsername,
-                        newBirthday: $newBirthday,
-                        selectedColor: $selectedColor,
-                        showAlert: $showAlert
-                    )
-                    
-                    SaveButton(authViewModel: authViewModel, showSettingSheet: $showSettingSheet, newUsername: newUsername, newBirthday: newBirthday, selectedColor: selectedColor)
+                ScrollView {
+                    VStack {
+                        ProfileImageSection(
+                            profileViewModel: profileViewModel,
+                            selectedItem: $selectedItem,
+                            selectedImage: $selectedImage
+                        )
+                        .padding(.top, 10)
+                        
+                        UserDetailsSection(
+                            newUsername: $newUsername,
+                            newBirthday: $newBirthday,
+                            selectedColor: $selectedColor,
+                            showAlert: $showAlert
+                        )
+                        
+                        SaveButton(authViewModel: authViewModel, showSettingSheet: $showSettingSheet, newUsername: newUsername, newBirthday: newBirthday, selectedColor: selectedColor)
+                    }
+                    .padding()
                 }
-                .padding()
             }
             .toolbar {
                 ToolbarItem(placement: .automatic) {
