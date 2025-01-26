@@ -49,48 +49,44 @@ struct LibraryView: View {
                 .edgesIgnoringSafeArea(.all)
                 
                 VStack {
-                    // Search bar
-                    VStack {
+                    ScrollView {
+                        // Search bar
                         TextField("Search libraries...", text: $searchQuery)
                             .padding()
                             .background(Color.black.opacity(0.4))
                             .cornerRadius(10)
                             .shadow(radius: 2)
-                    }
-                    .padding()
-                    
-                    Spacer()
-                    
-                    if viewModel.libreries.isEmpty {
-                        Image(systemName: "tray")
-                            .font(.largeTitle)
-                            .foregroundColor(.gray)
                             .padding()
-                        Text(" You have No libraries yet")
-                            .font(.headline)
-                            .foregroundColor(.gray)
-                        Text("Click on the Plus (+) button to start")
-                            .font(.headline)
-                            .foregroundColor(.gray)
-                        
                         Spacer()
                         
-                    } else {
-                        
-                        if filteredLibraries.isEmpty {
-                            VStack {
-                                Text("No results found")
-                                    .font(.headline)
-                                    .foregroundColor(.gray)
-                                    .padding()
-                                Spacer()
-                            }
+                        if viewModel.libreries.isEmpty {
+                            Image(systemName: "tray")
+                                .font(.largeTitle)
+                                .foregroundColor(.gray)
+                                .padding()
+                            Text(" You have No libraries yet")
+                                .font(.headline)
+                                .foregroundColor(.gray)
+                            Text("Click on the Plus (+) button to start")
+                                .font(.headline)
+                                .foregroundColor(.gray)
+                            
+                            Spacer()
+                            
                         } else {
-                            ScrollView {
-                                
-                                Divider()
-                                    .hidden()
-                                    .padding()
+                            
+                            if filteredLibraries.isEmpty {
+                                VStack {
+                                    Text("No results found")
+                                        .font(.headline)
+                                        .foregroundColor(.gray)
+                                        .padding()
+                                    Spacer()
+                                }
+                            } else {
+                                //
+                                //                                Divider()
+                                //                                    .hidden()
                                 
                                 LazyVGrid(columns: gridItems, spacing: 20) {
                                     ForEach(filteredLibraries.sorted {
@@ -104,23 +100,23 @@ struct LibraryView: View {
                                         }
                                     }
                                 }
-                                .padding(.horizontal)
-                            }
-                            HStack {
+                                .padding()
                                 
-                                Spacer()
-                                
-                                Text("\(filteredLibraries.count) items ")
-                                    .font(.caption)
-                                    .padding(.horizontal)
-                                    .padding(.bottom)
                             }
-                            .padding(.horizontal)
-                            .padding(.top)
                             
                         }
-                        
                     }
+                    HStack {
+                        
+                        Spacer()
+                        
+                        Text("\(filteredLibraries.count) items ")
+                            .font(.caption)
+                            .padding(.top, 2)
+                            .padding(.bottom, 4)
+                            .padding(.horizontal)
+                    }
+                    
                 }
             }
         }
