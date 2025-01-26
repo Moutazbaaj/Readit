@@ -12,7 +12,7 @@ struct TextToSpeechView: View {
     @StateObject private var textViewModel = TextToSpeechViewModel.shared
     @StateObject private var libViewModel = ScanViewModel.shared
     
-    @State private var selectedLanguage: Language = .english
+    @State private var selectedLanguage: Language = .englishUS
     @State private var showLanguagePicker: Bool = false
     
     var body: some View {

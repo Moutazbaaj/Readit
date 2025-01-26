@@ -17,7 +17,7 @@ struct ImageRecognitionView: View {
     
     @State private var selectedItem: PhotosPickerItem? // For the selected image from the picker
     @State private var showLanguagePicker: Bool = false
-    @State private var selectedLanguage: Language = .english
+    @State private var selectedLanguage: Language = .englishUS
 //    @State private var showCamera: Bool = false // To trigger the camera
     @State private var capturedImage: UIImage? // To hold the captured image
     

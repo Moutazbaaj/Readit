@@ -89,9 +89,9 @@ struct ProfileView: View {
                                 .font(.callout)
                                 .font(.callout)
                             
-                            Text("Registered since:\n \(authViewModel.user?.registerdAt ?? Date(), style: .date)")
-                                .foregroundStyle(.gray)
-                                .font(.callout)
+//                            Text("Registered since:\n \(authViewModel.user?.registerdAt ?? Date(), style: .date)")
+//                                .foregroundStyle(.gray)
+//                                .font(.callout)
                         }
                         
                         Spacer()

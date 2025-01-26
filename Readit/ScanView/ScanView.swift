@@ -13,7 +13,7 @@ struct ScanView: View {
     @State private var showAlert = false
     @State private var textItem: FireText?
 
-    @State private var selectedLanguage: Language = .english
+    @State private var selectedLanguage: Language = .englishUS
     @State private var showLanguagePicker: Bool = false
 
     var body: some View {

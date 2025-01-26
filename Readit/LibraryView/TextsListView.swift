@@ -20,10 +20,12 @@ struct TextsListView: View {
     @StateObject private var viewModel = LibraryViewModel.shared
     @State private var showAddTextSheet = false
     @State private var showLanguagePicker = false
-    @State private var selectedLanguage: Language = .english
+    @State private var selectedLanguage: Language = .englishUS
     @State private var newTextContent = ""
     @State private var editingTextContent = ""
     @State private var capturedImage: UIImage? // To hold the captured image
+    @State private var showVoicePicker = false // Controls the voice picker presentation
+    @State private var selectedVoice = Voice.allCases.first ?? .custom(identifier: "", language: "", name: "") // Selected voice
     
     var body: some View {
         ZStack {
@@ -42,7 +44,9 @@ struct TextsListView: View {
                         .padding()
                     
                     Spacer()
+
                 }
+
                 
                 if viewModel.texts.isEmpty {
                     Spacer()
@@ -93,6 +97,7 @@ struct TextsListView: View {
                 }
                 
                 Spacer()
+                
                 HStack {
                     Text("Language:")
                         .font(.subheadline)
@@ -105,13 +110,26 @@ struct TextsListView: View {
                         .padding(.vertical)
                 }
                 .padding()
+                
+                HStack {
+                    Text("Voice:")
+                        .font(.subheadline)
+                    Spacer()
+                    Text(selectedVoice.displayName)
+                        .foregroundColor(.blue)
+                        .onTapGesture {
+                            showVoicePicker = true
+                        }
+                        .padding(.vertical)
+                }
+                .padding()
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(trailing: HStack {
             Button(action: {
                 viewModel.stopSpeaking()
-                viewModel.readTextAloud(from: library, in: selectedLanguage)
+                viewModel.readTextAloud(from: library, in: selectedLanguage, using: selectedVoice)
             }) {
                 Image(systemName: "speaker.wave.2.fill")
             }
@@ -145,6 +163,9 @@ struct TextsListView: View {
         }
         .sheet(isPresented: $showLanguagePicker) {
                 LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
+        }
+        .sheet(isPresented: $showVoicePicker) {
+            VoicePickerView(selectedVoice: $selectedVoice, isPresented: $showVoicePicker, language: selectedLanguage)
         }
         .sheet(isPresented: $showAddTextSheet) {
             VStack {
@@ -220,7 +241,6 @@ struct TextsListView: View {
                 .padding()
                 .presentationDetents([.medium, .large])
             }
-
         .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("Confirm Delete"),
@@ -233,9 +253,19 @@ struct TextsListView: View {
                 secondaryButton: .cancel()
             )
         }
-        .onAppear {
-            viewModel.fetchTexts(forLibraryId: library.id ?? "")
+        .onChange(of: selectedLanguage) {_, newLanguage in
+            if let firstVoice = Voice.voices(for: newLanguage.rawValue).first {
+                selectedVoice = firstVoice
+            }
         }
+        .onAppear {
+
+            viewModel.fetchTexts(forLibraryId: library.id ?? "")
+                
+            if let firstVoice = Voice.voices(for: selectedLanguage.rawValue).first {
+                        selectedVoice = firstVoice
+                    }
+                }
         .onDisappear {
             viewModel.stopSpeaking()
             capturedImage = nil
