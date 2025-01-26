@@ -39,7 +39,7 @@ struct HomeCard: View {
         .frame(width: 100, height: 100) // Adjusted height for better layout
         .background(
             LinearGradient(
-                gradient: Gradient(colors: [Color.gray.opacity(0.1), Color.gray.opacity(0.3)]),
+                gradient: Gradient(colors: [Color.gray.opacity(0.2), Color.gray.opacity(0.5)]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
