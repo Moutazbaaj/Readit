@@ -23,6 +23,16 @@ struct ProfileView: View {
     @State private var selectedItem: PhotosPickerItem?
     @State private var selectedImage: UIImage?
     
+    
+    @State private var showLanguagePicker = false
+    @State private var selectedLanguage: Language = .englishUS
+    @State private var showVoicePicker = false // Controls the voice picker presentation
+    @State private var selectedVoice = Voice.allCases.first ?? .custom(identifier: "", language: "", name: "") // Selected voice
+    
+    @State private var isLoadingPreferences = true
+
+    
+    
     enum AlertType {
         case none
         case logout
@@ -42,7 +52,7 @@ struct ProfileView: View {
                 .edgesIgnoringSafeArea(.all)
                 
                 
-                // Custom layout replacing Form
+                //mein Stack
                 VStack {
                     HStack {
                         // Profile Image Section
@@ -53,7 +63,7 @@ struct ProfileView: View {
                                     .foregroundColor(.blue)
                                     .shadow(color: .white, radius: 10)
                                     .frame(width: 110, height: 110)
-
+                                
                                 if let profileImage = profileViewModel.profileImage {
                                     Image(uiImage: profileImage)
                                         .resizable()
@@ -79,9 +89,9 @@ struct ProfileView: View {
                                 .bold()
                                 .font(.callout)
                             
-                            Text("\(authViewModel.user?.birthday ?? Date(), style: .date)")
-                                .font(.callout)
-                                .font(.callout)
+                            //                            Text("\(authViewModel.user?.birthday ?? Date(), style: .date)")
+                            //                                .font(.callout)
+                            //                                .font(.callout)
                             
                             
                             Text("\(authViewModel.user?.email ?? "unknown")")
@@ -89,9 +99,9 @@ struct ProfileView: View {
                                 .font(.callout)
                                 .font(.callout)
                             
-//                            Text("Registered since:\n \(authViewModel.user?.registerdAt ?? Date(), style: .date)")
-//                                .foregroundStyle(.gray)
-//                                .font(.callout)
+                            //                            Text("Registered since:\n \(authViewModel.user?.registerdAt ?? Date(), style: .date)")
+                            //                                .foregroundStyle(.gray)
+                            //                                .font(.callout)
                         }
                         
                         Spacer()
@@ -107,11 +117,75 @@ struct ProfileView: View {
                         }
                         .padding()
                     }
+                    
                     Divider()
                     
+                    //Option Stack
+                    VStack {
+                        HStack {
+                            Text("preferences:")
+                                .font(.subheadline)
+                                .foregroundStyle(.gray)
+                                .padding()
+                            
+                            Spacer()
+                        }
+                        
+                        Divider()
+                            .padding(.horizontal)
+                        
+                        if isLoadingPreferences {
+                            ProgressView("Loading preferences...")
+                        } else {
+                            //Language
+                            HStack {
+                                Text("Language:")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.gray)
+                                
+                                Spacer()
+                                Button(action: {
+                                    showLanguagePicker = true
+                                }) {
+                                    Text(selectedLanguage.displayName)
+                                        .font(.subheadline)
+                                        .foregroundColor(.white) // Text color for the button
+                                        .padding()
+                                        .background(Color.black.opacity(0.5)) // Button background color
+                                        .cornerRadius(20) // Rounded corners
+                                }
+                            }
+                            .padding()
+                            
+                            //Voice
+                            HStack {
+                                Text("Voice:")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.gray)
+                                
+                                
+                                Spacer()
+                                
+                                Button(action: {
+                                    showVoicePicker = true
+                                }) {
+                                    Text(selectedVoice.displayName)
+                                        .font(.subheadline)
+                                        .foregroundColor(.white) // Text color for the button
+                                        .padding()
+                                        .background(Color.black.opacity(0.5)) // Button background color
+                                        .cornerRadius(20) // Rounded corners
+                                }
+                            }
+                            .padding()
+                        }
+                        Divider()
+                    }
+                    .padding()
                     
                     Spacer()
                     
+                    //Buttons log and del
                     HStack {
                         // Logout Button
                         Button(role: .destructive) {
@@ -155,6 +229,34 @@ struct ProfileView: View {
                     )
                     .presentationDetents([.medium, .large])
                 }
+                .sheet(isPresented: $showLanguagePicker) {
+                    LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
+                }
+                .sheet(isPresented: $showVoicePicker) {
+                    VoicePickerView(selectedVoice: $selectedVoice, isPresented: $showVoicePicker, language: selectedLanguage)
+                }
+                .onChange(of: profileViewModel.preferences) {_ , preferences in
+                    if let rawSelectedLanguage = preferences.first?.selectedLanguage,
+                       let language = Language(rawValue: rawSelectedLanguage),
+                       let firstVoice = Voice.voices(for: language.rawValue).first {
+                        selectedLanguage = language
+                        selectedVoice = firstVoice
+                    }
+                }
+                .onChange(of: selectedLanguage) {_, newLanguage in
+                    if let firstVoice = Voice.voices(for: newLanguage.rawValue).first {
+                        selectedVoice = firstVoice
+                    }
+                    if profileViewModel.preferences.isEmpty {
+                        profileViewModel.createPrefrences(language: selectedLanguage.rawValue)
+                        print("created")
+                        
+                    } else {
+                        profileViewModel.editPrefrences(withId: profileViewModel.preferences.first?.id ?? "", newLanguage: selectedLanguage.rawValue)
+                        print("updated")
+                        
+                    }
+                }
                 .alert(isPresented: $showAlert) {
                     switch alertType {
                     case .logout:
@@ -183,7 +285,11 @@ struct ProfileView: View {
                 }
             }
             .onAppear {
+                profileViewModel.fetchPrefrences()
                 profileViewModel.loadProfileImage()
+                isLoadingPreferences = false
+
+
             }
         }
     }
