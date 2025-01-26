@@ -44,9 +44,9 @@ struct TextsListView: View {
                         .padding()
                     
                     Spacer()
-
+                    
                 }
-
+                
                 
                 if viewModel.texts.isEmpty {
                     Spacer()
@@ -97,30 +97,38 @@ struct TextsListView: View {
                 }
                 
                 Spacer()
-                
                 HStack {
-                    Text("Language:")
-                        .font(.subheadline)
-                    Spacer()
-                    Text(selectedLanguage.displayName)
-                        .foregroundColor(.blue)
-                        .onTapGesture {
+                    //Language
+                    VStack {
+                        Text("Language:")
+                            .font(.subheadline)
+                        Button(action: {
                             showLanguagePicker = true
+                        }) {
+                            Text(selectedLanguage.displayName)
+                                .foregroundColor(.white) // Text color for the button
+                                .padding()
+                                .background(Color.black.opacity(0.5)) // Button background color
+                                .cornerRadius(20) // Rounded corners
                         }
-                        .padding(.vertical)
-                }
-                .padding()
-                
-                HStack {
-                    Text("Voice:")
-                        .font(.subheadline)
+                    }
+                    .padding()
                     Spacer()
-                    Text(selectedVoice.displayName)
-                        .foregroundColor(.blue)
-                        .onTapGesture {
+                    //Voice
+                    VStack {
+                        Text("Voice:")
+                            .font(.subheadline)
+                        Button(action: {
                             showVoicePicker = true
+                        }) {
+                            Text(selectedVoice.displayName)
+                                .foregroundColor(.white) // Text color for the button
+                                .padding()
+                                .background(Color.black.opacity(0.5)) // Button background color
+                                .cornerRadius(20) // Rounded corners
                         }
-                        .padding(.vertical)
+                    }
+                    .padding()
                 }
                 .padding()
             }
@@ -129,7 +137,7 @@ struct TextsListView: View {
         .navigationBarItems(trailing: HStack {
             Button(action: {
                 viewModel.stopSpeaking()
-                viewModel.readTextAloud(from: library, in: selectedLanguage, using: selectedVoice)
+                viewModel.readTextAloudForLibrary(from: library, in: selectedLanguage, using: selectedVoice)
             }) {
                 Image(systemName: "speaker.wave.2.fill")
             }

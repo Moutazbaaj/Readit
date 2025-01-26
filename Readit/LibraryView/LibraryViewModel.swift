@@ -19,8 +19,6 @@ class LibraryViewModel: ObservableObject {
     
     @Published var selectedImage: UIImage?
     @Published var extractedText: String?
-//    @Published var showImagePicker = false
-
 
     
     @Published var texts : [FireText] = []
@@ -340,7 +338,7 @@ class LibraryViewModel: ObservableObject {
 //    }
     
     
-    func readTextAloud(from library: FireLibrary, in language: Language, using voice: Voice) {
+    func readTextAloudForLibrary(from library: FireLibrary, in language: Language, using voice: Voice) {
         guard !texts.isEmpty else {
             print("No texts available to read aloud.")
             return

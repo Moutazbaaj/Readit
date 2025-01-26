@@ -13,6 +13,14 @@ struct LanguagePickerView: View {
     @Binding var isPresented: Bool
     
     var body: some View {
+        ZStack {
+            LinearGradient(
+                gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .blur(radius: 10)
+            .edgesIgnoringSafeArea(.all)
         VStack {
             Text("Select Language")
                 .font(.headline)
@@ -32,11 +40,13 @@ struct LanguagePickerView: View {
             .font(.headline)
             .padding()
             .frame(maxWidth: .infinity)
-            .background(Color.blue)
+            .background(Color.black.opacity(0.6))
             .foregroundColor(.white)
             .cornerRadius(10)
             .padding()
         }
         .presentationDetents([.medium])
+        .presentationCornerRadius(50)
     }
+}
 }
