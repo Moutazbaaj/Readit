@@ -40,115 +40,111 @@ struct ProfileView: View {
                 )
                 .blur(radius: 10)
                 .edgesIgnoringSafeArea(.all)
-
+                
                 
                 // Custom layout replacing Form
-                    VStack {
+                VStack {
+                    HStack {
                         // Profile Image Section
-                        ZStack {
-                            Circle()
-                                .stroke(lineWidth: 5)
-                                .foregroundColor(.blue)
-                                .shadow(color: .white, radius: 10)
-                                .frame(width: 220, height: 220)
-                            
-                            if let profileImage = profileViewModel.profileImage {
-                                Image(uiImage: profileImage)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 200, height: 200)
-                                    .clipShape(Circle())
-                                    .padding()
-                            } else {
-                                Image(systemName: "person.circle.fill")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 200, height: 200)
-                                    .foregroundColor(.gray)
-                                    .padding()
+                        VStack {
+                            ZStack {
+                                Circle()
+                                    .stroke(lineWidth: 1)
+                                    .foregroundColor(.blue)
+                                    .shadow(color: .white, radius: 10)
+                                    .frame(width: 110, height: 110)
+
+                                if let profileImage = profileViewModel.profileImage {
+                                    Image(uiImage: profileImage)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 100, height: 100)
+                                        .clipShape(Circle())
+                                        .padding()
+                                } else {
+                                    Image(systemName: "person.circle.fill")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 100, height: 100)
+                                        .foregroundColor(.gray)
+                                        .padding()
+                                }
                             }
                         }
                         .padding()
-                        
                         // User Info Section
-                        VStack {
-                            Text("Username: \(authViewModel.user?.username ?? "unknown")")
+                        VStack(alignment: .leading) {
+                            Text("\(authViewModel.user?.username ?? "unknown")")
                                 .foregroundColor(Color(from: authViewModel.user?.color ?? "black"))
                                 .bold()
-                                .shadow(color: .blue, radius: 0.5)
-                                .padding()
+                                .font(.callout)
                             
-                            Text("Birthday: \(authViewModel.user?.birthday ?? Date(), style: .date)")
-                                .shadow(color: .blue, radius: 0.5)
-                                .padding()
+                            Text("\(authViewModel.user?.birthday ?? Date(), style: .date)")
+                                .font(.callout)
+                                .font(.callout)
                             
-                            Text("Email: \(authViewModel.user?.email ?? "unknown")")
+                            
+                            Text("\(authViewModel.user?.email ?? "unknown")")
                                 .foregroundStyle(.gray)
-                                .shadow(color: .blue, radius: 0.5)
-                                .padding()
+                                .font(.callout)
+                                .font(.callout)
                             
-                            Text("Registered since: \(authViewModel.user?.registerdAt ?? Date(), style: .date)")
+                            Text("Registered since:\n \(authViewModel.user?.registerdAt ?? Date(), style: .date)")
                                 .foregroundStyle(.gray)
-                                .shadow(color: .blue, radius: 0.5)
-                                .padding()
+                                .font(.callout)
+                        }
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            showSettingSheet = true
+                            newUsername = authViewModel.user?.username ?? ""
+                            newBirthday = authViewModel.user?.birthday ?? Date()
+                            newColor = Color(from: authViewModel.user?.color ?? "")
+                        }) {
+                            Image(systemName: "gearshape")
+                                .imageScale(.large)
                         }
                         .padding()
-                        
-                        Spacer()
-                        
-                        // Navigation Link to ImpressumView
-                        NavigationLink(destination: ImpressumView()) {
-                            Text("About Us")
+                    }
+                    Divider()
+                    
+                    
+                    Spacer()
+                    
+                    HStack {
+                        // Logout Button
+                        Button(role: .destructive) {
+                            alertType = .logout
+                            showAlert = true
+                        } label: {
+                            Text("Log Out")
                                 .font(.headline)
-                                .foregroundColor(.blue)
+                                .foregroundColor(.red)
                                 .padding()
-
+                            
                         }
+                        
                         
                         Spacer()
                         
-                        HStack {
-                            // Logout Button
-                            Button(role: .destructive) {
-                                alertType = .logout
-                                showAlert = true
-                            } label: {
-                                Text("Log Out")
-                                    .font(.headline)
-                                    .foregroundColor(.red)
-                                    .padding()
-             
-                            }
+                        
+                        // Delete Account Button
+                        Button(role: .destructive) {
+                            alertType = .deleteAccount
+                            showAlert = true
+                        } label: {
+                            Text("Delete Account")
+                                .font(.headline)
+                                .foregroundColor(.red)
+                                .padding()
                             
-                            
-                            Spacer()
-                            
-                            
-                            // Delete Account Button
-                            Button(role: .destructive) {
-                                alertType = .deleteAccount
-                                showAlert = true
-                            } label: {
-                                Text("Delete Account")
-                                    .font(.headline)
-                                    .foregroundColor(.red)
-                                    .padding()
-
-                            }
                         }
                     }
-                    .padding()
-                .navigationBarItems(trailing:
-                    Button(action: {
-                        showSettingSheet = true
-                        newUsername = authViewModel.user?.username ?? ""
-                        newBirthday = authViewModel.user?.birthday ?? Date()
-                        newColor = Color(from: authViewModel.user?.color ?? "")
-                    }) {
-                        Image(systemName: "gearshape")
-                            .imageScale(.large)
-                    }
-                )
+                }
+                .padding()
+                .navigationTitle("Settings")
+                .navigationBarTitleDisplayMode(.inline)
                 .sheet(isPresented: $showSettingSheet) {
                     ProfileSheetView(
                         authViewModel: authViewModel,
