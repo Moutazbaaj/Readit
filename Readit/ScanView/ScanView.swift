@@ -25,7 +25,7 @@ struct ScanView: View {
                 endPoint: .bottom
             )
             .edgesIgnoringSafeArea(.all)
-            .blur(radius: 10) // Adding a subtle blur effect to the background
+            .blur(radius: 10)
             VStack {
                 ScrollView {
                     if viewModel.texts.isEmpty {
