@@ -46,8 +46,6 @@ struct HomeView: View {
             
             VStack {
                 
-                Divider()
-                    .hidden()
                 
 //                Text("Hello, \(authViewModel.user?.username ?? "User")")
                 Text("Hello")
@@ -78,7 +76,7 @@ struct HomeView: View {
 //                    }
                     
                     HStack {
-                        Text("last Books")
+                        Text("last collections")
                             .padding(.top)
                         Spacer()
                     }
@@ -86,7 +84,11 @@ struct HomeView: View {
                     if viewModel.libreries.isEmpty {
                         HStack {
                             Spacer()
-                            Text("Your Have no Books")
+                            Image(systemName: "bookmark.slash")
+                                .font(.largeTitle)
+                                .foregroundColor(.gray)
+                                .padding()
+                            Text("There is no collections yet")
                                 .font(.headline)
                                 .foregroundColor(.gray)
                                 .padding()
@@ -123,15 +125,25 @@ struct HomeView: View {
                             Spacer()
                         }
                         
-                        ZStack {
+                            if viewModel.favLibreries.isEmpty {
+                                
+                                Spacer()
+                                
+                                Image(systemName: "star.slash")
+                                    .font(.largeTitle)
+                                    .foregroundColor(.gray)
+                                    .padding()
+                                Text("Your Have no Favorites")
+                                    .font(.headline)
+                                    .foregroundColor(.gray)
+                                    .padding()
+                                
+                                Spacer()
+                                
+                            } else {
                             // ScrollView with favorite libraries
                             ScrollView(.vertical, showsIndicators: false) {
-                                if viewModel.favLibreries.isEmpty {
-                                    Text("Your Have no Favorites")
-                                        .font(.headline)
-                                        .foregroundColor(.gray)
-                                        .padding()
-                                } else {
+
                                     Divider().hidden()
                                     LazyVGrid(columns: gridItems, spacing: 20) {
                                         ForEach(viewModel.favLibreries.sorted(by: {
@@ -145,7 +157,6 @@ struct HomeView: View {
                                     }
                                 }
                             }
-                        }
                     }
                 }
                 .padding()
