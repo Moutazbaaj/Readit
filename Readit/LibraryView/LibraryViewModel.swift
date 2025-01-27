@@ -303,41 +303,6 @@ class LibraryViewModel: ObservableObject {
         }
     }
     
-//    func readTextAloud(from library: FireLibrary, in language: Language) {
-//        guard !texts.isEmpty else {
-//            print("No texts available to read aloud.")
-//            return
-//        }
-//        
-//        let textsToRead = texts
-//            .filter { $0.libraryId == library.id } // Ensure the texts belong to the specified library
-//            .sorted(by: {
-//                $0.timestamp.dateValue() < $1.timestamp.dateValue() // Sort by timestamp in ascending order
-//            })
-//            .enumerated() // Enumerate to get both index and content
-//            .map { index, text in
-//                "\(language.pageTranslation) \(index + 1). \(text.text)" // Add "Page X" prefix before each text
-//            }
-//            .joined(separator: ". ") // Concatenate texts with a separator
-//               
-//        
-//        let utterance = AVSpeechUtterance(string: textsToRead)
-//        utterance.voice = AVSpeechSynthesisVoice(language: language.rawValue)
-//        
-//        // Configure audio session
-//    
-//        do {
-//            let audioSession = AVAudioSession.sharedInstance()
-//            try audioSession.setCategory(.playback, mode: .default, options: [])
-//            try audioSession.setActive(true)
-//        } catch {
-//            print("Failed to configure audio session: \(error.localizedDescription)")
-//        }
-//        
-//        synthesizer.speak(utterance)
-//    }
-    
-    
     func readTextAloudForLibrary(from library: FireLibrary, in language: Language, using voice: Voice) {
         guard !texts.isEmpty else {
             print("No texts available to read aloud.")
