@@ -95,7 +95,7 @@ struct MainTabView: View {
                 LibraryView()
             }
             .tabItem {
-                Label("My Library", systemImage: "books.vertical")
+                Label("Collections", systemImage: "books.vertical")
             }
             
             // Scan Tab
