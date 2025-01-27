@@ -9,7 +9,8 @@
 import AVFoundation
 import SwiftUICore
 
-class TextToSpeechManager {
+
+class TextToSpeechManager: ObservableObject {
     
     static let shared = TextToSpeechManager()
 
@@ -17,8 +18,31 @@ class TextToSpeechManager {
     @Published var libreries : [FireLibrary] = []
     
     private var synthesizer = AVSpeechSynthesizer()
-
     
+    func readTextAloud(from inputText: String, in language: Language, using voice: Voice) {
+        if !inputText.isEmpty {
+            let utterance = AVSpeechUtterance(string: inputText)
+
+            // Configure voice
+            if let customVoice = AVSpeechSynthesisVoice(identifier: voice.identifier) {
+                utterance.voice = customVoice
+            } else {
+                utterance.voice = AVSpeechSynthesisVoice(language: language.rawValue) // Fallback to language-based voice
+            }
+
+            // Configure audio session
+            do {
+                let audioSession = AVAudioSession.sharedInstance()
+                try audioSession.setCategory(.playback, mode: .default, options: [])
+                try audioSession.setActive(true)
+            } catch {
+                print("Failed to configure audio session: \(error.localizedDescription)")
+            }
+            
+            synthesizer.speak(utterance)
+        }
+    }
+
     func readTextAloudForLibrary(from library: FireLibrary, in language: Language, using voice: Voice) {
         guard !texts.isEmpty else {
             print("No texts available to read aloud.")
@@ -56,6 +80,12 @@ class TextToSpeechManager {
         }
 
         synthesizer.speak(utterance)
+    }
+
+    func pauseSpeaking() {
+        if synthesizer.isSpeaking {
+            synthesizer.pauseSpeaking(at: .immediate)
+        }
     }
 
     func stopSpeaking() {
