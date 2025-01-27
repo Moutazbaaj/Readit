@@ -45,7 +45,6 @@ struct ProfileView: View {
                     startPoint: .top,
                     endPoint: .bottom
                 )
-                .blur(radius: 7)
                 .edgesIgnoringSafeArea(.all)
                 
                 

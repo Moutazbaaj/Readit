@@ -21,7 +21,6 @@ struct VoicePickerView: View {
                 startPoint: .top,
                 endPoint: .bottom
             )
-            .blur(radius: 7)
             .edgesIgnoringSafeArea(.all)
         VStack {
             Text("Select Voice")

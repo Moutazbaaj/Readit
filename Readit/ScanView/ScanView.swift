@@ -25,7 +25,6 @@ struct ScanView: View {
                 endPoint: .bottom
             )
             .edgesIgnoringSafeArea(.all)
-            .blur(radius: 7)
             VStack {
                 ScrollView {
                     if viewModel.texts.isEmpty {

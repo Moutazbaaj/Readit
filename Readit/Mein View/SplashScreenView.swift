@@ -56,8 +56,6 @@ struct SplashScreenView: View {
                 startPoint: .top,
                 endPoint: .bottom
             )
-            .edgesIgnoringSafeArea(.all)
-            .blur(radius: 10 ) // Add blur effect during animation
         )
         .edgesIgnoringSafeArea(.all)
     }

@@ -27,7 +27,7 @@ struct ProfileCreatingView: View {
             ZStack {
                 // Gradient background
                 LinearGradient(
-                    gradient: Gradient(colors: [Color.blue.opacity(0.1), Color.purple.opacity(0.3)]),
+                    gradient: Gradient(colors: [Color.blue.opacity(0.3), Color.purple.opacity(0.3)]),
                     startPoint: .top,
                     endPoint: .bottom
                 )

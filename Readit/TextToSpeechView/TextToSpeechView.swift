@@ -24,7 +24,6 @@ struct TextToSpeechView: View {
                 endPoint: .bottom
             )
             .edgesIgnoringSafeArea(.all)
-            .blur(radius: 7)
 
             
             VStack() {

@@ -37,11 +37,10 @@ struct HomeView: View {
         ZStack {
             // Animated background gradient
             LinearGradient(
-                gradient: Gradient(colors: [Color.blue.opacity(0.3), Color.purple.opacity(0.3)]),
+                gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
                 startPoint: .top,
                 endPoint: .bottom
             )
-            .blur(radius: animateText ? 7 : 0) // Add blur effect during animation
             .edgesIgnoringSafeArea(.all)
             
             VStack {
@@ -77,9 +76,11 @@ struct HomeView: View {
                     
                     HStack {
                         Text("last collections")
-                            .padding(.top)
                         Spacer()
                     }
+                    .padding(.horizontal)
+                    .padding(.top)
+
                     
                     if viewModel.libreries.isEmpty {
                         HStack {
@@ -109,7 +110,7 @@ struct HomeView: View {
                             }
                             .padding(.horizontal, 1)
                         }
-                        .frame(height: 110)
+                        .frame(height: 160)
                         .padding(.horizontal, 2)
                     }
 
@@ -119,11 +120,14 @@ struct HomeView: View {
                             Text("Favorites")
                             Spacer()
                         }
+                        .padding(.horizontal)
+                        
                         HStack {
                             Text("\(viewModel.favLibreries.count) items ")
                                 .font(.caption2)
                             Spacer()
                         }
+                        .padding(.horizontal)
                         
                             if viewModel.favLibreries.isEmpty {
                                 
@@ -159,7 +163,7 @@ struct HomeView: View {
                             }
                     }
                 }
-                .padding()
+//                .padding()
             }
         }
         .onTapGesture {
