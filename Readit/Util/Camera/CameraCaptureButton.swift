@@ -24,7 +24,7 @@ struct CameraCaptureButton: View {
                 .padding()
                 .frame(maxWidth: .infinity)
                 .foregroundColor(.white)
-                .cornerRadius(10)
+                .cornerRadius(20)
         }
         .sheet(isPresented: $showCamera) {
             CameraView(image: $capturedImage)

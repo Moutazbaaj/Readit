@@ -15,11 +15,11 @@ struct LanguagePickerView: View {
     var body: some View {
         ZStack {
             LinearGradient(
-                gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
+                gradient: Gradient(colors: [Color.purple.opacity(0.3), Color.blue.opacity(0.3)]),
                 startPoint: .top,
                 endPoint: .bottom
             )
-            .blur(radius: 10)
+            .blur(radius: 7)
             .edgesIgnoringSafeArea(.all)
         VStack {
             Text("Select Language")

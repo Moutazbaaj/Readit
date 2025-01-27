@@ -41,7 +41,7 @@ struct HomeView: View {
                 startPoint: .top,
                 endPoint: .bottom
             )
-            .blur(radius: animateText ? 10 : 0) // Add blur effect during animation
+            .blur(radius: animateText ? 7 : 0) // Add blur effect during animation
             .edgesIgnoringSafeArea(.all)
             
             VStack {

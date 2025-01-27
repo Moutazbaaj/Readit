@@ -17,10 +17,11 @@ struct ForgotPasswordSheet: View {
             ZStack {
                 // Background color
                 LinearGradient(
-                    gradient: Gradient(colors: [Color.blue, Color.purple]),
+                    gradient: Gradient(colors: [Color.purple.opacity(0.3), Color.blue.opacity(0.3)]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
+                .blur(radius: 7)
                 .edgesIgnoringSafeArea(.all)
                 
                 ScrollView {

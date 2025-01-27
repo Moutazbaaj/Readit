@@ -45,13 +45,13 @@ struct LibraryView: View {
                     startPoint: .top,
                     endPoint: .bottom
                 )
-                .blur(radius: 10)
+                .blur(radius: 7)
                 .edgesIgnoringSafeArea(.all)
                 
                 VStack {
                     ScrollView {
                         // Search bar
-                        TextField("Search libraries...", text: $searchQuery)
+                        TextField("Search Collections...", text: $searchQuery)
                             .padding()
                             .background(Color.black.opacity(0.4))
                             .cornerRadius(10)
@@ -64,14 +64,12 @@ struct LibraryView: View {
                                 .font(.largeTitle)
                                 .foregroundColor(.gray)
                                 .padding()
-                            Text(" You have No libraries yet")
+                            Text(" You have No Collections yet")
                                 .font(.headline)
                                 .foregroundColor(.gray)
                             Text("Click on the Plus (+) button to start")
                                 .font(.headline)
                                 .foregroundColor(.gray)
-                            
-                            Spacer()
                             
                         } else {
                             
@@ -120,7 +118,7 @@ struct LibraryView: View {
                 }
             }
         }
-        .navigationTitle("My Libraries")
+        .navigationTitle("My Collections")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(trailing: Button(action: {
             showAddLibrarySheet = true

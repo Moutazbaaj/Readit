@@ -22,12 +22,12 @@ struct RegisterView: View {
             ZStack {
                 // Gradient background
                 LinearGradient(
-                    gradient: Gradient(colors: [Color.blue, Color.black]),
+                    gradient: Gradient(colors: [Color.blue.opacity(0.1), Color.purple.opacity(0.3)]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
+                .blur(radius: 10)
                 .edgesIgnoringSafeArea(.all)
-                
                 ScrollView {
                     
                     VStack {

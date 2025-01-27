@@ -34,7 +34,7 @@ struct TextsListView: View {
                 startPoint: .top,
                 endPoint: .bottom
             )
-            .blur(radius: 10)
+            .blur(radius: 7)
             .edgesIgnoringSafeArea(.all)
             
             VStack {

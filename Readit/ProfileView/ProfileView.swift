@@ -28,10 +28,7 @@ struct ProfileView: View {
     @State private var selectedLanguage: Language = .englishUS
     @State private var showVoicePicker = false // Controls the voice picker presentation
     @State private var selectedVoice = Voice.allCases.first ?? .custom(identifier: "", language: "", name: "") // Selected voice
-    
     @State private var isLoadingPreferences = true
-
-    
     
     enum AlertType {
         case none
@@ -48,7 +45,7 @@ struct ProfileView: View {
                     startPoint: .top,
                     endPoint: .bottom
                 )
-                .blur(radius: 10)
+                .blur(radius: 7)
                 .edgesIgnoringSafeArea(.all)
                 
                 
@@ -185,36 +182,39 @@ struct ProfileView: View {
                     
                     Spacer()
                     
-                    //Buttons log and del
-                    HStack {
-                        // Logout Button
-                        Button(role: .destructive) {
-                            alertType = .logout
-                            showAlert = true
-                        } label: {
-                            Text("Log Out")
-                                .font(.headline)
-                                .foregroundColor(.red)
-                                .padding()
-                            
-                        }
-                        
-                        
-                        Spacer()
-                        
-                        
-                        // Delete Account Button
-                        Button(role: .destructive) {
-                            alertType = .deleteAccount
-                            showAlert = true
-                        } label: {
-                            Text("Delete Account")
-                                .font(.headline)
-                                .foregroundColor(.red)
-                                .padding()
-                            
-                        }
-                    }
+//                    //Buttons log and del
+//                    HStack {
+//                        // Logout Button
+//                        Button(role: .destructive) {
+//                            alertType = .logout
+//                            showAlert = true
+//                        } label: {
+//                            Text("Log Out")
+//                                .font(.subheadline)
+//                                .foregroundColor(.red) // Text color for the button
+//                                .padding()
+//                                .background(Color.black.opacity(0.5)) // Button background color
+//                                .cornerRadius(20) // Rounded corners
+//                            
+//                        }
+//                        
+//                        
+//                        Spacer()
+//                        
+//                        
+//                        // Delete Account Button
+//                        Button(role: .destructive) {
+//                            alertType = .deleteAccount
+//                            showAlert = true
+//                        } label: {
+//                            Text("Delete Account")
+//                                .font(.subheadline)
+//                                .foregroundColor(.red) // Text color for the button
+//                                .padding()
+//                                .background(Color.black.opacity(0.5)) // Button background color
+//                                .cornerRadius(20) // Rounded corners
+//                        }
+//                    }
                 }
                 .padding()
                 .navigationTitle("Settings")
@@ -228,6 +228,7 @@ struct ProfileView: View {
                         selectedColor: $newColor
                     )
                     .presentationDetents([.medium, .large])
+                    .presentationCornerRadius(50)
                 }
                 .sheet(isPresented: $showLanguagePicker) {
                     LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
