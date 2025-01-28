@@ -79,7 +79,7 @@ struct ScanView: View {
                                     .cornerRadius(20)
                                     .shadow(radius: 5)
                             }
-                            .swipeActions {
+                            .contextMenu {
                                 Button(role: .destructive) {
                                     textItem = text
                                     showAlert = true
