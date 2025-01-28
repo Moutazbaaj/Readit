@@ -11,6 +11,7 @@ import PhotosUI
 struct ProfileView: View {
     
     @StateObject var profileViewModel = ProfileViewModel.shared
+    @StateObject var textToSpeechManager = TextToSpeechManager.shared
     @EnvironmentObject var authViewModel: AuthViewModel
     
     @State private var showSettingSheet: Bool = false
@@ -181,39 +182,6 @@ struct ProfileView: View {
                     
                     Spacer()
                     
-//                    //Buttons log and del
-//                    HStack {
-//                        // Logout Button
-//                        Button(role: .destructive) {
-//                            alertType = .logout
-//                            showAlert = true
-//                        } label: {
-//                            Text("Log Out")
-//                                .font(.subheadline)
-//                                .foregroundColor(.red) // Text color for the button
-//                                .padding()
-//                                .background(Color.black.opacity(0.5)) // Button background color
-//                                .cornerRadius(20) // Rounded corners
-//                            
-//                        }
-//                        
-//                        
-//                        Spacer()
-//                        
-//                        
-//                        // Delete Account Button
-//                        Button(role: .destructive) {
-//                            alertType = .deleteAccount
-//                            showAlert = true
-//                        } label: {
-//                            Text("Delete Account")
-//                                .font(.subheadline)
-//                                .foregroundColor(.red) // Text color for the button
-//                                .padding()
-//                                .background(Color.black.opacity(0.5)) // Button background color
-//                                .cornerRadius(20) // Rounded corners
-//                        }
-//                    }
                 }
                 .padding()
                 .navigationTitle("Settings")
@@ -235,7 +203,7 @@ struct ProfileView: View {
                 .sheet(isPresented: $showVoicePicker) {
                     VoicePickerView(selectedVoice: $selectedVoice, isPresented: $showVoicePicker, language: selectedLanguage)
                 }
-                .onChange(of: profileViewModel.preferences) {_ , preferences in
+                .onChange(of: textToSpeechManager.preferences) {_ , preferences in
                     if let rawSelectedLanguage = preferences.first?.selectedLanguage,
                        let language = Language(rawValue: rawSelectedLanguage),
                        let firstVoice = Voice.voices(for: language.rawValue).first {
@@ -247,12 +215,12 @@ struct ProfileView: View {
                     if let firstVoice = Voice.voices(for: newLanguage.rawValue).first {
                         selectedVoice = firstVoice
                     }
-                    if profileViewModel.preferences.isEmpty {
-                        profileViewModel.createPrefrences(language: selectedLanguage.rawValue)
+                    if textToSpeechManager.preferences.isEmpty {
+                        textToSpeechManager.createPrefrences(language: selectedLanguage.rawValue)
                         print("created")
                         
                     } else {
-                        profileViewModel.editPrefrences(withId: profileViewModel.preferences.first?.id ?? "", newLanguage: selectedLanguage.rawValue)
+                        textToSpeechManager.editPrefrences(withId: textToSpeechManager.preferences.first?.id ?? "", newLanguage: selectedLanguage.rawValue)
                         print("updated")
                         
                     }
@@ -285,7 +253,7 @@ struct ProfileView: View {
                 }
             }
             .onAppear {
-                profileViewModel.fetchPrefrences()
+                textToSpeechManager.fetchPrefrences()
                 profileViewModel.loadProfileImage()
                 isLoadingPreferences = false
 
