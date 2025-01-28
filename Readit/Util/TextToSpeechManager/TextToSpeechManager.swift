@@ -8,6 +8,8 @@
 
 import AVFoundation
 import SwiftUICore
+import FirebaseAuth
+import FirebaseFirestore
 
 
 class TextToSpeechManager: ObservableObject {
@@ -16,8 +18,94 @@ class TextToSpeechManager: ObservableObject {
 
     @Published var texts : [FireText] = []
     @Published var libreries : [FireLibrary] = []
+    @Published var preferences : [FirePreference] = []
+
     
     private var synthesizer = AVSpeechSynthesizer()
+    
+    
+    // Firestore listener for real-time updates
+    private var listener: ListenerRegistration?
+
+    /// Firebase Authentication instance.
+    private let firebaseAuthentication = Auth.auth()
+
+    /// Firebase Firestore instance.
+    private let firebaseFirestore = Firestore.firestore()
+
+    
+    init() {
+        fetchPrefrences()
+    }
+    
+    func createPrefrences(language: Language.RawValue) {
+        guard let userId = self.firebaseAuthentication.currentUser?.uid else {
+            print("User is not signed in")
+            return
+        }
+        
+        let newPrefrences = FirePreference(userId: userId, selectedLanguage: language)
+        
+        do {
+            try self.firebaseFirestore.collection("Prefrences").addDocument(from: newPrefrences) { error in
+                if let error = error {
+                    print("Error adding Prefrences: \(error.localizedDescription)")
+                } else {
+                    print("Prefrences added successfully")
+                }
+            }
+        } catch {
+            print("Error encoding Prefrences: \(error.localizedDescription)")
+        }
+    }
+
+    func fetchPrefrences() {
+        guard let userId = self.firebaseAuthentication.currentUser?.uid else {
+            print("User is not signed in")
+            return
+        }
+        
+        self.listener = firebaseFirestore.collection("Prefrences")
+            .whereField("userId", isEqualTo: userId)
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let self = self else { return }
+                if let error = error {
+                    print("Error fetching Prefrences: \(error.localizedDescription)")
+                    return
+                }
+                
+                guard let snapshot = snapshot else {
+                    print("No Prefrences found.")
+                    return
+                }
+                
+                let Prefrences = snapshot.documents.compactMap { document -> FirePreference? in
+                    do {
+                        var Prefrenc = try document.data(as: FirePreference.self)
+                        Prefrenc.id = document.documentID
+                        return Prefrenc
+                    } catch {
+                        print("Error decoding Prefrences: \(error)")
+                        return nil
+                    }
+                }
+                self.preferences = Prefrences
+            }
+    }
+    
+    func editPrefrences(withId id: String, newLanguage: Language.RawValue) {
+        let prefrence = firebaseFirestore.collection("Prefrences").document(id)
+        
+        prefrence.updateData(["selectedLanguage": newLanguage,
+                             ]) { error in
+            if let error = error {
+                print("Error updating prefrence: \(error.localizedDescription)")
+            } else {
+                print("prefrence successfully updated")
+            }
+        }
+    }
+    
     
     func readTextAloud(from inputText: String, in language: Language, using voice: Voice) {
         if !inputText.isEmpty {
