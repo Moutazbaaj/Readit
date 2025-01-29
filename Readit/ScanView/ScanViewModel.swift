@@ -11,12 +11,16 @@ import FirebaseAuth
 import CoreLocation
 import FirebaseStorage
 import AVFAudio
+import SwiftUI
 
 class ScanViewModel: ObservableObject {
     
     static let shared = ScanViewModel()
     
     @Published var texts = [FireText]()
+    
+    @Published var currentWordRange: NSRange? = nil
+
     
     // Listener for Firestore updates.
     private var listener: ListenerRegistration?
@@ -34,8 +38,13 @@ class ScanViewModel: ObservableObject {
     private let synthesizer = AVSpeechSynthesizer()
     
     
+    private var textToSpeechManager = TextToSpeechManager.shared
+    
     init() {
         self.fetchMyTexts()
+        textToSpeechManager.$currentWordRange
+            .receive(on: RunLoop.main)
+            .assign(to: &$currentWordRange)
     }
     
     // Creates a new bee report.
@@ -128,30 +137,51 @@ class ScanViewModel: ObservableObject {
         }
     }
     
-    
     func readTextAloud(in language: Language, text: String) {
-        guard !text.isEmpty else { return }
-        let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: language.rawValue)
-        
-        // Configure audio session
-    
-        do {
-            let audioSession = AVAudioSession.sharedInstance()
-            try audioSession.setCategory(.playback, mode: .default, options: [])
-            try audioSession.setActive(true)
-        } catch {
-            print("Failed to configure audio session: \(error.localizedDescription)")
-        }
-        
-        synthesizer.speak(utterance)
+        textToSpeechManager.readTextAloud(from: text, in: language, using: Voice.custom(identifier: "", language: language.rawValue, name: ""))
     }
-    
-    
+
     func stopSpeaking() {
-        if synthesizer.isSpeaking {
-            synthesizer.stopSpeaking(at: .immediate)
-        }
+        textToSpeechManager.stopSpeaking()
     }
     
+    func highlightedText(_ fullText: String, range: NSRange?) -> Text {
+        guard let range = range, let textRange = Range(range, in: fullText) else {
+            return Text(fullText)
+        }
+        
+        let before = String(fullText[..<textRange.lowerBound])
+        let highlighted = String(fullText[textRange])
+        let after = String(fullText[textRange.upperBound...])
+
+        return Text(before) + Text(highlighted).bold().foregroundColor(.purple) + Text(after)
+    }
+
+    
+//    
+//    func readTextAloud(in language: Language, text: String) {
+//        guard !text.isEmpty else { return }
+//        let utterance = AVSpeechUtterance(string: text)
+//        utterance.voice = AVSpeechSynthesisVoice(language: language.rawValue)
+//        
+//        // Configure audio session
+//    
+//        do {
+//            let audioSession = AVAudioSession.sharedInstance()
+//            try audioSession.setCategory(.playback, mode: .default, options: [])
+//            try audioSession.setActive(true)
+//        } catch {
+//            print("Failed to configure audio session: \(error.localizedDescription)")
+//        }
+//        
+//        synthesizer.speak(utterance)
+//    }
+//    
+//    
+//    func stopSpeaking() {
+//        if synthesizer.isSpeaking {
+//            synthesizer.stopSpeaking(at: .immediate)
+//        }
+//    }
+//    
 }
