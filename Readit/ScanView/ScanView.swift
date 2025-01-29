@@ -71,7 +71,9 @@ struct ScanView: View {
 
                                 }
                                 // Text display
-                                Text(text.text)
+                                let highlightedTextView = viewModel.highlightedText(text.text, range: viewModel.currentWordRange)
+
+                                highlightedTextView
                                     .font(.headline)
                                     .padding()
                                     .frame(maxWidth: .infinity)
@@ -79,7 +81,7 @@ struct ScanView: View {
                                     .cornerRadius(20)
                                     .shadow(radius: 5)
                             }
-                            .contextMenu {
+                            .contextMenu{
                                 Button(role: .destructive) {
                                     textItem = text
                                     showAlert = true
@@ -130,6 +132,7 @@ struct ScanView: View {
             )
         }
     }
+    
 }
 
 #Preview {
