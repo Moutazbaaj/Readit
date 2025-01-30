@@ -161,7 +161,7 @@ struct ProfileView: View {
                                 Button(action: {
                                     showVoicePicker = true
                                 }) {
-                                    Text(selectedVoice.displayName)
+                                    Text(textToSpeechManager.preferences.first?.selectedVoice.name ?? "select voice")
                                         .font(.subheadline)
                                         .foregroundColor(.white) // Text color for the button
                                         .padding()
@@ -199,7 +199,7 @@ struct ProfileView: View {
                     VoiceListPickerView(selectedVoice: $selectedVoice, isPresented: $showVoicePicker, language: selectedLanguage)
                 }
                 .onChange(of: textToSpeechManager.preferences) { _, preferences in
-                    isLoadingPreferences = false // Stop loading when preferences update
+//                    isLoadingPreferences = false // Stop loading when preferences update
                     
                     if preferences.isEmpty {
                         alertType = .noPrefrence
