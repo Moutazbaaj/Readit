@@ -9,13 +9,31 @@ import SwiftUI
 
 struct ScanView: View {
     @StateObject private var viewModel = ScanViewModel.shared
-
+    
     @State private var showAlert = false
     @State private var textItem: FireText?
-
-    @State private var selectedLanguage: Language = .englishUS
-    @State private var showLanguagePicker: Bool = false
-
+    
+//    @State private var selectedLanguage: Language = .englishUS
+//    @State private var selectedVoice = Voice.allCases.first ?? .custom(identifier: "", language: "en-US", name: "") // Selected voice
+    
+//    @State private var showLanguagePicker: Bool = false
+    
+    
+//    // Initialize with preferences
+//    private func loadPreferences() {
+//        if let preference = TextToSpeechManager.shared.preferences.first {
+//            if let language = Language(rawValue: preference.selectedLanguage) {
+//                selectedLanguage = language
+//            }
+//            let voice = Voice.custom(identifier: preference.selectedVoice.identifier,
+//                                     language: preference.selectedVoice.language,
+//                                     name: preference.selectedVoice.name)
+//            selectedVoice = voice
+//            
+//        }
+//    }
+    
+    
     var body: some View {
         ZStack {
             // Gradient background
@@ -63,16 +81,17 @@ struct ScanView: View {
                                     Button(action: {
                                         viewModel.stopSpeaking()
                                         textItem = text
-                                        viewModel.readTextAloud(in: selectedLanguage, text: textItem?.text ?? "no text")
+//                                        viewModel.readTextAloud(in: selectedLanguage, with: selectedVoice, form: textItem?.text ?? "no text")
+                                        viewModel.readTextAloud(form: textItem?.text ?? "no text")
                                     }) {
                                         Image(systemName: "speaker.wave.2")
                                     }
                                     .padding()
-
+                                    
                                 }
                                 // Text display
                                 let highlightedTextView = viewModel.highlightedText(text.text, range: viewModel.currentWordRange)
-
+                                
                                 highlightedTextView
                                     .font(.headline)
                                     .padding()
@@ -98,27 +117,32 @@ struct ScanView: View {
                 Divider()
                     .hidden()
             }
+//            .onAppear {
+//                TextToSpeechManager.shared.fetchPrefrences()
+////                self.loadPreferences()
+//            }
             .onDisappear {
                 viewModel.stopSpeaking()
             }
         }
         .navigationTitle("History")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        showLanguagePicker = true // Show the language picker sheet
-                    }) {
-                        HStack{
-                            Text(selectedLanguage.displayTag)
-                            Image(systemName: "globe")
-                        }
-                    }
-                }
-            }
-        .sheet(isPresented: $showLanguagePicker) {
-            LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
-        }
+//        .toolbar {
+//            ToolbarItem(placement: .navigationBarTrailing) {
+//                Button(action: {
+////                    showLanguagePicker = true // Show the language picker sheet
+//                }) {
+//                    HStack{
+//                        let language = TextToSpeechManager.shared.preferences.first?.selectedLanguage ?? "en-US"
+//                        Text(language)
+//                        Image(systemName: "globe")
+//                    }
+//                }
+//            }
+//        }
+//        .sheet(isPresented: $showLanguagePicker) {
+//            LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
+//        }
         .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("Confirm Delete"),
