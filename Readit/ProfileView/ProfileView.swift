@@ -28,7 +28,7 @@ struct ProfileView: View {
     @State private var showLanguagePicker = false
     @State private var selectedLanguage: Language = .englishUS
     @State private var showVoicePicker = false // Controls the voice picker presentation
-    @State private var selectedVoice = Voice.custom(identifier: "", language: "en-US", name: "") // Selected voice
+    @State private var selectedVoice = Voice.custom(identifier: "com.apple.voice.compact.en-US.Samantha", language: "en-US", name: "Samantha (en-US)") // Selected voice
     @State private var isLoadingPreferences = true
     
     
@@ -196,87 +196,100 @@ struct ProfileView: View {
                     LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
                 }
                 .sheet(isPresented: $showVoicePicker) {
-                    VoicePickerView(selectedVoice: $selectedVoice, isPresented: $showVoicePicker, language: selectedLanguage)
+                    VoiceListPickerView(selectedVoice: $selectedVoice, isPresented: $showVoicePicker, language: selectedLanguage)
                 }
-                
-//                .onChange(of: textToSpeechManager.preferences) {_ , preferences in
-//                    let language = Language(rawValue: preferences.first!.selectedLanguage) ?? .englishUS
-//                    let voice = Voice.custom(identifier: preferences.first!.selectedVoice.identifier,
-//                                             language: preferences.first!.selectedVoice.language,
-//                                             name: preferences.first!.selectedVoice.name)
-//                    selectedLanguage = language
-//                    selectedVoice = voice
-//                }
-                
-                .onChange(of: selectedLanguage) {_, newLanguage in
+                .onChange(of: textToSpeechManager.preferences) { _, preferences in
+                    isLoadingPreferences = false // Stop loading when preferences update
+                    
+                    if preferences.isEmpty {
+                        alertType = .noPrefrence
+                        showAlert = true
+                    } else {
+                        if let firstPreference = preferences.first {
+                            let language = Language(rawValue: firstPreference.selectedLanguage) ?? .englishUS
+                            let voice = Voice.custom(identifier: firstPreference.selectedVoice.identifier,
+                                                     language: language.rawValue,
+                                                     name: firstPreference.selectedVoice.name)
+                            
+                            // Update only if values are different
+                            if selectedLanguage != language {
+                                selectedLanguage = language
+                            }
+                            
+                            if selectedVoice != voice {
+                                selectedVoice = voice
+                            }
+                        }
+                    }
+                }
+                .onChange(of: selectedLanguage) { _, newLanguage in
                     if let firstVoice = Voice.voices(for: newLanguage.rawValue).first {
                         selectedVoice = firstVoice
                     }
+                    
                     if textToSpeechManager.preferences.isEmpty {
                         textToSpeechManager.createPrefrences(language: selectedLanguage, voice: selectedVoice)
                         print("created")
-                        
                     } else {
-                        textToSpeechManager.editPrefrences(withId: textToSpeechManager.preferences.first?.id ?? "", newLanguage: selectedLanguage, newVoice: selectedVoice)
-                        print("updated")
-                        
+                        if textToSpeechManager.preferences.first?.selectedLanguage != selectedLanguage.rawValue {
+                            textToSpeechManager.editPrefrences(
+                                withId: textToSpeechManager.preferences.first?.id ?? "",
+                                newLanguage: selectedLanguage,
+                                newVoice: selectedVoice
+                            )
+                            print("updated")
+                        }
                     }
                 }
                 .onChange(of: selectedVoice) { _, newVoice in
-                    
                     if textToSpeechManager.preferences.isEmpty {
                         textToSpeechManager.createPrefrences(language: selectedLanguage, voice: selectedVoice)
                         print("created with voice")
                     } else {
-                        textToSpeechManager.editPrefrences(withId: textToSpeechManager.preferences.first?.id ?? "", newLanguage: selectedLanguage, newVoice: selectedVoice)
-                        print("updated with voice")
-                    }
-                }
-                
-                .alert(isPresented: $showAlert) {
-                    switch alertType {
-                    case .logout:
-                        return Alert(
-                            title: Text("Confirm Logout"),
-                            message: Text("Are you sure you want to log out?"),
-                            primaryButton: .destructive(Text("Log Out")) {
-                                authViewModel.logout()
-                                authViewModel.checkAuth()
-                            },
-                            secondaryButton: .cancel()
-                        )
-                    case .deleteAccount:
-                        return Alert(
-                            title: Text("Confirm Delete Account"),
-                            message: Text("Are you sure you want to delete your account? This action cannot be undone."),
-                            primaryButton: .destructive(Text("Delete Account")) {
-                                authViewModel.deleteUserData()
-                                authViewModel.checkAuth()
-                            },
-                            secondaryButton: .cancel()
-                        )
-                    case .none:
-                        return Alert(title: Text("Error"), message: Text("An unknown error occurred"), dismissButton: .default(Text("OK")))
+                        if textToSpeechManager.preferences.first?.selectedVoice.identifier != newVoice.identifier {
+                            textToSpeechManager.editPrefrences(
+                                withId: textToSpeechManager.preferences.first?.id ?? "",
+                                newLanguage: selectedLanguage,
+                                newVoice: selectedVoice
+                            )
+                            print("updated with voice")
+                        }
                     }
                 }
             }
-            .onAppear {
-                textToSpeechManager.fetchPrefrences() // Fetch preferences from Firestore
-                profileViewModel.loadProfileImage()
-
-                // Set the language and voice from fetched preferences if available
-                if let preferences = textToSpeechManager.preferences.first {
-                    let language = Language(rawValue: preferences.selectedLanguage) ?? .englishUS
-                    let voice = Voice.custom(identifier: preferences.selectedVoice.identifier,
-                                             language: preferences.selectedVoice.language,
-                                             name: preferences.selectedVoice.name)
-
-                    selectedLanguage = language
-                    selectedVoice = voice
-                    
-                    isLoadingPreferences = false
-
+            .alert(isPresented: $showAlert) {
+                switch alertType {
+                case .logout:
+                    return Alert(
+                        title: Text("Confirm Logout"),
+                        message: Text("Are you sure you want to log out?"),
+                        primaryButton: .destructive(Text("Log Out")) {
+                            authViewModel.logout()
+                            authViewModel.checkAuth()
+                        },
+                        secondaryButton: .cancel()
+                    )
+                case .deleteAccount:
+                    return Alert(
+                        title: Text("Confirm Delete Account"),
+                        message: Text("Are you sure you want to delete your account? This action cannot be undone."),
+                        primaryButton: .destructive(Text("Delete Account")) {
+                            authViewModel.deleteUserData()
+                            authViewModel.checkAuth()
+                        },
+                        secondaryButton: .cancel()
+                    )
+                case .none:
+                    return Alert(title: Text("Error"), message: Text("An unknown error occurred"), dismissButton: .default(Text("OK")))
+                case .noPrefrence:
+                    return Alert(title: Text("Warning"), message: Text(" there is no preferences set please choose language and voice"), dismissButton: .default(Text("OK")))
                 }
+            }
+            .onAppear {
+                isLoadingPreferences = true
+                textToSpeechManager.fetchPrefrences()
+                isLoadingPreferences = false
+                profileViewModel.loadProfileImage()
             }
         }
     }
