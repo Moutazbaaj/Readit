@@ -11,4 +11,5 @@ import Foundation
         case none
         case logout
         case deleteAccount
+        case noPrefrence
     }
