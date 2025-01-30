@@ -81,9 +81,9 @@ struct ProfileView: View {
                                 .bold()
                                 .font(.callout)
                             
-                            //                            Text("\(authViewModel.user?.birthday ?? Date(), style: .date)")
-                            //                                .font(.callout)
-                            //                                .font(.callout)
+                            Text("\(authViewModel.user?.birthday ?? Date(), style: .date)")
+                                .font(.callout)
+                                .font(.callout)
                             
                             
                             Text("\(authViewModel.user?.email ?? "unknown")")
@@ -91,13 +91,13 @@ struct ProfileView: View {
                                 .font(.callout)
                                 .font(.callout)
                             
-                            //                            Text("Registered since:\n \(authViewModel.user?.registerdAt ?? Date(), style: .date)")
-                            //                                .foregroundStyle(.gray)
-                            //                                .font(.callout)
+                            //                                                        Text("Registered since:\n \(authViewModel.user?.registerdAt ?? Date(), style: .date)")
+                            //                                                            .foregroundStyle(.gray)
+                            //                                                            .font(.callout)
                         }
                         
                         Spacer()
-                        
+                        // settings
                         Button(action: {
                             showSettingSheet = true
                             newUsername = authViewModel.user?.username ?? ""
@@ -197,6 +197,7 @@ struct ProfileView: View {
                 }
                 .sheet(isPresented: $showVoicePicker) {
                     VoiceListPickerView(selectedVoice: $selectedVoice, isPresented: $showVoicePicker, language: selectedLanguage)
+
                 }
                 .onChange(of: textToSpeechManager.preferences) { _, preferences in
 //                    isLoadingPreferences = false // Stop loading when preferences update
