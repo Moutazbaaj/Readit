@@ -28,14 +28,10 @@ struct ProfileView: View {
     @State private var showLanguagePicker = false
     @State private var selectedLanguage: Language = .englishUS
     @State private var showVoicePicker = false // Controls the voice picker presentation
-    @State private var selectedVoice = Voice.allCases.first ?? .custom(identifier: "", language: "", name: "") // Selected voice
+    @State private var selectedVoice = Voice.custom(identifier: "", language: "en-US", name: "") // Selected voice
     @State private var isLoadingPreferences = true
     
-    enum AlertType {
-        case none
-        case logout
-        case deleteAccount
-    }
+    
     
     var body: some View {
         NavigationStack {
@@ -47,7 +43,6 @@ struct ProfileView: View {
                     endPoint: .bottom
                 )
                 .edgesIgnoringSafeArea(.all)
-                
                 
                 //mein Stack
                 VStack {
@@ -203,28 +198,41 @@ struct ProfileView: View {
                 .sheet(isPresented: $showVoicePicker) {
                     VoicePickerView(selectedVoice: $selectedVoice, isPresented: $showVoicePicker, language: selectedLanguage)
                 }
-                .onChange(of: textToSpeechManager.preferences) {_ , preferences in
-                    if let rawSelectedLanguage = preferences.first?.selectedLanguage,
-                       let language = Language(rawValue: rawSelectedLanguage),
-                       let firstVoice = Voice.voices(for: language.rawValue).first {
-                        selectedLanguage = language
-                        selectedVoice = firstVoice
-                    }
-                }
+                
+//                .onChange(of: textToSpeechManager.preferences) {_ , preferences in
+//                    let language = Language(rawValue: preferences.first!.selectedLanguage) ?? .englishUS
+//                    let voice = Voice.custom(identifier: preferences.first!.selectedVoice.identifier,
+//                                             language: preferences.first!.selectedVoice.language,
+//                                             name: preferences.first!.selectedVoice.name)
+//                    selectedLanguage = language
+//                    selectedVoice = voice
+//                }
+                
                 .onChange(of: selectedLanguage) {_, newLanguage in
                     if let firstVoice = Voice.voices(for: newLanguage.rawValue).first {
                         selectedVoice = firstVoice
                     }
                     if textToSpeechManager.preferences.isEmpty {
-                        textToSpeechManager.createPrefrences(language: selectedLanguage.rawValue)
+                        textToSpeechManager.createPrefrences(language: selectedLanguage, voice: selectedVoice)
                         print("created")
                         
                     } else {
-                        textToSpeechManager.editPrefrences(withId: textToSpeechManager.preferences.first?.id ?? "", newLanguage: selectedLanguage.rawValue)
+                        textToSpeechManager.editPrefrences(withId: textToSpeechManager.preferences.first?.id ?? "", newLanguage: selectedLanguage, newVoice: selectedVoice)
                         print("updated")
                         
                     }
                 }
+                .onChange(of: selectedVoice) { _, newVoice in
+                    
+                    if textToSpeechManager.preferences.isEmpty {
+                        textToSpeechManager.createPrefrences(language: selectedLanguage, voice: selectedVoice)
+                        print("created with voice")
+                    } else {
+                        textToSpeechManager.editPrefrences(withId: textToSpeechManager.preferences.first?.id ?? "", newLanguage: selectedLanguage, newVoice: selectedVoice)
+                        print("updated with voice")
+                    }
+                }
+                
                 .alert(isPresented: $showAlert) {
                     switch alertType {
                     case .logout:
@@ -253,11 +261,22 @@ struct ProfileView: View {
                 }
             }
             .onAppear {
-                textToSpeechManager.fetchPrefrences()
+                textToSpeechManager.fetchPrefrences() // Fetch preferences from Firestore
                 profileViewModel.loadProfileImage()
-                isLoadingPreferences = false
 
+                // Set the language and voice from fetched preferences if available
+                if let preferences = textToSpeechManager.preferences.first {
+                    let language = Language(rawValue: preferences.selectedLanguage) ?? .englishUS
+                    let voice = Voice.custom(identifier: preferences.selectedVoice.identifier,
+                                             language: preferences.selectedVoice.language,
+                                             name: preferences.selectedVoice.name)
 
+                    selectedLanguage = language
+                    selectedVoice = voice
+                    
+                    isLoadingPreferences = false
+
+                }
             }
         }
     }
