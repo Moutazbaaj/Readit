@@ -17,7 +17,7 @@ struct TextsListView: View {
     @State private var showEditTextSheet = false
     @State private var showCameraCaptureView = false
     @State private var showAlert = false // State variable to control the display of the alert.
-    @StateObject private var viewModel = LibraryViewModel.shared
+    @StateObject private var viewModel = CollectionViewModel.shared
     @State private var showAddTextSheet = false
     @State private var showLanguagePicker = false
     @State private var selectedLanguage: Language = .englishUS

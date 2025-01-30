@@ -92,7 +92,7 @@ struct MainTabView: View {
             
             // Library Tab
             NavigationStack {
-                LibraryView()
+                CollectionView()
             }
             .tabItem {
                 Label("Collections", systemImage: "books.vertical")

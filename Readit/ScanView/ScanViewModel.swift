@@ -1,5 +1,5 @@
 //
-//  LibraryViewModel.swift
+//  CollectionViewModel.swift
 //  Readit
 //
 //  Created by Moutaz Baaj on 07.01.25.

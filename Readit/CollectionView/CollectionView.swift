@@ -1,12 +1,5 @@
 //
-//  LibraryView.swift
-//  Readit
-//
-//  Created by Moutaz Baaj on 08.01.25.
-//
-
-//
-//  LibraryView.swift
+//  CollectionView.swift
 //  Readit
 //
 //  Created by Moutaz Baaj on 08.01.25.
@@ -14,8 +7,8 @@
 
 import SwiftUI
 
-struct LibraryView: View {
-    @StateObject private var viewModel = LibraryViewModel.shared
+struct CollectionView: View {
+    @StateObject private var viewModel = CollectionViewModel.shared
     @State private var showAlert = false
     @State private var showEditSheet = false
     @State private var showAddLibrarySheet = false
@@ -51,11 +44,9 @@ struct LibraryView: View {
                     ScrollView {
                         // Search bar
                         TextField("Search Collections...", text: $searchQuery)
-                            .padding()
                             .background(Color.black.opacity(0.4))
                             .cornerRadius(10)
                             .shadow(radius: 2)
-                            .padding()
                         Spacer()
                         
                         if viewModel.libreries.isEmpty {
@@ -63,7 +54,7 @@ struct LibraryView: View {
                                 .font(.largeTitle)
                                 .foregroundColor(.gray)
                                 .padding()
-                            Text(" You have No Collections yet")
+                            Text("You have No Collections yet")
                                 .font(.headline)
                                 .foregroundColor(.gray)
                             Text("Click on the Plus (+) button to start")
@@ -71,7 +62,6 @@ struct LibraryView: View {
                                 .foregroundColor(.gray)
                             
                         } else {
-                            
                             if filteredLibraries.isEmpty {
                                 VStack {
                                     Text("No results found")
@@ -81,23 +71,19 @@ struct LibraryView: View {
                                     Spacer()
                                 }
                             } else {
-                                //
-                                //                                Divider()
-                                //                                    .hidden()
-                                
                                 LazyVGrid(columns: gridItems, spacing: 20) {
                                     ForEach(filteredLibraries.sorted {
                                         $0.timestamp.dateValue() > $1.timestamp.dateValue()
                                     }) { library in
                                         NavigationLink(destination: TextsListView(library: library)) {
-                                            LibraryCard(library: library)
+                                            CollectionCard(library: library)
                                         }
                                         .contextMenu {
                                             contextMenu(for: library)
                                         }
                                     }
                                 }
-                                .padding()
+//                                .padding()
                                 
                             }
                             
@@ -137,14 +123,14 @@ struct LibraryView: View {
             )
         }
         .sheet(isPresented: $showAddLibrarySheet) {
-            AddLibrarySheet(newLibraryTitle: $newLibraryTitle)
+            AddCollectionSheet(newLibraryTitle: $newLibraryTitle)
                 .presentationDetents([.height(200)])
                 .presentationCornerRadius(50)
-
+            
         }
         .sheet(isPresented: $showEditSheet) {
             // Implement editing sheet logic here.
-
+            
         }
         .onAppear {
             viewModel.fetchLibraries()

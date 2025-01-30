@@ -11,7 +11,7 @@ struct HomeView: View {
     
     @State private var animateText = false // State to control animation
     
-    @StateObject private var viewModel = LibraryViewModel.shared
+    @StateObject private var viewModel = CollectionViewModel.shared
     
     @EnvironmentObject private var authViewModel: AuthViewModel
     
@@ -154,7 +154,7 @@ struct HomeView: View {
                                             $0.editTimestamp?.dateValue() ?? Date() > $1.editTimestamp?.dateValue() ?? Date()
                                         })) { library in
                                             NavigationLink(destination: TextsListView(library: library)) {
-                                                LibraryCard(library: library)
+                                                CollectionCard(library: library)
                                                     .frame(width: 175, height: 170)
                                             }
                                         }

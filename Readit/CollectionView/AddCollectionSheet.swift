@@ -1,5 +1,5 @@
 //
-//  AddLibrarySheet 2.swift
+//  AddCollectionSheet 2.swift
 //  Readit
 //
 //  Created by Moutaz Baaj on 80.01.25.
@@ -8,8 +8,8 @@
 import SwiftUI
 
 
-struct AddLibrarySheet: View {
-    @StateObject var viewModel = LibraryViewModel.shared
+struct AddCollectionSheet: View {
+    @StateObject var viewModel = CollectionViewModel.shared
     @Environment(\.dismiss) var dismiss // Environment value for dismissing
 
     @Binding var newLibraryTitle: String

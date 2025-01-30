@@ -12,7 +12,7 @@ import FirebaseCore
 struct ImageRecognitionView: View {
     
     @StateObject private var viewModel = ImageRecognitionViewModel.shared
-    @StateObject private var libViewModel = LibraryViewModel.shared
+    @StateObject private var libViewModel = CollectionViewModel.shared
     
     
     @State private var selectedItem: PhotosPickerItem? // For the selected image from the picker
