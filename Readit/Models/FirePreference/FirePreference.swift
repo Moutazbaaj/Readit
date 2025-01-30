@@ -9,12 +9,24 @@ import Foundation
 import FirebaseFirestore
 
 // Model for a bee report.
-struct FirePreference: Codable, Identifiable, Equatable {
+struct FirePreference: Codable, Identifiable {
 
     @DocumentID var id: String?
+    var userId: String
+    var selectedLanguage: String
+    var selectedVoice: VoiceData // Store voice as a structured object
 
-    let userId: String
-    var selectedLanguage: Language.RawValue
+    struct VoiceData: Codable, Equatable {
+        var identifier: String
+        var language: String
+        var name: String
 
+        func toVoice() -> Voice {
+            return .custom(identifier: identifier, language: language, name: name)
+        }
 
+        static func from(voice: Voice) -> VoiceData {
+            return VoiceData(identifier: voice.identifier, language: voice.language, name: voice.displayName)
+        }
+    }
 }
