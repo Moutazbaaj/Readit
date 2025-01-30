@@ -21,24 +21,17 @@ class ScanViewModel: ObservableObject {
     
     @Published var currentWordRange: NSRange? = nil
 
-    
     // Listener for Firestore updates.
     private var listener: ListenerRegistration?
-    
     // Firebase authentication instance.
     private let firebaseAuthentication = Auth.auth()
-    
     // Firestore instance.
     private let firebaseFirestore = Firestore.firestore()
-    
     /// Firebase Storage instance.
     private let firebaseStorage = Storage.storage()
-    
-    
     private let synthesizer = AVSpeechSynthesizer()
-    
-    
     private var textToSpeechManager = TextToSpeechManager.shared
+    
     
     init() {
         self.fetchMyTexts()
@@ -137,8 +130,9 @@ class ScanViewModel: ObservableObject {
         }
     }
     
-    func readTextAloud(in language: Language, text: String) {
-        textToSpeechManager.readTextAloud(from: text, in: language, using: Voice.custom(identifier: "", language: language.rawValue, name: ""))
+//    func readTextAloud(in language: Language, with voice: Voice, form text: String) {
+    func readTextAloud(form text: String) {
+        textToSpeechManager.readTextAloud(from: text)
     }
 
     func stopSpeaking() {
@@ -154,7 +148,7 @@ class ScanViewModel: ObservableObject {
         let highlighted = String(fullText[textRange])
         let after = String(fullText[textRange.upperBound...])
 
-        return Text(before) + Text(highlighted).bold().foregroundColor(.purple) + Text(after)
+        return Text(before) + Text(highlighted).bold().foregroundColor(.blue).fontWeight(.heavy) + Text(after)
     }
 
     
