@@ -81,7 +81,7 @@ struct ScanView: View {
                                     Button(action: {
                                         viewModel.stopSpeaking()
                                         textItem = text
-//                                        viewModel.readTextAloud(in: selectedLanguage, with: selectedVoice, form: textItem?.text ?? "no text")
+                                        //                                        viewModel.readTextAloud(in: selectedLanguage, with: selectedVoice, form: textItem?.text ?? "no text")
                                         viewModel.readTextAloud(form: textItem?.text ?? "no text")
                                     }) {
                                         Image(systemName: "speaker.wave.2")
@@ -89,25 +89,28 @@ struct ScanView: View {
                                     .padding()
                                     
                                 }
-                                // Text display
-                                let highlightedTextView = viewModel.highlightedText(text.text, range: viewModel.currentWordRange)
-                                
-                                highlightedTextView
-                                    .font(.headline)
-                                    .padding()
-                                    .frame(maxWidth: .infinity)
-                                    .background(Color.white.opacity(0.2))
-                                    .cornerRadius(20)
-                                    .shadow(radius: 5)
-                            }
-                            .contextMenu{
-                                Button(role: .destructive) {
-                                    textItem = text
-                                    showAlert = true
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
+                                VStack {
+                                    // Text display
+                                    let highlightedTextView = viewModel.highlightedText(text.text, range: viewModel.currentWordRange)
+                                    
+                                    highlightedTextView
+                                        .font(.headline)
+                                        .padding()
+                                        .frame(maxWidth: .infinity)
+                                        .background(Color.white.opacity(0.2))
+                                        .cornerRadius(20)
+                                        .shadow(radius: 5)
                                 }
-                                .tint(.red)
+                                .contextMenu{
+                                    Button(role: .destructive) {
+                                        textItem = text
+                                        showAlert = true
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                    .tint(.red)
+                                }
+
                             }
                         }
                         .padding()
@@ -129,11 +132,11 @@ struct ScanView: View {
         .navigationBarTitleDisplayMode(.inline)
 //        .toolbar {
 //            ToolbarItem(placement: .navigationBarTrailing) {
-//                Button(action: {
-////                    showLanguagePicker = true // Show the language picker sheet
-//                }) {
+////                Button(action: {
+//////                    showLanguagePicker = true // Show the language picker sheet
+////                }) {
 //                    HStack{
-//                        let language = TextToSpeechManager.shared.preferences.first?.selectedLanguage ?? "en-US"
+//                        let language = TextToSpeechManager.shared.preferences.first?.selectedLanguage. ?? "en-US"
 //                        Text(language)
 //                        Image(systemName: "globe")
 //                    }
@@ -156,7 +159,6 @@ struct ScanView: View {
             )
         }
     }
-    
 }
 
 #Preview {

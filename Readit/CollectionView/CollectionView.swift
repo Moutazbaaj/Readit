@@ -81,12 +81,30 @@ struct CollectionView: View {
                                             CollectionCard(library: library)
                                         }
                                         .contextMenu {
-                                            contextMenu(for: library)
+                                            Button(library.isFavorites ? "Unfavorite" : "Favorite") {
+                                                if let libraryId = library.id {
+                                                    viewModel.addLibraryToFav(withId: libraryId, isFavorites: !library.isFavorites)
+                                                } else {
+                                                    print("Error: Library ID is missing")
+                                                }
+                                            }
+                                            
+                                            // Edit button
+                                            Button("Edit") {
+                                                libraryItem = library
+                                                showEditSheet = true
+                                            }
+                                            
+                                            // Delete button
+                                            Button(role: .destructive) {
+                                                libraryItem = library
+                                                showAlert = true
+                                            } label: {
+                                                Text("Delete")
+                                            }
                                         }
                                     }
                                 }
-//                                .padding()
-                                
                             }
                             
                         }
@@ -138,31 +156,4 @@ struct CollectionView: View {
             viewModel.fetchLibraries()
         }
     }
-    
-    @ViewBuilder
-    private func contextMenu(for library: FireLibrary) -> some View {
-        // Favorite/Unfavorite button
-        Button(library.isFavorites ? "Unfavorite" : "Favorite") {
-            if let libraryId = library.id {
-                viewModel.addLibraryToFav(withId: libraryId, isFavorites: !library.isFavorites)
-            } else {
-                print("Error: Library ID is missing")
-            }
-        }
-        
-        // Edit button
-        Button("Edit") {
-            libraryItem = library
-            showEditSheet = true
-        }
-        
-        // Delete button
-        Button(role: .destructive) {
-            libraryItem = library
-            showAlert = true
-        } label: {
-            Text("Delete")
-        }
-    }
 }
-
