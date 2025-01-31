@@ -44,6 +44,8 @@ struct ProfileView: View {
                 )
                 .edgesIgnoringSafeArea(.all)
                 
+                ScrollView {
+
                 //mein Stack
                 VStack {
                     HStack {
@@ -189,7 +191,7 @@ struct ProfileView: View {
                         showSettingSheet: $showSettingSheet,
                         selectedColor: $newColor
                     )
-
+                    
                 }
                 .sheet(isPresented: $showLanguagePicker) {
                     LanguageListPickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
@@ -198,7 +200,7 @@ struct ProfileView: View {
                     VoiceListPickerView(selectedVoice: $selectedVoice, isPresented: $showVoicePicker, language: $selectedLanguage)
                 }
                 .onChange(of: textToSpeechManager.preferences) { _, preferences in
-//                    isLoadingPreferences = false // Stop loading when preferences update
+                    //                    isLoadingPreferences = false // Stop loading when preferences update
                     
                     if preferences.isEmpty {
                         alertType = .noPrefrence
@@ -256,6 +258,7 @@ struct ProfileView: View {
                     }
                 }
             }
+        }
             .alert(isPresented: $showAlert) {
                 switch alertType {
                 case .logout:

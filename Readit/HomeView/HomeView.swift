@@ -160,7 +160,7 @@ struct HomeView: View {
                                         }
                                     }
                                 }
-                                Divider().hidden()
+//                                Divider().hidden()
                             }
                     }
                 }

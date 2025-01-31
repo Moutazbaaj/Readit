@@ -51,6 +51,18 @@ struct CollectionView: View {
                             .padding(4)
                         Spacer()
                         
+                        HStack {
+                            
+                            Spacer()
+                            
+                            Text("\(filteredLibraries.count) items ")
+                                .font(.caption)
+                                .padding(.top, 2)
+                                .padding(.bottom, 4)
+                                .padding(.horizontal)
+                        }
+                        
+                        
                         if viewModel.libreries.isEmpty {
                             Image(systemName: "tray")
                                 .font(.largeTitle)
@@ -109,16 +121,17 @@ struct CollectionView: View {
                             
                         }
                     }
-                    HStack {
-                        
-                        Spacer()
-                        
-                        Text("\(filteredLibraries.count) items ")
-                            .font(.caption)
-                            .padding(.top, 2)
-                            .padding(.bottom, 4)
-                            .padding(.horizontal)
-                    }
+                    
+//                    HStack {
+//                        
+//                        Spacer()
+//                        
+//                        Text("\(filteredLibraries.count) items ")
+//                            .font(.caption)
+//                            .padding(.top, 2)
+//                            .padding(.bottom, 4)
+//                            .padding(.horizontal)
+//                    }
                     
                 }
             }

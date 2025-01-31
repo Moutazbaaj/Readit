@@ -117,8 +117,8 @@ struct ScanView: View {
                     }
                     Spacer()
                 }
-                Divider()
-                    .hidden()
+//                Divider()
+//                    .hidden()
             }
 //            .onAppear {
 //                TextToSpeechManager.shared.fetchPrefrences()
