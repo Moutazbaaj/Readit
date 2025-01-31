@@ -140,6 +140,7 @@ class TextToSpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         let newPreferences = FirePreference(
             userId: userId,
             selectedLanguage: language.rawValue,
+            selectedLanguageName: language.displayName,
             selectedVoice: FirePreference.VoiceData.from(voice: voice)
         )
         
@@ -195,6 +196,7 @@ class TextToSpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         
         let updatedData: [String: Any] = [
             "selectedLanguage": newLanguage.rawValue,
+            "selectedLanguageName": newLanguage.displayName,
             "selectedVoice": [
                 "identifier": newVoice.identifier,
                 "language": newVoice.language,

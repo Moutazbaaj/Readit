@@ -14,6 +14,7 @@ struct FirePreference: Codable, Identifiable, Equatable {
     @DocumentID var id: String?
     var userId: String
     var selectedLanguage: String
+    var selectedLanguageName: String
     var selectedVoice: VoiceData // Store voice as a structured object
     
     // Conform to Equatable

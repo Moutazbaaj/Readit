@@ -141,7 +141,7 @@ struct ProfileView: View {
                                 Button(action: {
                                     showLanguagePicker = true
                                 }) {
-                                    Text(selectedLanguage.displayName)
+                                    Text(textToSpeechManager.preferences.first?.selectedLanguageName ?? "select Language")
                                         .font(.subheadline)
                                         .foregroundColor(.white) // Text color for the button
                                         .padding()
