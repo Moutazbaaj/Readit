@@ -36,7 +36,7 @@ struct MainTabView: View {
                     }
 //                case 4:
 //                    NavigationStack{
-//                        ScanView()
+//                        HistoryView()
 //                    }
                 case 5:
                     NavigationStack{
@@ -146,7 +146,7 @@ struct MainTabView: View {
 //
 //            // Scan Tab
 //            NavigationStack {
-//                ScanView()
+//                HistoryView()
 //            }
 //            .tabItem {
 //                Label("History", systemImage: "document.viewfinder.fill")

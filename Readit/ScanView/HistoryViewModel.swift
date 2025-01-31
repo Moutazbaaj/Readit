@@ -1,5 +1,5 @@
 //
-//  CollectionViewModel.swift
+//  HistoryViewModel.swift
 //  Readit
 //
 //  Created by Moutaz Baaj on 07.01.25.
@@ -13,9 +13,9 @@ import FirebaseStorage
 import AVFAudio
 import SwiftUI
 
-class ScanViewModel: ObservableObject {
+class HistoryViewModel: ObservableObject {
     
-    static let shared = ScanViewModel()
+    static let shared = HistoryViewModel()
     
     @Published var texts = [FireText]()
     
@@ -99,19 +99,19 @@ class ScanViewModel: ObservableObject {
     }
     
     // Edit bee report.
-    func editText(withId id: String, newText: String) {
-        let beeReport = firebaseFirestore.collection("texts").document(id)
-        
-        beeReport.updateData(["text": newText,
-                              "editTimestamp": Timestamp()
-                             ]) { error in
-            if let error = error {
-                print("Error updating document: \(error.localizedDescription)")
-            } else {
-                print("Document successfully updated")
-            }
-        }
-    }
+//    func editText(withId id: String, newText: String) {
+//        let beeReport = firebaseFirestore.collection("texts").document(id)
+//        
+//        beeReport.updateData(["text": newText,
+//                              "editTimestamp": Timestamp()
+//                             ]) { error in
+//            if let error = error {
+//                print("Error updating document: \(error.localizedDescription)")
+//            } else {
+//                print("Document successfully updated")
+//            }
+//        }
+//    }
     
     // Deletes a bee report with the given ID.
     func deleteText(withId id: String?) {

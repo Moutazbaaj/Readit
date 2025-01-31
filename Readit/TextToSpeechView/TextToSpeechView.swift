@@ -10,7 +10,7 @@ import FirebaseCore
 
 struct TextToSpeechView: View {
     @StateObject private var textViewModel = TextToSpeechViewModel.shared
-    @StateObject private var libViewModel = ScanViewModel.shared
+    @StateObject private var libViewModel = HistoryViewModel.shared
     
     @State private var selectedLanguage: Language = .englishUS
     @State private var showLanguagePicker: Bool = false

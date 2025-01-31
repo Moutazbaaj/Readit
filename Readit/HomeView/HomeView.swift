@@ -15,22 +15,8 @@ struct HomeView: View {
     
     @EnvironmentObject private var authViewModel: AuthViewModel
     
-    @State private var hideButton = false
-    
-//    @State private var searchQuery = "" // State for search input
-
-//    private var filteredLibraries: [FireLibrary] {
-//         if searchQuery.isEmpty {
-//             return viewModel.libreries
-//         } else {
-//             return viewModel.libreries.filter { $0.libraryTitle.localizedCaseInsensitiveContains(searchQuery) }
-//         }
-//     }
-    
-    
     // Define the grid layout with two columns.
     let gridItems = [GridItem(.flexible()), GridItem(.flexible())]
-    
     
     
     var body: some View {
@@ -45,34 +31,34 @@ struct HomeView: View {
             
             VStack {
                 
-                
-//                Text("Hello, \(authViewModel.user?.username ?? "User")")
-                Text("Hello")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .lineLimit(1)
-                    .foregroundColor(.white)
-                    .scaleEffect(animateText ? 1 : 0.3) // Start from smaller size and scale up
-                    .opacity(animateText ? 1 : 0) // Start with opacity 0 and fade in
-                    .onAppear {
-                        // Trigger the animation when the view appears
-                        withAnimation(.easeOut(duration: 2)) {
-                            animateText = true
+                HStack {
+  
+                    Text("Hello")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .lineLimit(1)
+                        .foregroundColor(.white)
+                        .scaleEffect(animateText ? 1 : 0.3) // Start from smaller size and scale up
+                        .opacity(animateText ? 1 : 0) // Start with opacity 0 and fade in
+                        .onAppear {
+                            // Trigger the animation when the view appears
+                            withAnimation(.easeOut(duration: 2)) {
+                                animateText = true
+                            }
                         }
+                        .padding()
+                    
+                    Spacer()
+                    
+                    //History
+                    NavigationLink(destination: HistoryView()) {
+                            Image(systemName: "clock")
+                                .foregroundColor(.white)
+                                .padding()
                     }
+                }
                 
                 VStack {
-                    
-                    // Search bar
-                    
-//                    HStack {
-//                        TextField("Search libraries...", text: $searchQuery)
-//                            .padding()
-//                            .background(Color.black.opacity(0.4))
-//                            .cornerRadius(10)
-//                            .shadow(radius: 2)
-//                        Spacer()
-//                    }
                     
                     HStack {
                         Text("last collections")
@@ -80,7 +66,7 @@ struct HomeView: View {
                     }
                     .padding(.horizontal)
                     .padding(.top)
-
+                    
                     
                     if viewModel.libreries.isEmpty {
                         HStack {
@@ -113,7 +99,7 @@ struct HomeView: View {
                         .frame(height: 160)
                         .padding(.horizontal, 2)
                     }
-
+                    
                     VStack {
                         // Content above the scroll view
                         HStack {
@@ -129,48 +115,40 @@ struct HomeView: View {
                         }
                         .padding(.horizontal)
                         
-                            if viewModel.favLibreries.isEmpty {
-                                
-                                Spacer()
-                                
-                                Image(systemName: "star.slash")
-                                    .font(.largeTitle)
-                                    .foregroundColor(.gray)
-                                    .padding()
-                                Text("Your Have no Favorites")
-                                    .font(.headline)
-                                    .foregroundColor(.gray)
-                                    .padding()
-                                
-                                Spacer()
-                                
-                            } else {
+                        if viewModel.favLibreries.isEmpty {
+                            
+                            Spacer()
+                            
+                            Image(systemName: "star.slash")
+                                .font(.largeTitle)
+                                .foregroundColor(.gray)
+                                .padding()
+                            Text("Your Have no Favorites")
+                                .font(.headline)
+                                .foregroundColor(.gray)
+                                .padding()
+                            
+                            Spacer()
+                            
+                        } else {
                             // ScrollView with favorite libraries
                             ScrollView(.vertical, showsIndicators: false) {
-
-                                    Divider().hidden()
-                                    LazyVGrid(columns: gridItems, spacing: 20) {
-                                        ForEach(viewModel.favLibreries.sorted(by: {
-                                            $0.editTimestamp?.dateValue() ?? Date() > $1.editTimestamp?.dateValue() ?? Date()
-                                        })) { library in
-                                            NavigationLink(destination: TextsListView(library: library)) {
-                                                CollectionCard(library: library)
-                                                    .frame(width: 175, height: 170)
-                                            }
+                                
+                                Divider().hidden()
+                                LazyVGrid(columns: gridItems, spacing: 20) {
+                                    ForEach(viewModel.favLibreries.sorted(by: {
+                                        $0.editTimestamp?.dateValue() ?? Date() > $1.editTimestamp?.dateValue() ?? Date()
+                                    })) { library in
+                                        NavigationLink(destination: TextsListView(library: library)) {
+                                            CollectionCard(library: library)
+                                                .frame(width: 175, height: 170)
                                         }
                                     }
                                 }
-//                                Divider().hidden()
                             }
+                            //                                Divider().hidden()
+                        }
                     }
-                }
-//                .padding()
-            }
-        }
-        .onTapGesture {
-            if hideButton {
-                withAnimation {
-                    hideButton = false // Hide the buttons when tapped outside
                 }
             }
         }

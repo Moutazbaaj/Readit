@@ -1,5 +1,5 @@
 //
-//  CollectionView.swift
+//  HistoryView.swift
 //  Readit
 //
 //  Created by Moutaz Baaj on 07.01.25.
@@ -7,31 +7,15 @@
 
 import SwiftUI
 
-struct ScanView: View {
-    @StateObject private var viewModel = ScanViewModel.shared
+struct HistoryView: View {
+    @StateObject private var viewModel = HistoryViewModel.shared
     
     @State private var showAlert = false
     @State private var textItem: FireText?
     
 //    @State private var selectedLanguage: Language = .englishUS
 //    @State private var selectedVoice = Voice.allCases.first ?? .custom(identifier: "", language: "en-US", name: "") // Selected voice
-    
 //    @State private var showLanguagePicker: Bool = false
-    
-    
-//    // Initialize with preferences
-//    private func loadPreferences() {
-//        if let preference = TextToSpeechManager.shared.preferences.first {
-//            if let language = Language(rawValue: preference.selectedLanguage) {
-//                selectedLanguage = language
-//            }
-//            let voice = Voice.custom(identifier: preference.selectedVoice.identifier,
-//                                     language: preference.selectedVoice.language,
-//                                     name: preference.selectedVoice.name)
-//            selectedVoice = voice
-//            
-//        }
-//    }
     
     
     var body: some View {
@@ -110,19 +94,17 @@ struct ScanView: View {
                                     }
                                     .tint(.red)
                                 }
-
                             }
                         }
                         .padding()
                     }
                     Spacer()
                 }
-//                Divider()
-//                    .hidden()
+                
+                Divider().hidden().padding()
             }
 //            .onAppear {
 //                TextToSpeechManager.shared.fetchPrefrences()
-////                self.loadPreferences()
 //            }
             .onDisappear {
                 viewModel.stopSpeaking()
