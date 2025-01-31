@@ -27,7 +27,7 @@ class ScanViewModel: ObservableObject {
     private let firebaseAuthentication = Auth.auth()
     // Firestore instance.
     private let firebaseFirestore = Firestore.firestore()
-    /// Firebase Storage instance.
+    // Firebase Storage instance.
     private let firebaseStorage = Storage.storage()
     private let synthesizer = AVSpeechSynthesizer()
     private var textToSpeechManager = TextToSpeechManager.shared
@@ -130,11 +130,10 @@ class ScanViewModel: ObservableObject {
         }
     }
     
-//    func readTextAloud(in language: Language, with voice: Voice, form text: String) {
     func readTextAloud(form text: String) {
         textToSpeechManager.readTextAloud(from: text)
     }
-
+    
     func stopSpeaking() {
         textToSpeechManager.stopSpeaking()
     }
