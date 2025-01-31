@@ -189,15 +189,13 @@ struct ProfileView: View {
                         showSettingSheet: $showSettingSheet,
                         selectedColor: $newColor
                     )
-                    .presentationDetents([.medium, .large])
-                    .presentationCornerRadius(50)
+
                 }
                 .sheet(isPresented: $showLanguagePicker) {
-                    LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
+                    LanguageListPickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
                 }
                 .sheet(isPresented: $showVoicePicker) {
-                    VoiceListPickerView(selectedVoice: $selectedVoice, isPresented: $showVoicePicker, language: selectedLanguage)
-
+                    VoiceListPickerView(selectedVoice: $selectedVoice, isPresented: $showVoicePicker, language: $selectedLanguage)
                 }
                 .onChange(of: textToSpeechManager.preferences) { _, preferences in
 //                    isLoadingPreferences = false // Stop loading when preferences update

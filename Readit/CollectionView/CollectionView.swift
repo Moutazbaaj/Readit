@@ -44,9 +44,11 @@ struct CollectionView: View {
                     ScrollView {
                         // Search bar
                         TextField("Search Collections...", text: $searchQuery)
+                            .padding()
                             .background(Color.black.opacity(0.4))
                             .cornerRadius(10)
                             .shadow(radius: 2)
+                            .padding(4)
                         Spacer()
                         
                         if viewModel.libreries.isEmpty {

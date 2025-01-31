@@ -1,41 +1,44 @@
 //
-//  VoiceListPickerView.swift
+//  LanguageListPickerView.swift
 //  Readit
 //
-//  Created by Moutaz Baaj on 30.01.25.
+//  Created by Moutaz Baaj on 31.01.25.
 //
 
 
-import SwiftUI
-import AVFoundation
+//
+//  LanguageListPickerView.swift
+//  Readit
+//
+//  Created by Moutaz Baaj on 31.01.25.
+//
 
-struct VoiceListPickerView: View {
-    @Binding var selectedVoice: Voice
+import SwiftUI
+
+
+struct LanguageListPickerView: View {
+    @Binding var selectedLanguage: Language
     @Binding var isPresented: Bool
-    @Binding var language: Language
-    
-    //    let voices: [Voice] = Voice.voices(for: language.rawValue) // Get available voices
     
     var body: some View {
         NavigationStack {
             ZStack {
-                // Background gradient
                 LinearGradient(
-                    gradient: Gradient(colors: [.purple.opacity(0.3), .blue.opacity(0.3)]),
+                    gradient: Gradient(colors: [Color.purple.opacity(0.3), Color.blue.opacity(0.3)]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
                 .edgesIgnoringSafeArea(.all)
                 VStack {
                     ScrollView {
-                    ForEach(Voice.voices(for: language.rawValue), id: \.identifier) { voice in
+                        ForEach(Language.allCases, id: \.rawValue) { language in
                             HStack {
-                                Text(voice.displayName)
+                                Text(language.displayName)
                                     .foregroundColor(.primary)
                                 
                                 Spacer()
                                 
-                                if voice.identifier == selectedVoice.identifier {
+                                if language.displayName == selectedLanguage.displayName {
                                     Image(systemName: "checkmark.circle.fill")
                                         .foregroundColor(.blue)
                                 }
@@ -47,15 +50,14 @@ struct VoiceListPickerView: View {
                                     .fill(Color.gray.opacity(0.3))
                             }
                             .onTapGesture {
-                                selectedVoice = voice
+                                selectedLanguage = language
                                 //                        isPresented = false
                             }
                         }
                     }
                     .padding()
                 }
-                .listStyle(.plain)
-                .navigationTitle("Select a Voice")
+                .navigationBarTitle("Select Language")
                 .presentationDetents([.medium])
                 .presentationCornerRadius(50)
             }

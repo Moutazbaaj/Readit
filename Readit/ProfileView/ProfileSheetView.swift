@@ -25,11 +25,11 @@ struct ProfileSheetView: View {
     @State private var alertType: AlertType = .none
 
     
-    enum AlertType {
-        case none
-        case logout
-        case deleteAccount
-    }
+//    enum AlertType {
+//        case none
+//        case logout
+//        case deleteAccount
+//    }
     
     var body: some View {
         NavigationStack {
@@ -199,11 +199,16 @@ struct ProfileSheetView: View {
                             )
                         case .none:
                             return Alert(title: Text("Error"), message: Text("An unknown error occurred"), dismissButton: .default(Text("OK")))
+                        case .noPrefrence:
+                            return Alert(title: Text("Error"), message: Text("An unknown error occurred"), dismissButton: .default(Text("OK")))
+
                         }
                     }
                 }
             }
         }
+        .presentationDetents([.medium, .large])
+        .presentationCornerRadius(50)
     }
     
     // Handle the image selection and update
