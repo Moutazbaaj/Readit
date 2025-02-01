@@ -32,7 +32,7 @@ struct HomeView: View {
             VStack {
                 
                 HStack {
-  
+                    
                     Text("Hello")
                         .font(.largeTitle)
                         .fontWeight(.bold)
@@ -52,87 +52,86 @@ struct HomeView: View {
                     
                     //History
                     NavigationLink(destination: HistoryView()) {
-                            Image(systemName: "clock")
-                                .foregroundColor(.white)
-                                .padding()
+                        Image(systemName: "clock")
+                            .foregroundColor(.white)
+                            .padding()
                     }
                 }
                 
-                VStack {
-                    
-                    HStack {
-                        Text("last collections")
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    .padding(.top)
-                    
-                    
-                    if viewModel.libreries.isEmpty {
+                ScrollView (.vertical, showsIndicators: false) {
+                    VStack {
+                        
                         HStack {
-                            Spacer()
-                            Image(systemName: "bookmark.slash")
-                                .font(.largeTitle)
-                                .foregroundColor(.gray)
-                                .padding()
-                            Text("There is no collections yet")
-                                .font(.headline)
-                                .foregroundColor(.gray)
-                                .padding()
+                            Text("last collections")
                             Spacer()
                         }
-                    } else {
+                        .padding(.horizontal)
+                        .padding(.top)
                         
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            LazyHStack(spacing: 5) {
-                                ForEach(viewModel.libreries.sorted(by: {
-                                    $0.timestamp.dateValue() > $1.timestamp.dateValue()
-                                }).prefix(6)) { library in
-                                    NavigationLink(destination: TextsListView(library: library)) {
-                                        HomeCard(library: library)
-                                            .frame(width: 110, height: 110)
+                        
+                        if viewModel.libreries.isEmpty {
+                            HStack {
+                                Spacer()
+                                Image(systemName: "bookmark.slash")
+                                    .font(.largeTitle)
+                                    .foregroundColor(.gray)
+                                    .padding()
+                                Text("There is no collections yet")
+                                    .font(.headline)
+                                    .foregroundColor(.gray)
+                                    .padding()
+                                Spacer()
+                            }
+                        } else {
+                            
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                LazyHStack(spacing: 5) {
+                                    ForEach(viewModel.libreries.sorted(by: {
+                                        $0.timestamp.dateValue() > $1.timestamp.dateValue()
+                                    }).prefix(6)) { library in
+                                        NavigationLink(destination: TextsListView(library: library)) {
+                                            HomeCard(library: library)
+                                                .frame(width: 110, height: 110)
+                                        }
                                     }
                                 }
+                                .padding(.horizontal, 1)
                             }
-                            .padding(.horizontal, 1)
+                            .frame(height: 160)
+                            .padding(.horizontal, 2)
                         }
-                        .frame(height: 160)
-                        .padding(.horizontal, 2)
-                    }
-                    
-                    VStack {
-                        // Content above the scroll view
-                        HStack {
-                            Text("Favorites")
-                            Spacer()
-                        }
-                        .padding(.horizontal)
                         
-                        HStack {
-                            Text("\(viewModel.favLibreries.count) items ")
-                                .font(.caption2)
-                            Spacer()
-                        }
-                        .padding(.horizontal)
-                        
-                        if viewModel.favLibreries.isEmpty {
+                        VStack {
+                            // Content above the scroll view
+                            HStack {
+                                Text("Favorites")
+                                Spacer()
+                            }
+                            .padding(.horizontal)
                             
-                            Spacer()
+                            HStack {
+                                Text("\(viewModel.favLibreries.count) items ")
+                                    .font(.caption2)
+                                Spacer()
+                            }
+                            .padding(.horizontal)
                             
-                            Image(systemName: "star.slash")
-                                .font(.largeTitle)
-                                .foregroundColor(.gray)
-                                .padding()
-                            Text("Your Have no Favorites")
-                                .font(.headline)
-                                .foregroundColor(.gray)
-                                .padding()
-                            
-                            Spacer()
-                            
-                        } else {
-                            // ScrollView with favorite libraries
-                            ScrollView(.vertical, showsIndicators: false) {
+                            if viewModel.favLibreries.isEmpty {
+                                
+                                Spacer()
+                                
+                                Image(systemName: "star.slash")
+                                    .font(.largeTitle)
+                                    .foregroundColor(.gray)
+                                    .padding()
+                                Text("Your Have no Favorites")
+                                    .font(.headline)
+                                    .foregroundColor(.gray)
+                                    .padding()
+                                
+                                Spacer()
+                                
+                            } else {
                                 
                                 Divider().hidden()
                                 LazyVGrid(columns: gridItems, spacing: 20) {
@@ -145,10 +144,11 @@ struct HomeView: View {
                                         }
                                     }
                                 }
+                                
                             }
-                            //                                Divider().hidden()
                         }
                     }
+                    Divider().hidden().padding(.bottom).padding()
                 }
             }
         }

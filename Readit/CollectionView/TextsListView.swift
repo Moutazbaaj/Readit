@@ -68,7 +68,6 @@ struct TextsListView: View {
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
                         }
-                        .padding()
                         .background(Color.clear) // Clear background for the row
                         .listRowBackground(Color.clear) // Ensure no opaque row background
                         .cornerRadius(15)
@@ -96,40 +95,44 @@ struct TextsListView: View {
                 }
                 
                 Spacer()
+                
                 HStack {
                     //Language
-                    VStack {
-                        Text("Language:")
-                            .font(.subheadline)
+//                    VStack {
+//                        Text("Language:")
+//                            .font(.subheadline)
                         Button(action: {
                             showLanguagePicker = true
                         }) {
                             Text(selectedLanguage.displayName)
                                 .foregroundColor(.white) // Text color for the button
                                 .padding()
-                                .background(Color.black.opacity(0.5)) // Button background color
-                                .cornerRadius(20) // Rounded corners
+//                                .background(Color.black.opacity(0.5)) // Button background color
+//                                .cornerRadius(20) // Rounded corners
                         }
-                    }
-                    .padding()
+//                    }
+//                    .padding()
                     Spacer()
                     //Voice
-                    VStack {
-                        Text("Voice:")
-                            .font(.subheadline)
+//                    VStack {
+//                        Text("Voice:")
+//                            .font(.subheadline)
                         Button(action: {
                             showVoicePicker = true
                         }) {
                             Text(selectedVoice.displayName)
                                 .foregroundColor(.white) // Text color for the button
                                 .padding()
-                                .background(Color.black.opacity(0.5)) // Button background color
-                                .cornerRadius(20) // Rounded corners
+//                                .background(Color.black.opacity(0.5)) // Button background color
+//                                .cornerRadius(20) // Rounded corners
                         }
-                    }
-                    .padding()
+//                    }
+//                    .padding()
+                    
                 }
                 .padding()
+                Divider().hidden().padding()
+
             }
         }
         .navigationBarTitleDisplayMode(.inline)

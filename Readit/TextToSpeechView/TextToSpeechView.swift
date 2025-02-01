@@ -84,6 +84,7 @@ struct TextToSpeechView: View {
                             .cornerRadius(10)
                     }
                 }
+                Divider().hidden().padding()
             }
             .padding()
             .navigationTitle("Text to Speech")
@@ -100,7 +101,6 @@ struct TextToSpeechView: View {
                         }
                     }
                 }
-
             .sheet(isPresented: $showLanguagePicker) {
                 LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
             }

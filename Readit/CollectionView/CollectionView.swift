@@ -120,18 +120,9 @@ struct CollectionView: View {
                             }
                             
                         }
+                        Divider().hidden().padding(.bottom).padding()
+
                     }
-                    
-//                    HStack {
-//                        
-//                        Spacer()
-//                        
-//                        Text("\(filteredLibraries.count) items ")
-//                            .font(.caption)
-//                            .padding(.top, 2)
-//                            .padding(.bottom, 4)
-//                            .padding(.horizontal)
-//                    }
                     
                 }
             }

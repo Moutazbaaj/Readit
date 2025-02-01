@@ -31,7 +31,6 @@ struct ImageRecognitionView: View {
                 endPoint: .bottom
             )
             .edgesIgnoringSafeArea(.all)
-            .blur(radius: 7)
             
             VStack() {
                 Spacer()
@@ -146,6 +145,9 @@ struct ImageRecognitionView: View {
                             .cornerRadius(10)
                     }
                 }
+                
+                Divider().hidden().padding()
+
             }
             .padding()
             .navigationTitle("Image Recognition")
