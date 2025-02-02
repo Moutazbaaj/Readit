@@ -148,8 +148,9 @@ struct HomeView: View {
                             }
                         }
                     }
-                    Divider().hidden().padding(.bottom).padding()
+//                    Divider().hidden().padding(.bottom).padding()
                 }
+                Divider().hidden()
             }
         }
     }

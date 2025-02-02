@@ -100,9 +100,9 @@ struct HistoryView: View {
                     }
                     Spacer()
                     
-                    Divider().hidden().padding()
                 }
-                
+                Divider().hidden()
+
             }
 //            .onAppear {
 //                TextToSpeechManager.shared.fetchPrefrences()

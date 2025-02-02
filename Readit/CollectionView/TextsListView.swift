@@ -131,7 +131,7 @@ struct TextsListView: View {
                     
                 }
                 .padding()
-                Divider().hidden().padding()
+//                Divider().hidden().padding()
 
             }
         }

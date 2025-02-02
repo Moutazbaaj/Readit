@@ -120,10 +120,8 @@ struct CollectionView: View {
                             }
                             
                         }
-                        Divider().hidden().padding(.bottom).padding()
-
                     }
-                    
+                    Divider().hidden()
                 }
             }
         }

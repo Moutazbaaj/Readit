@@ -29,9 +29,9 @@ struct TextToSpeechView: View {
             VStack() {
                 // Input text area
                 VStack {
-                    Text("Enter Text:")
-                        .font(.headline)
-                        .padding(.horizontal)
+//                    Text("Enter Text:")
+//                        .font(.headline)
+//                        .padding(.horizontal)
                     
                     TextEditor(text: $textViewModel.inputText)
                         .padding()
@@ -84,7 +84,7 @@ struct TextToSpeechView: View {
                             .cornerRadius(10)
                     }
                 }
-                Divider().hidden().padding()
+//                Divider().hidden()
             }
             .padding()
             .navigationTitle("Text to Speech")

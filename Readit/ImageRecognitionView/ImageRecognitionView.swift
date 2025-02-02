@@ -41,13 +41,21 @@ struct ImageRecognitionView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(maxWidth: 300, maxHeight: 300)
-                        .cornerRadius(10)
+                        .cornerRadius(20)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                        )
                 } else if let capturedImage = capturedImage {
                     Image(uiImage: capturedImage)
                         .resizable()
                         .scaledToFit()
                         .frame(maxWidth: 300, maxHeight: 300)
-                        .cornerRadius(10)
+                        .cornerRadius(20)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                        )
                         .onAppear {
                             // Process the captured image
                             viewModel.selectedImage = capturedImage
@@ -56,25 +64,34 @@ struct ImageRecognitionView: View {
                     
                 }
                 
+                
                 if let extractedText = viewModel.extractedText {
                     Text("Extracted Text:")
-                        .font(.headline)
+                        .padding()
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                        )
                     
                     if extractedText.isEmpty {
                         Text("Error: No Text found")
                             .padding()
                             .foregroundColor(.red)
                             .background(Color.gray.opacity(0.1))
-                            .cornerRadius(10)
+                            .cornerRadius(20)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                            )
+
                     } else {
                         ScrollView {
                             Text(extractedText)
                                 .padding()
                                 .padding(.horizontal)
-                            
                         }
                         .overlay(
-                            RoundedRectangle(cornerRadius: 10)
+                            RoundedRectangle(cornerRadius: 20)
                                 .stroke(Color.gray, lineWidth: 1)
                         )
                         .frame(maxHeight: 350)
@@ -146,7 +163,7 @@ struct ImageRecognitionView: View {
                     }
                 }
                 
-                Divider().hidden().padding()
+//                Divider().hidden()
 
             }
             .padding()
