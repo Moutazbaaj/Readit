@@ -80,12 +80,11 @@ class TextToSpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         synthesizer.speak(utterance)
     }
     
-    func readTextAloudForLibrary(from library: FireLibrary, in language: Language, using voice: Voice) {
+    func readTextAloudForLibrary(from library: FireLibrary, from texts: [FireText]) {
         guard !texts.isEmpty else {
             print("No texts available to read aloud.")
             return
         }
-        
         // Filter and prepare texts to read
         let textsToRead = texts
             .filter { $0.libraryId == library.id } // Ensure the texts belong to the specified library
@@ -94,17 +93,20 @@ class TextToSpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
             })
             .enumerated() // Enumerate to get both index and content
             .map { index, text in
-                "\(language.pageTranslation) \(index + 1). \(text.text)" // Add "Page X" prefix before each text
+                 "\(text.text)" // Add "Page X" prefix before each text
             }
             .joined(separator: ". ") // Concatenate texts with a separator
         
         let utterance = AVSpeechUtterance(string: textsToRead)
         
-        // Configure voice
-        if let customVoice = AVSpeechSynthesisVoice(identifier: voice.identifier) {
-            utterance.voice = customVoice
+        if let voice = preferences.first?.selectedVoice {
+            if let customVoice = AVSpeechSynthesisVoice(identifier: voice.identifier) {
+                utterance.voice = customVoice
+            } else {
+                utterance.voice = AVSpeechSynthesisVoice(language: voice.language)
+            }
         } else {
-            utterance.voice = AVSpeechSynthesisVoice(language: language.rawValue) // Fallback to language-based voice
+            utterance.voice = AVSpeechSynthesisVoice(language: Language.englishUS.rawValue) // Default to English
         }
         
         // Configure audio session
