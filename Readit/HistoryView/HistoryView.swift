@@ -75,7 +75,7 @@ struct HistoryView: View {
                                 }
                                 VStack {
                                     // Text display
-                                    let highlightedTextView = viewModel.highlightedText(text.text, range: viewModel.currentWordRange)
+                                    let highlightedTextView = viewModel.highlightedText(text.text)
                                     
                                     highlightedTextView
                                         .font(.headline)

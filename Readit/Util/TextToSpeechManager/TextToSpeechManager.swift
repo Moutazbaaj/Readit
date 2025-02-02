@@ -19,6 +19,7 @@ class TextToSpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     @Published var libraries: [FireLibrary] = []
     @Published var preferences: [FirePreference] = []
     @Published var currentWordRange: NSRange? = nil
+    @Published var currentText: String? = nil
     
     private var synthesizer = AVSpeechSynthesizer()
     private var listener: ListenerRegistration?
@@ -46,36 +47,37 @@ class TextToSpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     }
     
     // MARK: - Speech Control Methods
-    
+
     func readTextAloud(from inputText: String) {
-        if !inputText.isEmpty {
-            guard !preferences.isEmpty else {
-                print("Preferences is empty.")
-                return
-            }
-            let language = Language(rawValue: preferences.first!.selectedLanguage) ?? .englishUS
-            let voice = Voice.custom(identifier: preferences.first!.selectedVoice.identifier,
-                                     language: preferences.first!.selectedVoice.language,
-                                     name: preferences.first!.selectedVoice.name)
-            
-            let utterance = AVSpeechUtterance(string: inputText)
-            
+        guard !inputText.isEmpty else {
+            print("No text provided for reading.")
+            return
+        }
+        
+        currentText = inputText
+        
+        let utterance = AVSpeechUtterance(string: inputText)
+        
+        if let voice = preferences.first?.selectedVoice {
             if let customVoice = AVSpeechSynthesisVoice(identifier: voice.identifier) {
                 utterance.voice = customVoice
             } else {
-                utterance.voice = AVSpeechSynthesisVoice(language: language.rawValue)
+                utterance.voice = AVSpeechSynthesisVoice(language: voice.language)
             }
-
-            do {
-                let audioSession = AVAudioSession.sharedInstance()
-                try audioSession.setCategory(.playback, mode: .default, options: [])
-                try audioSession.setActive(true)
-            } catch {
-                print("Failed to configure audio session: \(error.localizedDescription)")
-            }
-            
-            synthesizer.speak(utterance)
+        } else {
+            utterance.voice = AVSpeechSynthesisVoice(language: Language.englishUS.rawValue) // Default to English
         }
+
+        // Configure audio session
+        do {
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setCategory(.playback, mode: .default, options: [])
+            try audioSession.setActive(true)
+        } catch {
+            print("Failed to configure audio session: \(error.localizedDescription)")
+        }
+
+        synthesizer.speak(utterance)
     }
     
     func readTextAloudForLibrary(from library: FireLibrary, in language: Language, using voice: Voice) {
@@ -127,6 +129,20 @@ class TextToSpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         if synthesizer.isSpeaking {
             synthesizer.stopSpeaking(at: .immediate)
         }
+    }
+    
+    func highlightedText(_ fullText: String) -> Text {
+        guard fullText == currentText,
+              let range = currentWordRange,
+              let textRange = Range(range, in: fullText) else {
+            return Text(fullText)
+        }
+
+        let before = String(fullText[..<textRange.lowerBound])
+        let highlighted = String(fullText[textRange])
+        let after = String(fullText[textRange.upperBound...])
+
+        return Text(before) + Text(highlighted).bold().foregroundColor(.blue).fontWeight(.heavy) + Text(after)
     }
     
     // MARK: - Firestore Methods

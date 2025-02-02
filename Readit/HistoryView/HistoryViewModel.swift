@@ -20,7 +20,7 @@ class HistoryViewModel: ObservableObject {
     @Published var texts = [FireText]()
     
     @Published var currentWordRange: NSRange? = nil
-
+    
     // Listener for Firestore updates.
     private var listener: ListenerRegistration?
     // Firebase authentication instance.
@@ -99,19 +99,19 @@ class HistoryViewModel: ObservableObject {
     }
     
     // Edit bee report.
-//    func editText(withId id: String, newText: String) {
-//        let beeReport = firebaseFirestore.collection("texts").document(id)
-//        
-//        beeReport.updateData(["text": newText,
-//                              "editTimestamp": Timestamp()
-//                             ]) { error in
-//            if let error = error {
-//                print("Error updating document: \(error.localizedDescription)")
-//            } else {
-//                print("Document successfully updated")
-//            }
-//        }
-//    }
+    //    func editText(withId id: String, newText: String) {
+    //        let beeReport = firebaseFirestore.collection("texts").document(id)
+    //
+    //        beeReport.updateData(["text": newText,
+    //                              "editTimestamp": Timestamp()
+    //                             ]) { error in
+    //            if let error = error {
+    //                print("Error updating document: \(error.localizedDescription)")
+    //            } else {
+    //                print("Document successfully updated")
+    //            }
+    //        }
+    //    }
     
     // Deletes a bee report with the given ID.
     func deleteText(withId id: String?) {
@@ -138,18 +138,10 @@ class HistoryViewModel: ObservableObject {
         textToSpeechManager.stopSpeaking()
     }
     
-    func highlightedText(_ fullText: String, range: NSRange?) -> Text {
-        guard let range = range, let textRange = Range(range, in: fullText) else {
-            return Text(fullText)
-        }
-        
-        let before = String(fullText[..<textRange.lowerBound])
-        let highlighted = String(fullText[textRange])
-        let after = String(fullText[textRange.upperBound...])
-
-        return Text(before) + Text(highlighted).bold().foregroundColor(.blue).fontWeight(.heavy) + Text(after)
+    func highlightedText(_ fullText: String) -> Text {
+        return textToSpeechManager.highlightedText(fullText)
     }
-
+}
     
 //    
 //    func readTextAloud(in language: Language, text: String) {
@@ -177,4 +169,4 @@ class HistoryViewModel: ObservableObject {
 //        }
 //    }
 //    
-}
+
