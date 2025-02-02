@@ -9,11 +9,20 @@
 //
 //
 //struct FloatingTabbar: View {
-//    @Binding var selected: Int
+//    @State var selected =  1
 //    @State var expand = true
 //    
+//    
+//    @State var Tap1SystemName = "house"
+//    @State var Tap2SystemName = "bubble.and.pencil"
+//    @State var Tap3SystemName = "photo.badge.plus.fill"
+//    @State var Tap4SystemName = "books.vertical"
+//    @State var Tap5SystemName = "books.vertical"
+//    
+//    
+//    
 //    var body: some View {
-//       VStack {
+//       HStack {
 //            Spacer()
 //            HStack {
 //                Button(action: {
@@ -27,21 +36,23 @@
 //                if expand {
 //                    
 //                    Button(action: { self.selected = 0}) {
-//                        Image(systemName: "house")
-//                            .foregroundColor(self.selected == 0 ? .black : .gray)
+//                        NavigationLink(destination: HistoryView()){
+//                            Image(systemName: Tap1SystemName)
+//                                .foregroundColor(self.selected == 0 ? .black : .gray)
+//                        }
 //                    }
 //                    
 //                    Spacer()
 //                    
 //                    Button(action: { self.selected = 1}) {
-//                        Image(systemName: "bubble.and.pencil")
+//                        Image(systemName: Tap2SystemName)
 //                            .foregroundColor(self.selected == 1 ? .black : .gray)
 //                    }
 //                    
 //                    Spacer()
 //                    
 //                    Button(action: { self.selected = 2}) {
-//                        Image(systemName: "photo.badge.plus.fill")
+//                        Image(systemName: Tap3SystemName)
 //                            .foregroundColor(self.selected == 2 ? .black : .gray)
 //                    }
 //                    
@@ -56,14 +67,14 @@
 //                    Spacer()
 //                    
 ////                    Button(action: { self.selected = 4}) {
-////                        Image(systemName: "clock")
+////                        Image(systemName: Tap4SystemName)
 ////                            .foregroundColor(self.selected == 4 ? .black : .gray)
 ////                    }
 ////                    
 ////                    Spacer()
 //                    
 //                    Button(action: { self.selected = 5}) {
-//                        Image(systemName: "ellipsis.circle")
+//                        Image(systemName: Tap5SystemName)
 //                            .foregroundColor(self.selected == 5 ? .black : .gray)
 //                    }
 //                    
