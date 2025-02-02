@@ -124,12 +124,12 @@ struct MainTabView: View {
             }
 
             // Scan Tab
-            NavigationStack {
-                HistoryView()
-            }
-            .tabItem {
-                Label("History", systemImage: "document.viewfinder.fill")
-            }
+//            NavigationStack {
+//                HistoryView()
+//            }
+//            .tabItem {
+//                Label("History", systemImage: "document.viewfinder.fill")
+//            }
 
             // Settings Tab
             NavigationStack {
