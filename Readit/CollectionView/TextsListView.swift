@@ -13,19 +13,28 @@ struct TextsListView: View {
     
     let library: FireLibrary
     
+    @StateObject private var viewModel = CollectionViewModel.shared
+    @StateObject private var textToSpeechManager = TextToSpeechManager.shared
+
     @State private var textItem: FireText? // State variable to keep track of the text to edit or delete.
     @State private var showEditTextSheet = false
     @State private var showCameraCaptureView = false
     @State private var showAlert = false // State variable to control the display of the alert.
-    @StateObject private var viewModel = CollectionViewModel.shared
     @State private var showAddTextSheet = false
-    @State private var showLanguagePicker = false
-    @State private var selectedLanguage: Language = .englishUS
     @State private var newTextContent = ""
     @State private var editingTextContent = ""
     @State private var capturedImage: UIImage? // To hold the captured image
-    @State private var showVoicePicker = false // Controls the voice picker presentation
-    @State private var selectedVoice = Voice.allCases.first ?? .custom(identifier: "", language: "", name: "") // Selected voice
+    
+    @State private var selected =  0
+    @State private var expand = false
+    
+    
+    
+    //    @State private var showVoicePicker = false // Controls the voice picker presentation
+    //    @State private var selectedVoice = Voice.allCases.first ?? .custom(identifier: "", language: "", name: "") // Selected voice
+    //    @State private var showLanguagePicker = false
+    //    @State private var selectedLanguage: Language = .englishUS
+    
     
     var body: some View {
         ZStack {
@@ -36,149 +45,292 @@ struct TextsListView: View {
             )
             .edgesIgnoringSafeArea(.all)
             
-            VStack {
-                HStack {
-                    Text(library.libraryTitle)
-                        .font(.largeTitle)
+            ZStack(alignment: .bottomTrailing){
+                
+                VStack {
+                    HStack {
+                        Text(library.libraryTitle)
+                            .font(.largeTitle)
+                            .bold()
+                            .padding()
+                        
+                        Spacer()
+                        
+                    }
+                    
+                    if viewModel.texts.isEmpty {
+                        Spacer()
+                        Text("No texts in this library.")
+                            .font(.headline)
+                            .foregroundColor(.gray)
+                            .padding()
+                    } else {
+                        List(viewModel.texts.sorted(by: {
+                            $0.timestamp.dateValue() < $1.timestamp.dateValue()
+                        })) { text in
+                            VStack(alignment: .leading) {
+                                
+                                // Text display
+                                let highlightedTextView = viewModel.highlightedText(text.text)
+                                
+                                highlightedTextView
+                                    .font(.headline)
+                                    .padding()
+                                    .frame(maxWidth: .infinity , alignment: .leading)
+                                    .background(Color.white.opacity(0.2))
+                                    .cornerRadius(15)
+                                    .shadow(radius: 5)
+                                
+                                Text(text.timestamp.dateValue(), style: .date)
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                            }
+                            .contextMenu{
+                                Button {
+                                    viewModel.stopSpeaking()
+                                    textItem = text
+                                    viewModel.readTextAloud(form: text.text)
+                                } label: {
+                                    Label("Read", systemImage: "speaker.wave.2")
+                                }
+                                .tint(.blue)
+                                Button {
+                                    textItem = text
+                                    editingTextContent = text.text
+                                    showEditTextSheet = true
+                                } label: {
+                                    Label("Edit", systemImage: "pencil")
+                                }
+                                .tint(.blue)
+                                Button(role: .destructive) {
+                                    textItem = text
+                                    showAlert = true
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                                .tint(.red)
+                            }
+                            .background(Color.clear) // Clear background for the row
+                            .listRowBackground(Color.clear) // Ensure no opaque row background
+                            .cornerRadius(15)
+                            .swipeActions {
+                                Button(role: .destructive) {
+                                    textItem = text
+                                    showAlert = true
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                                .tint(.red)
+                                Button {
+                                    textItem = text
+                                    editingTextContent = text.text
+                                    showEditTextSheet = true
+                                } label: {
+                                    Label("Edit", systemImage: "pencil")
+                                }
+                                .tint(.blue)
+                                Button {
+                                    viewModel.stopSpeaking()
+                                    textItem = text
+                                    viewModel.readTextAloud(form: text.text)
+                                } label: {
+                                    Label("Read", systemImage: "speaker.wave.2")
+                                }
+                                .tint(.yellow)
+                            }
+                        }
+                        .listStyle(.plain)
+                        .background(Color.clear) // Transparent list background
+                    }
+                    
+                    Text("")
                         .padding()
+                        .hidden()
+                    //                HStack {
+                    //
+                    //                    Spacer()
+                    //
+                    //                    Button(action: {
+                    //                        viewModel.stopSpeaking()
+                    //                        viewModel.readTextAloudForLibrary(from: library)
+                    //                    }) {
+                    //                        Image(systemName: "speaker.wave.2.fill")
+                    //                    }
+                    //                    .padding()
+                    //
+                    //                    Spacer()
+                    //
+                    //                    Button(action: {
+                    //                        viewModel.stopSpeaking()
+                    //                    }) {
+                    //                        Image(systemName: "stop")
+                    //                    }
+                    //                    .padding()
+                    //
+                    //                    Spacer()
+                    //
+                    //                }
                     
-                    Spacer()
-                    
+                    //                HStack {
+                    //                    //Language
+                    ////                    VStack {
+                    ////                        Text("Language:")
+                    ////                            .font(.subheadline)
+                    //                        Button(action: {
+                    //                            showLanguagePicker = true
+                    //                        }) {
+                    //                            Text(selectedLanguage.displayName)
+                    //                                .foregroundColor(.white) // Text color for the button
+                    //                                .padding()
+                    ////                                .background(Color.black.opacity(0.5)) // Button background color
+                    ////                                .cornerRadius(20) // Rounded corners
+                    //                        }
+                    ////                    }
+                    ////                    .padding()
+                    //                    Spacer()
+                    //                    //Voice
+                    ////                    VStack {
+                    ////                        Text("Voice:")
+                    ////                            .font(.subheadline)
+                    //                        Button(action: {
+                    //                            showVoicePicker = true
+                    //                        }) {
+                    //                            Text(selectedVoice.displayName)
+                    //                                .foregroundColor(.white) // Text color for the button
+                    //                                .padding()
+                    ////                                .background(Color.black.opacity(0.5)) // Button background color
+                    ////                                .cornerRadius(20) // Rounded corners
+                    //                        }
+                    ////                    }
+                    ////                    .padding()
+                    //
+                    //                }
+                    //                .padding()
+                    Divider().hidden()
                 }
                 
-                
-                if viewModel.texts.isEmpty {
+                //floting tab bar
+                HStack {
                     Spacer()
-                    Text("No texts in this library.")
-                        .font(.headline)
-                        .foregroundColor(.gray)
-                        .padding()
-                } else {
-                    List(viewModel.texts.sorted(by: {
-                        $0.timestamp.dateValue() < $1.timestamp.dateValue()
-                    })) { text in
-                        VStack(alignment: .leading) {
-                            Text(text.text)
-                                .font(.headline)
+                    HStack {
+                        Button(action: {
+                            self.expand.toggle() // Toggle expand on tap
+                        }) {
+                            Image(systemName: expand ? "arrow.right" : "plus") // Dynamic icon
+                                .foregroundColor(.black)
                                 .padding()
-                                .background(Color.white.opacity(0.2))
-                                .cornerRadius(15)
-                            
-                            Text(text.timestamp.dateValue(), style: .date)
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
                         }
-                        .background(Color.clear) // Clear background for the row
-                        .listRowBackground(Color.clear) // Ensure no opaque row background
-                        .cornerRadius(15)
-                        .swipeActions {
-                            Button(role: .destructive) {
-                                textItem = text
-                                showAlert = true
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                            .tint(.red)
+                        
+                        if expand {
+                            
+                            //                             Button(action: { self.selected = 0}) {
+                            //                                 NavigationLink(destination: HistoryView()){
+                            //                                     Image(systemName: "house")
+                            //                                         .foregroundColor(self.selected == 0 ? .black : .gray)
+                            //                                 }
+                            //                             }
                             
                             Button {
-                                textItem = text
-                                editingTextContent = text.text
-                                showEditTextSheet = true
+                                self.selected = 0
+                                viewModel.stopSpeaking()
+                                viewModel.readTextAloudForLibrary(from: library)
                             } label: {
-                                Label("Edit", systemImage: "pencil")
+                                Label("", systemImage: "speaker.wave.2")
                             }
-                            .tint(.blue)
+                            .foregroundColor(self.selected == 0 ? .black : .gray)
+                            
+                            Spacer()
+                            
+                            Button {
+                                self.selected = 1
+                                viewModel.stopSpeaking()
+                            } label: {
+                                Label("", systemImage: "stop")
+                            }
+                            .foregroundColor(self.selected == 1 ? .black : .gray)
+                            
+                            Spacer()
+                            
+                            Button {
+                                self.selected = 2
+                                showAddTextSheet = true
+                            } label: {
+                                Label("", systemImage: "plus")
+                            }
+                            .foregroundColor(self.selected == 2 ? .black : .gray)
+                            
+                            Spacer()
+                            
+                            Button {
+                                self.selected = 3
+                                capturedImage = nil
+                                showCameraCaptureView = true
+                                
+                            } label: {
+                                Image(systemName: "camera")
+                            }
+                            .foregroundColor(self.selected == 3 ? .black : .gray)
+                            
+                            Spacer()
                         }
                     }
-                    .listStyle(.plain)
-                    .background(Color.clear) // Transparent list background
+                    .background(
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.white.opacity(0.95), Color.white.opacity(0.95)]),
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .clipShape(Capsule())
+                    .padding(.bottom)
+                    .padding()
+                    .animation(.interactiveSpring(response: 0.6, dampingFraction: 0.6, blendDuration: 0.6), value: expand)
                 }
                 
-                Spacer()
                 
-                HStack {
-                    //Language
-//                    VStack {
-//                        Text("Language:")
-//                            .font(.subheadline)
-                        Button(action: {
-                            showLanguagePicker = true
-                        }) {
-                            Text(selectedLanguage.displayName)
-                                .foregroundColor(.white) // Text color for the button
-                                .padding()
-//                                .background(Color.black.opacity(0.5)) // Button background color
-//                                .cornerRadius(20) // Rounded corners
-                        }
-//                    }
-//                    .padding()
-                    Spacer()
-                    //Voice
-//                    VStack {
-//                        Text("Voice:")
-//                            .font(.subheadline)
-                        Button(action: {
-                            showVoicePicker = true
-                        }) {
-                            Text(selectedVoice.displayName)
-                                .foregroundColor(.white) // Text color for the button
-                                .padding()
-//                                .background(Color.black.opacity(0.5)) // Button background color
-//                                .cornerRadius(20) // Rounded corners
-                        }
-//                    }
-//                    .padding()
-                    
-                }
-                .padding()
-//                Divider().hidden().padding()
-
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(trailing: HStack {
-            Button(action: {
-                viewModel.stopSpeaking()
-                viewModel.readTextAloudForLibrary(from: library, in: selectedLanguage, using: selectedVoice)
-            }) {
-                Image(systemName: "speaker.wave.2.fill")
-            }
-            
-            Menu {
-                Button("Add New Text") {
-                    showAddTextSheet = true
-                }
-                Button("Scan a Document") {
-                    capturedImage = nil
-                    showCameraCaptureView = true
-                }
-                .onChange(of: capturedImage) { _, newImage in
-                    if let newImage = newImage {
-                        viewModel.selectedImage = newImage
-                        viewModel.processImage(image: newImage)
-                        guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
-                            return
-                        }
-                        viewModel.createText(text: extractedText, libraryId: library.id ?? "")
-                    }
-                }
-                
-            } label: {
-                Image(systemName: "ellipsis.circle")
-                    .font(.title2)
-            }
+            Text(textToSpeechManager.preferences.first?.selectedLanguageName ?? "English")
+            Image(systemName: "globe")
+//            Menu {
+//                Button("Add New Text") {
+//                    showAddTextSheet = true
+//                }
+//                Button("Scan a Document") {
+//                    capturedImage = nil
+//                    showCameraCaptureView = true
+//                }
+//                .onChange(of: capturedImage) { _, newImage in
+//                    if let newImage = newImage {
+//                        viewModel.selectedImage = newImage
+//                        viewModel.processImage(image: newImage)
+//                        guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
+//                            return
+//                        }
+//                        viewModel.createText(text: extractedText, libraryId: library.id ?? "")
+//                        viewModel.fetchTexts(forLibraryId: library.id ?? "")
+//                        
+//                    }
+//                }
+//                
+//            } label: {
+//                Image(systemName: "ellipsis.circle")
+//                    .font(.title2)
+//            }
         })
         .sheet(isPresented: $showCameraCaptureView) {
             CameraView(image: $capturedImage)
                 .presentationCornerRadius(20)
-
+            
         }
-        .sheet(isPresented: $showLanguagePicker) {
-                LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
-        }
-        .sheet(isPresented: $showVoicePicker) {
-            VoicePickerView(selectedVoice: $selectedVoice, isPresented: $showVoicePicker, language: selectedLanguage)
-        }
+        //        .sheet(isPresented: $showLanguagePicker) {
+        //                LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
+        //        }
+        //        .sheet(isPresented: $showVoicePicker) {
+        //            VoicePickerView(selectedVoice: $selectedVoice, isPresented: $showVoicePicker, language: selectedLanguage)
+        //        }
         .sheet(isPresented: $showAddTextSheet) {
             VStack {
                 Text("Add New Text")
@@ -216,47 +368,47 @@ struct TextsListView: View {
             .padding()
             .presentationDetents([.medium, .large])
             .presentationCornerRadius(50)
-
+            
         }
         .sheet(isPresented: $showEditTextSheet) {
-                VStack {
-                    Text("Edit Text")
-                        .font(.headline)
-                        .padding()
-                    
-                    TextEditor(text: $editingTextContent)
-                        .padding()
-                        .frame(maxHeight: .infinity)
-                        .cornerRadius(10)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.gray, lineWidth: 1)
-                        )
-                    
-                    Button(action: {
-                        if !editingTextContent.isEmpty {
-                            viewModel.editText(withId: textItem?.id ?? " ", newText: editingTextContent)
-                            editingTextContent = ""
-                            showEditTextSheet = false
-                        }
-                    }) {
-                        Text("Done")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
+            VStack {
+                Text("Edit Text")
+                    .font(.headline)
+                    .padding()
+                
+                TextEditor(text: $editingTextContent)
+                    .padding()
+                    .frame(maxHeight: .infinity)
+                    .cornerRadius(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
+                
+                Button(action: {
+                    if !editingTextContent.isEmpty {
+                        viewModel.editText(withId: textItem?.id ?? " ", newText: editingTextContent)
+                        editingTextContent = ""
+                        showEditTextSheet = false
                     }
-                    .disabled(editingTextContent.isEmpty)
-                    
-                    Spacer()
+                }) {
+                    Text("Done")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
                 }
-                .padding()
-                .presentationDetents([.medium, .large])
-                .presentationCornerRadius(50)
-
+                .disabled(editingTextContent.isEmpty)
+                
+                Spacer()
             }
+            .padding()
+            .presentationDetents([.medium, .large])
+            .presentationCornerRadius(50)
+            
+        }
         .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("Confirm Delete"),
@@ -269,19 +421,14 @@ struct TextsListView: View {
                 secondaryButton: .cancel()
             )
         }
-        .onChange(of: selectedLanguage) {_, newLanguage in
-            if let firstVoice = Voice.voices(for: newLanguage.rawValue).first {
-                selectedVoice = firstVoice
-            }
-        }
         .onAppear {
-
+            
             viewModel.fetchTexts(forLibraryId: library.id ?? "")
-                
-            if let firstVoice = Voice.voices(for: selectedLanguage.rawValue).first {
-                        selectedVoice = firstVoice
-                    }
-                }
+            
+            //            if let firstVoice = Voice.voices(for: selectedLanguage.rawValue).first {
+            //                        selectedVoice = firstVoice
+            //                    }
+        }
         .onDisappear {
             viewModel.stopSpeaking()
             capturedImage = nil
