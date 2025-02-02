@@ -85,6 +85,7 @@ struct TextsListView: View {
                                     .font(.subheadline)
                                     .foregroundColor(.gray)
                             }
+                            .padding(.bottom)
                             .contextMenu{
                                 Button {
                                     viewModel.stopSpeaking()
@@ -142,70 +143,6 @@ struct TextsListView: View {
                         .listStyle(.plain)
                         .background(Color.clear) // Transparent list background
                     }
-                    
-                    Text("")
-                        .padding()
-                        .hidden()
-                    //                HStack {
-                    //
-                    //                    Spacer()
-                    //
-                    //                    Button(action: {
-                    //                        viewModel.stopSpeaking()
-                    //                        viewModel.readTextAloudForLibrary(from: library)
-                    //                    }) {
-                    //                        Image(systemName: "speaker.wave.2.fill")
-                    //                    }
-                    //                    .padding()
-                    //
-                    //                    Spacer()
-                    //
-                    //                    Button(action: {
-                    //                        viewModel.stopSpeaking()
-                    //                    }) {
-                    //                        Image(systemName: "stop")
-                    //                    }
-                    //                    .padding()
-                    //
-                    //                    Spacer()
-                    //
-                    //                }
-                    
-                    //                HStack {
-                    //                    //Language
-                    ////                    VStack {
-                    ////                        Text("Language:")
-                    ////                            .font(.subheadline)
-                    //                        Button(action: {
-                    //                            showLanguagePicker = true
-                    //                        }) {
-                    //                            Text(selectedLanguage.displayName)
-                    //                                .foregroundColor(.white) // Text color for the button
-                    //                                .padding()
-                    ////                                .background(Color.black.opacity(0.5)) // Button background color
-                    ////                                .cornerRadius(20) // Rounded corners
-                    //                        }
-                    ////                    }
-                    ////                    .padding()
-                    //                    Spacer()
-                    //                    //Voice
-                    ////                    VStack {
-                    ////                        Text("Voice:")
-                    ////                            .font(.subheadline)
-                    //                        Button(action: {
-                    //                            showVoicePicker = true
-                    //                        }) {
-                    //                            Text(selectedVoice.displayName)
-                    //                                .foregroundColor(.white) // Text color for the button
-                    //                                .padding()
-                    ////                                .background(Color.black.opacity(0.5)) // Button background color
-                    ////                                .cornerRadius(20) // Rounded corners
-                    //                        }
-                    ////                    }
-                    ////                    .padding()
-                    //
-                    //                }
-                    //                .padding()
                     Divider().hidden()
                 }
                 
@@ -287,7 +224,6 @@ struct TextsListView: View {
                     .animation(.interactiveSpring(response: 0.6, dampingFraction: 0.6, blendDuration: 0.6), value: expand)
                 }
                 
-                
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -325,12 +261,6 @@ struct TextsListView: View {
                 .presentationCornerRadius(20)
             
         }
-        //        .sheet(isPresented: $showLanguagePicker) {
-        //                LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
-        //        }
-        //        .sheet(isPresented: $showVoicePicker) {
-        //            VoicePickerView(selectedVoice: $selectedVoice, isPresented: $showVoicePicker, language: selectedLanguage)
-        //        }
         .sheet(isPresented: $showAddTextSheet) {
             VStack {
                 Text("Add New Text")
@@ -422,12 +352,7 @@ struct TextsListView: View {
             )
         }
         .onAppear {
-            
             viewModel.fetchTexts(forLibraryId: library.id ?? "")
-            
-            //            if let firstVoice = Voice.voices(for: selectedLanguage.rawValue).first {
-            //                        selectedVoice = firstVoice
-            //                    }
         }
         .onDisappear {
             viewModel.stopSpeaking()
