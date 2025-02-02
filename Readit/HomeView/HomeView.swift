@@ -18,6 +18,12 @@ struct HomeView: View {
     // Define the grid layout with two columns.
     let gridItems = [GridItem(.flexible()), GridItem(.flexible())]
     
+    @State var hideButton = false
+    
+    @State private var showSheet = false // Controls sheet visibility
+
+
+    
     
     var body: some View {
         ZStack {
@@ -30,33 +36,6 @@ struct HomeView: View {
             .edgesIgnoringSafeArea(.all)
             
             VStack {
-                
-                HStack {
-                    
-                    Text("Hello")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .lineLimit(1)
-                        .foregroundColor(.white)
-                        .scaleEffect(animateText ? 1 : 0.3) // Start from smaller size and scale up
-                        .opacity(animateText ? 1 : 0) // Start with opacity 0 and fade in
-                        .onAppear {
-                            // Trigger the animation when the view appears
-                            withAnimation(.easeOut(duration: 2)) {
-                                animateText = true
-                            }
-                        }
-                        .padding()
-                    
-                    Spacer()
-                    
-                    //History
-                    NavigationLink(destination: HistoryView()) {
-                        Image(systemName: "clock")
-                            .foregroundColor(.white)
-                            .padding()
-                    }
-                }
                 
                 ScrollView (.vertical, showsIndicators: false) {
                     VStack {
@@ -152,6 +131,87 @@ struct HomeView: View {
                 }
                 Divider().hidden()
             }
+//            VStack {
+//                Spacer()
+//                if hideButton {
+//                    VStack {
+//                        // Navigation Buttons
+//                        NavigationLink(destination: TextToSpeechView()) {
+//                            VStack {
+//                                Image(systemName: "bubble.and.pencil")
+//                                    .font(.title)
+//                                    .foregroundColor(.white)
+//                                    .shadow(radius: 10)
+//                                Text("Text to Speech")
+//                                    .font(.caption)
+//                                    .foregroundColor(.white)
+//                            }
+//                            .padding()
+//                        }
+//                        NavigationLink(destination: ImageRecognitionView()) {
+//                            VStack {
+//                                Image(systemName: "photo.badge.plus.fill")
+//                                    .font(.title)
+//                                    .foregroundColor(.white)
+//                                    .shadow(radius: 10)
+//                                Text("Text Recognition")
+//                                    .font(.caption)
+//                                    .foregroundColor(.white)
+//                            }
+//                            .padding()
+//                        }
+//                    }
+//                    .transition(.scale) // Smooth animation when appearing/disappearing
+//                    .padding() // Space from the bottom
+//                    .background(
+//                        LinearGradient(
+//                            gradient: Gradient(colors: [Color.black.opacity(0.6), Color.black.opacity(0.7)]),
+//                            startPoint: .top,
+//                            endPoint: .bottom
+//                        )
+//                        .cornerRadius(30)
+//                        .padding()
+//                    )
+//                }
+//            }
+        }
+//        .onTapGesture {
+//            hideButton = false
+//        }
+        .navigationBarItems(leading: HStack {
+            Text("Hello")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .lineLimit(1)
+                .foregroundColor(.white)
+                .scaleEffect(animateText ? 1 : 0.3) // Start from smaller size and scale up
+                .opacity(animateText ? 1 : 0) // Start with opacity 0 and fade in
+                .onAppear {
+                    // Trigger the animation when the view appears
+                    withAnimation(.easeOut(duration: 2)) {
+                        animateText = true
+                    }
+                }
+                .padding()
+            Spacer()
+                })
+        .navigationBarItems(trailing: HStack {
+            Button("", systemImage: hideButton ? "x.circle" : "plus.circle") {
+                hideButton.toggle()
+                showSheet = true
+            }
+//            Spacer()
+//            //History
+//            NavigationLink(destination: HistoryView()) {
+//                Image(systemName: "clock")
+//                    .foregroundColor(.white)
+//                    .padding()
+//            }
+        })
+        .sheet(isPresented: $showSheet){
+            SheetView()
+                .presentationDetents([.medium, .large])
+                .presentationCornerRadius(50)
         }
     }
 }
@@ -160,3 +220,4 @@ struct HomeView: View {
     HomeView()
         .environmentObject(AuthViewModel())
 }
+

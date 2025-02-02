@@ -1,21 +1,19 @@
+//
+//  SheetView.swift
+//  Readit
+//
+//  Created by Moutaz Baaj on 03.02.25.
+//
+
+import SwiftUI
+
+
 struct SheetView: View {
     @Environment(\.dismiss) var dismiss // Allows dismissing the sheet
     @State private var hideButton = true
 
     var body: some View {
-        VStack {
-            HStack {
-                Spacer()
-                Button(action: { dismiss() }) { // Close button
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.title)
-                        .foregroundColor(.white)
-                        .padding()
-                }
-            }
-            
-            Spacer()
-            
+        NavigationStack {
             VStack {
                 NavigationLink(destination: TextToSpeechView()) {
                     VStack {
@@ -46,16 +44,13 @@ struct SheetView: View {
             .padding()
             .background(
                 LinearGradient(
-                    gradient: Gradient(colors: [Color.black.opacity(0.6), Color.black.opacity(0.7)]),
+                    gradient: Gradient(colors: [Color.purple.opacity(0.3), Color.blue.opacity(0.3)]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
                 .cornerRadius(30)
                 .padding()
             )
-            
-            Spacer()
         }
-        .background(Color.black.opacity(0.8).edgesIgnoringSafeArea(.all)) // Background styling
     }
 }
