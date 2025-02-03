@@ -57,7 +57,7 @@ struct VoiceListPickerView: View {
                 .listStyle(.plain)
                 .navigationTitle("Select a Voice")
                 .presentationDetents([.medium])
-                .presentationCornerRadius(50)
+                .presentationCornerRadius(30)
             }
         }
     }

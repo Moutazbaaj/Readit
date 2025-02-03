@@ -47,7 +47,7 @@ struct VoicePickerView: View {
             .padding()
         }
         .presentationDetents([.medium])
-        .presentationCornerRadius(50)
+        .presentationCornerRadius(30)
     }
 }
 }

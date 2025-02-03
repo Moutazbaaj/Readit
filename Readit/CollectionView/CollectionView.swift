@@ -147,7 +147,7 @@ struct CollectionView: View {
         .sheet(isPresented: $showAddLibrarySheet) {
             AddCollectionSheet(newLibraryTitle: $newLibraryTitle)
                 .presentationDetents([.height(200)])
-                .presentationCornerRadius(50)
+                .presentationCornerRadius(30)
             
         }
         .sheet(isPresented: $showEditSheet) {

@@ -18,7 +18,7 @@ struct HomeView: View {
     // Define the grid layout with two columns.
     let gridItems = [GridItem(.flexible()), GridItem(.flexible())]
     
-    @State var hideButton = false
+//    @State var hideButton = false
     
     @State private var showSheet = false // Controls sheet visibility
 
@@ -196,8 +196,8 @@ struct HomeView: View {
             Spacer()
                 })
         .navigationBarItems(trailing: HStack {
-            Button("", systemImage: hideButton ? "x.circle" : "plus.circle") {
-                hideButton.toggle()
+            Button("", systemImage: "plus.circle") {
+//                hideButton.toggle()
                 showSheet = true
             }
 //            Spacer()
@@ -211,7 +211,7 @@ struct HomeView: View {
         .sheet(isPresented: $showSheet){
             SheetView()
                 .presentationDetents([.medium, .large])
-                .presentationCornerRadius(50)
+                .presentationCornerRadius(30)
         }
     }
 }

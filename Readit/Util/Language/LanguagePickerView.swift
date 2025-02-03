@@ -47,7 +47,7 @@ struct LanguagePickerView: View {
                 }
                 .navigationBarTitle("Select Language")
                 .presentationDetents([.medium])
-                .presentationCornerRadius(50)
+                .presentationCornerRadius(30)
             }
         }
     }
