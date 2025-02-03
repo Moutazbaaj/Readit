@@ -27,16 +27,9 @@ struct TextsListView: View {
     
     @State private var selected =  0
     @State private var expand = false
+
     
-    
-    
-    //    @State private var showVoicePicker = false // Controls the voice picker presentation
-    //    @State private var selectedVoice = Voice.allCases.first ?? .custom(identifier: "", language: "", name: "") // Selected voice
-    //    @State private var showLanguagePicker = false
-    //    @State private var selectedLanguage: Language = .englishUS
-    
-    
-    var body: some View {
+        var body: some View {
         ZStack {
             LinearGradient(
                 gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
@@ -258,7 +251,7 @@ struct TextsListView: View {
         })
         .sheet(isPresented: $showCameraCaptureView) {
             CameraView(image: $capturedImage)
-                .presentationCornerRadius(20)
+                .presentationCornerRadius(30)
             
         }
         .sheet(isPresented: $showAddTextSheet) {
@@ -296,8 +289,15 @@ struct TextsListView: View {
                 Spacer()
             }
             .padding()
+            .background(
+                LinearGradient(
+                gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .edgesIgnoringSafeArea(.all))
             .presentationDetents([.medium, .large])
-            .presentationCornerRadius(50)
+            .presentationCornerRadius(30)
             
         }
         .sheet(isPresented: $showEditTextSheet) {
@@ -335,6 +335,13 @@ struct TextsListView: View {
                 Spacer()
             }
             .padding()
+            .background(
+                LinearGradient(
+                gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .edgesIgnoringSafeArea(.all))
             .presentationDetents([.medium, .large])
             .presentationCornerRadius(30)
             
