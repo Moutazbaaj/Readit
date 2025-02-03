@@ -336,7 +336,7 @@ struct TextsListView: View {
             }
             .padding()
             .presentationDetents([.medium, .large])
-            .presentationCornerRadius(50)
+            .presentationCornerRadius(30)
             
         }
         .alert(isPresented: $showAlert) {

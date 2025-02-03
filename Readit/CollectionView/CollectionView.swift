@@ -15,6 +15,7 @@ struct CollectionView: View {
     @State private var newLibraryTitle = "" // Stores the new library title
     @State private var libraryItem: FireLibrary? // Selected library for actions (edit/delete)
     @State private var searchQuery = "" // State for search input
+    @State private var editingTextContent = "" // State for search input
     
     
     private var filteredLibraries: [FireLibrary] {
@@ -104,6 +105,7 @@ struct CollectionView: View {
                                             // Edit button
                                             Button("Edit") {
                                                 libraryItem = library
+                                                editingTextContent = library.libraryTitle
                                                 showEditSheet = true
                                             }
                                             
@@ -152,7 +154,42 @@ struct CollectionView: View {
         }
         .sheet(isPresented: $showEditSheet) {
             // Implement editing sheet logic here.
-            
+            VStack {
+                Text("Edit Text")
+                    .font(.headline)
+                    .padding()
+                
+                TextEditor(text: $editingTextContent)
+                    .padding()
+                    .frame(maxHeight: .infinity)
+                    .cornerRadius(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
+                
+                Button(action: {
+                    if !editingTextContent.isEmpty {
+                        viewModel.editLibrary(libraryId: libraryItem?.id, newTitle: editingTextContent)
+                        editingTextContent = ""
+                        showEditSheet = false
+                    }
+                }) {
+                    Text("Done")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .disabled(editingTextContent.isEmpty)
+                
+                Spacer()
+            }
+            .padding()
+            .presentationDetents([.medium, .large])
+            .presentationCornerRadius(30)
         }
         .onAppear {
             viewModel.fetchLibraries()

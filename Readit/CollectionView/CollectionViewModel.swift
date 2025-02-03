@@ -219,6 +219,47 @@ class CollectionViewModel: ObservableObject {
         }
     }
     
+    func editLibrary(libraryId: String?, newTitle: String) {
+        guard let userId = self.firebaseAuthentication.currentUser?.uid else {
+            print("User is not signed in")
+            return
+        }
+        
+        guard let libraryId = libraryId else {
+            print("Library ID is nil")
+            return
+        }
+        
+        let libraryRef = self.firebaseFirestore.collection("Librarys").document(libraryId)
+        
+        libraryRef.getDocument { document, error in
+            if let error = error {
+                print("Error fetching Library: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let document = document, document.exists, let libraryData = try? document.data(as: FireLibrary.self) else {
+                print("Library does not exist or data decoding failed")
+                return
+            }
+            
+            guard libraryData.userId == userId else {
+                print("Unauthorized: User does not own this library")
+                return
+            }
+            
+            libraryRef.updateData([
+                "libraryTitle": newTitle,
+                "editTimestamp": Timestamp()
+            ]) { error in
+                if let error = error {
+                    print("Error updating Library: \(error.localizedDescription)")
+                } else {
+                    print("Library updated successfully")
+                }
+            }
+        }
+    }
     
     func addLibraryToFav(withId id: String, isFavorites: Bool) {
         let library = firebaseFirestore.collection("Librarys").document(id)
