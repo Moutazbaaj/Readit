@@ -20,7 +20,7 @@ struct ImageRecognitionView: View {
 
     @State private var showLanguagePicker: Bool = false
     @State private var selectedLanguage: Language = .englishUS
-    @State private var capturedImage: UIImage? // To hold the captured image
+//    @State private var capturedImage: UIImage? // To hold the captured image
     
     
     
@@ -49,23 +49,24 @@ struct ImageRecognitionView: View {
                                     RoundedRectangle(cornerRadius: 20)
                                         .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                                 )
-                        } else if let capturedImage = capturedImage {
-                            Image(uiImage: capturedImage)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(maxWidth: 300, maxHeight: 300)
-                                .cornerRadius(20)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                                )
-                                .onAppear {
-                                    // Process the captured image
-                                    viewModel.selectedImage = capturedImage
-                                    viewModel.processImage(image: capturedImage)
-                                }
-                            
                         }
+//                        } else if let capturedImage = capturedImage {
+//                            Image(uiImage: capturedImage)
+//                                .resizable()
+//                                .scaledToFit()
+//                                .frame(maxWidth: 300, maxHeight: 300)
+//                                .cornerRadius(20)
+//                                .overlay(
+//                                    RoundedRectangle(cornerRadius: 20)
+//                                        .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+//                                )
+//                                .onAppear {
+//                                    // Process the captured image
+//                                    viewModel.selectedImage = capturedImage
+//                                    viewModel.processImage(image: capturedImage)
+//                                }
+//                            
+//                        }
                         
                         
                         if let extractedText = viewModel.extractedText {
@@ -120,7 +121,7 @@ struct ImageRecognitionView: View {
                                 viewModel.stopSpeaking()
                                 viewModel.selectedImage = nil
                                 viewModel.extractedText = nil
-                                capturedImage = nil
+//                                capturedImage = nil
                             }) {
                                 Label("Clear", systemImage: "xmark.circle")
                                     .font(.headline)
@@ -132,7 +133,7 @@ struct ImageRecognitionView: View {
                         }
                         
                         HStack {
-                            CameraCaptureButton(capturedImage: $capturedImage)
+//                            CameraCaptureButton(capturedImage: $capturedImage)
                             
                             // PhotosPicker to select an image
                             PhotosPicker(
@@ -140,7 +141,7 @@ struct ImageRecognitionView: View {
                                 matching: .images, // Show only images in the picker
                                 photoLibrary: .shared()
                             ) {
-                                Label("Select Photo", systemImage: "photo")
+                                Label("Select another image", systemImage: "photo")
                                 
                                     .font(.headline)
                                     .padding()
@@ -170,7 +171,6 @@ struct ImageRecognitionView: View {
                 LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
             }
             .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhoto, matching: .images, photoLibrary: .shared()) // Auto-open the picker
-
             .onAppear {
                 showPhotoPicker = true
                 viewModel.selectedImage = nil
@@ -185,17 +185,17 @@ struct ImageRecognitionView: View {
                 
                 libViewModel.createText(text: extractedText, libraryId: " ")
             }
-            .onChange(of: capturedImage) {_, newImage in
-                if let newImage = newImage {
-                    viewModel.selectedImage = newImage
-                    viewModel.processImage(image: newImage)
-                    guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
-                        return
-                    }
-                    
-                    libViewModel.createText(text: extractedText, libraryId: " ")
-                }
-            }
+//            .onChange(of: capturedImage) {_, newImage in
+//                if let newImage = newImage {
+//                    viewModel.selectedImage = newImage
+//                    viewModel.processImage(image: newImage)
+//                    guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
+//                        return
+//                    }
+//                    
+//                    libViewModel.createText(text: extractedText, libraryId: " ")
+//                }
+//            }
             .onChange(of: selectedPhoto) {_ , newItem in
                 Task {
                     if let data = try? await newItem?.loadTransferable(type: Data.self),
@@ -213,7 +213,6 @@ struct ImageRecognitionView: View {
             }
         }
     }
-
 
 #Preview {
     ImageRecognitionView()
