@@ -17,7 +17,6 @@ class CameraRecognitionViewModel: ObservableObject {
     static let shared = CameraRecognitionViewModel()
     private let synthesizer = AVSpeechSynthesizer()
 
-//    @Published var showImagePicker = false
     @Published var selectedImage: UIImage?
     @Published var extractedText: String?
 

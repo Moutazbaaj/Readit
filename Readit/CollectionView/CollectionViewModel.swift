@@ -318,36 +318,65 @@ class CollectionViewModel: ObservableObject {
         }
     }
     
-    
-    func processImage(image: UIImage?) {
-        guard let image = image, let cgImage = image.cgImage else { return }
-        
-        // Specify the languages you want to recognize
-        let request = VNRecognizeTextRequest { request, error in
-            if let error = error {
-                print("Text recognition failed with error: \(error.localizedDescription)")
-                return
-            }
-            
-            if let results = request.results as? [VNRecognizedTextObservation] {
-                let recognizedText = results.compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
-                DispatchQueue.main.async {
-                    self.extractedText = recognizedText
+    func processImage(image: UIImage?) async -> String? {
+        guard let image = image, let cgImage = image.cgImage else { return nil }
+
+        return await withCheckedContinuation { continuation in
+            Task.detached {
+                let request = VNRecognizeTextRequest()
+                request.recognitionLanguages = ["en", "ar", "ja", "zh-Hans", "zh-Hant"]
+                request.usesLanguageCorrection = true
+
+                let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+
+                do {
+                    try handler.perform([request])
+
+                    let recognizedText = (request.results)?
+                        .compactMap { $0.topCandidates(1).first?.string }
+                        .joined(separator: " ") ?? ""
+
+                    await MainActor.run {
+                        self.extractedText = recognizedText
+                        continuation.resume(returning: recognizedText)
+                    }
+
+                } catch {
+                    print("Text recognition failed: \(error.localizedDescription)")
+                    await MainActor.run {
+                        continuation.resume(returning: nil)
+                    }
                 }
             }
         }
-        
-        // Set recognition languages
-        request.recognitionLanguages = ["en", "ar", "ja", "zh-Hans", "zh-Hant"] // English, Arabic, Japanese, Simplified and Traditional Chinese
-        
-        // Fallback to automatic language detection if needed
-        request.usesLanguageCorrection = true
-
-        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-        DispatchQueue.global(qos: .userInitiated).async {
-            try? handler.perform([request])
-        }
-    }
+    }//        guard let image = image, let cgImage = image.cgImage else { return }
+//
+//        // Specify the languages you want to recognize
+//        let request = VNRecognizeTextRequest { request, error in
+//            if let error = error {
+//                print("Text recognition failed with error: \(error.localizedDescription)")
+//                return
+//            }
+//            
+//            if let results = request.results as? [VNRecognizedTextObservation] {
+//                let recognizedText = results.compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+//                DispatchQueue.main.async {
+//                    self.extractedText = recognizedText
+//                }
+//            }
+//        }
+//        
+//        // Set recognition languages
+//        request.recognitionLanguages = ["en", "ar", "ja", "zh-Hans", "zh-Hant"] // English, Arabic, Japanese, Simplified and Traditional Chinese
+//        
+//        // Fallback to automatic language detection if needed
+//        request.usesLanguageCorrection = true
+//
+//        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+//        DispatchQueue.global(qos: .userInitiated).async {
+//            try? handler.perform([request])
+//        }
+//    }
     
 //    func readTextAloudForLibrary(from library: FireLibrary, in language: Language, using voice: Voice) {
 //        guard !texts.isEmpty else {

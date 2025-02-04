@@ -20,7 +20,6 @@ struct ImageRecognitionView: View {
 
     @State private var showLanguagePicker: Bool = false
     @State private var selectedLanguage: Language = .englishUS
-//    @State private var capturedImage: UIImage? // To hold the captured image
     
     
     
@@ -50,24 +49,6 @@ struct ImageRecognitionView: View {
                                         .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                                 )
                         }
-//                        } else if let capturedImage = capturedImage {
-//                            Image(uiImage: capturedImage)
-//                                .resizable()
-//                                .scaledToFit()
-//                                .frame(maxWidth: 300, maxHeight: 300)
-//                                .cornerRadius(20)
-//                                .overlay(
-//                                    RoundedRectangle(cornerRadius: 20)
-//                                        .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-//                                )
-//                                .onAppear {
-//                                    // Process the captured image
-//                                    viewModel.selectedImage = capturedImage
-//                                    viewModel.processImage(image: capturedImage)
-//                                }
-//                            
-//                        }
-                        
                         
                         if let extractedText = viewModel.extractedText {
                             Text("Extracted Text:")
@@ -133,7 +114,6 @@ struct ImageRecognitionView: View {
                         }
                         
                         HStack {
-//                            CameraCaptureButton(capturedImage: $capturedImage)
                             
                             // PhotosPicker to select an image
                             PhotosPicker(

@@ -1,3 +1,13 @@
+//
+//  FeatureButton.swift
+//  Readit
+//
+//  Created by Moutaz Baaj on 04.02.25.
+//
+
+import Foundation
+import SwiftUI
+
 struct FeatureButton: View {
     var iconName: String
     var title: String

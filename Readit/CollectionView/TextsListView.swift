@@ -24,6 +24,10 @@ struct TextsListView: View {
     @State private var newTextContent = ""
     @State private var editingTextContent = ""
     @State private var capturedImage: UIImage? // To hold the captured image
+    @State private var selectedPhoto: PhotosPickerItem? // For the selected image from the picker
+    @State private var showPhotoPicker: Bool = false  // State to trigger the picker automatically
+    @State private var isLoading: Bool = false  // NEW: Controls loading state
+
     
     @State private var selected =  0
     @State private var expand = false
@@ -153,13 +157,6 @@ struct TextsListView: View {
                         
                         if expand {
                             
-                            //                             Button(action: { self.selected = 0}) {
-                            //                                 NavigationLink(destination: HistoryView()){
-                            //                                     Image(systemName: "house")
-                            //                                         .foregroundColor(self.selected == 0 ? .black : .gray)
-                            //                                 }
-                            //                             }
-                            
                             Button {
                                 self.selected = 0
                                 viewModel.stopSpeaking()
@@ -193,13 +190,25 @@ struct TextsListView: View {
                             
                             Button {
                                 self.selected = 3
+                                selectedPhoto = nil
+                                showPhotoPicker = true
+                                
+                            } label: {
+                                Image(systemName: "photo")
+                            }
+                            .foregroundColor(self.selected == 3 ? .black : .gray)
+                            
+                            Spacer()
+                            
+                            Button {
+                                self.selected = 4
                                 capturedImage = nil
                                 showCameraCaptureView = true
                                 
                             } label: {
-                                Image(systemName: "camera")
+                                Image(systemName: "scanner")
                             }
-                            .foregroundColor(self.selected == 3 ? .black : .gray)
+                            .foregroundColor(self.selected == 4 ? .black : .gray)
                             
                             Spacer()
                         }
@@ -217,6 +226,20 @@ struct TextsListView: View {
                     .animation(.interactiveSpring(response: 0.6, dampingFraction: 0.6, blendDuration: 0.6), value: expand)
                 }
                 
+            }
+            if isLoading {
+                ZStack {
+                    Color.black.opacity(0.5).edgesIgnoringSafeArea(.all)
+                    VStack {
+                        ProgressView("Processing Image...")
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .font(.headline)
+                            .padding()
+                            .background(Color.black.opacity(0.7))
+                            .cornerRadius(10)
+                            .foregroundColor(.white)
+                    }
+                }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -249,6 +272,34 @@ struct TextsListView: View {
 //                    .font(.title2)
 //            }
         })
+        .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhoto, matching: .images, photoLibrary: .shared()) // Auto-open the picker
+        .onChange(of: capturedImage) { _, newImage in
+            Task {
+                if let newImage = newImage {
+                    isLoading = true
+                    viewModel.selectedImage = newImage
+                    if let extractedText = await viewModel.processImage(image: newImage), !extractedText.isEmpty {
+                        viewModel.createText(text: extractedText, libraryId: library.id ?? "")
+                        viewModel.fetchTexts(forLibraryId: library.id ?? "")
+                    }
+                    isLoading = false
+                }
+            }
+        }
+        .onChange(of: selectedPhoto) { _, newItem in
+            Task {
+                if let data = try? await newItem?.loadTransferable(type: Data.self),
+                   let uiImage = UIImage(data: data) {
+                    isLoading = true
+                    viewModel.selectedImage = uiImage
+                    if let extractedText = await viewModel.processImage(image: uiImage), !extractedText.isEmpty {
+                        viewModel.createText(text: extractedText, libraryId: library.id ?? "")
+                        viewModel.fetchTexts(forLibraryId: library.id ?? "")
+                    }
+                    isLoading = false
+                }
+            }
+        }
         .sheet(isPresented: $showCameraCaptureView) {
             CameraView(image: $capturedImage)
                 .presentationCornerRadius(30)
@@ -360,6 +411,8 @@ struct TextsListView: View {
         }
         .onAppear {
             viewModel.fetchTexts(forLibraryId: library.id ?? "")
+            viewModel.extractedText = nil
+            viewModel.selectedImage = nil
         }
         .onDisappear {
             viewModel.stopSpeaking()
