@@ -37,12 +37,12 @@ struct MainTabView: View {
                 }
                 
                 // Settings Tab
-                NavigationStack {
-                    ProfileView()
-                }
-                .tabItem {
-                    Label("More", systemImage: "ellipsis.circle")
-                }
+//                NavigationStack {
+//                    ProfileView()
+//                }
+//                .tabItem {
+//                    Label("More", systemImage: "ellipsis.circle")
+//                }
             }
             .tint(.white)
         }

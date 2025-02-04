@@ -19,6 +19,7 @@ struct SideMenuView: View {
     @State private var showSettingSheet: Bool = false
     @State private var alertType: AlertType = .none
     @State private var showAlert: Bool = false
+    @State private var showAlertButtons = false
     @State private var newUsername: String = ""
     @State private var newBirthday: Date = Date()
     @State private var newColor: Color = .black
@@ -29,22 +30,30 @@ struct SideMenuView: View {
     
     @State private var showLanguagePicker = false
     @State private var selectedLanguage: Language = .englishUS
-    @State private var showVoicePicker = false // Controls the voice picker presentation
-    @State private var selectedVoice = Voice.custom(identifier: "com.apple.voice.compact.en-US.Samantha", language: "en-US", name: "Samantha (en-US)") // Selected voice
+    @State private var showVoicePicker = false
+    @State private var selectedVoice = Voice.custom(identifier: "com.apple.voice.compact.en-US.Samantha", language: "en-US", name: "Samantha (en-US)")
     @State private var isLoadingPreferences = true
     
     
     var body: some View {
         NavigationStack {
             ZStack {
+                // Background Dimming View
                 if isShowing {
-                    Rectangle()
+                    Color.black
                         .opacity(0.3)
-                        .ignoresSafeArea(.all)
+                        .ignoresSafeArea()
                         .onTapGesture {
-                            isShowing.toggle()
+                            withAnimation(.easeInOut) {
+                                isShowing.toggle()
+                            }
                         }
-                    HStack {
+                        .transition(.opacity)
+                }
+                
+                // Side Menu
+                HStack {
+                    VStack(alignment: .leading) {
                         VStack(alignment: .leading) {
                             VStack {
                                 //mein Stack
@@ -167,7 +176,41 @@ struct SideMenuView: View {
                                     
                                     Spacer()
                                     Spacer()
+                                    
+                                    HStack {
+                                        // Logout Button
+                                        Button(role: .destructive) {
+                                            alertType = .logout
+                                            showAlert = true
+                                        } label: {
+                                            Text("Log Out")
+                                                .font(.subheadline)
+                                                .foregroundColor(.red) // Text color for the button
+                                                .padding()
+                                                .background(Color.black.opacity(0.5)) // Button background color
+                                                .cornerRadius(20) // Rounded corners
+                                            
+                                        }
+                                        
+                                        
+                                        Spacer()
+                                        
+                                        
+                                        // Delete Account Button
+                                        Button(role: .destructive) {
+                                            alertType = .deleteAccount
+                                            showAlert = true
+                                        } label: {
+                                            Text("Delete Account")
+                                                .font(.subheadline)
+                                                .foregroundColor(.red) // Text color for the button
+                                                .padding()
+                                                .background(Color.black.opacity(0.5)) // Button background color
+                                                .cornerRadius(20) // Rounded corners
+                                        }
+                                    }
 
+                                    
                                 }
                                 .sheet(isPresented: $showSettingSheet) {
                                     ProfileSheetView(
@@ -277,27 +320,29 @@ struct SideMenuView: View {
                                 isLoadingPreferences = false
                                 profileViewModel.loadProfileImage()
                             }
-
+                            
                         }
-                        .padding()
-                        .frame(maxWidth: 270, alignment: .leading)
-                        .presentationCornerRadius(30)
-                        .background(
-                            LinearGradient(
+                    }
+                    .padding()
+                    .frame(maxWidth: 270, alignment: .leading)
+                    .background(
+                        LinearGradient(
                             gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
                             startPoint: .top,
                             endPoint: .bottom
                         )
-                        .edgesIgnoringSafeArea(.all))
-                        .background(.black.opacity(0.9))
-                        
-                        Spacer()
-                    }
+                        .edgesIgnoringSafeArea(.all)
+                    )
+                    .background(.black.opacity(0.9))
+                    .cornerRadius(30)
+                    .shadow(color: .black.opacity(0.5), radius: 10, x: 5, y: 0)
+                    .offset(x: isShowing ? 0 : -270)
+                    .animation(.spring(response: 0.5, dampingFraction: 0.7, blendDuration: 0), value: isShowing)
+                    
+                    Spacer()
                 }
+                .transition(.move(edge: .leading))
             }
-            .transition(.move(edge: .leading))
-            .animation(.easeInOut, value: isShowing)
-            
         }
     }
 }

@@ -20,7 +20,6 @@ struct ProfileSheetView: View {
     @State private var selectedItem: PhotosPickerItem?
     @State private var selectedImage: UIImage?
     @State private var showAlert = false
-    @State private var showAlertButtons = false
     
     @State private var alertType: AlertType = .none
 
@@ -140,42 +139,42 @@ struct ProfileSheetView: View {
                         .padding()
                     }
                     
-                    Divider()
-                    //Buttons log and del
-                    HStack {
-                        // Logout Button
-                        Button(role: .destructive) {
-                            alertType = .logout
-                            showAlertButtons = true
-                        } label: {
-                            Text("Log Out")
-                                .font(.subheadline)
-                                .foregroundColor(.red) // Text color for the button
-                                .padding()
-                                .background(Color.black.opacity(0.5)) // Button background color
-                                .cornerRadius(20) // Rounded corners
-                            
-                        }
-                        
-                        
-                        Spacer()
-                        
-                        
-                        // Delete Account Button
-                        Button(role: .destructive) {
-                            alertType = .deleteAccount
-                            showAlertButtons = true
-                        } label: {
-                            Text("Delete Account")
-                                .font(.subheadline)
-                                .foregroundColor(.red) // Text color for the button
-                                .padding()
-                                .background(Color.black.opacity(0.5)) // Button background color
-                                .cornerRadius(20) // Rounded corners
-                        }
-                    }
-                    .padding()
-                    .alert(isPresented: $showAlertButtons) {
+//                    Divider()
+//                    //Buttons log and del
+//                    HStack {
+//                        // Logout Button
+//                        Button(role: .destructive) {
+//                            alertType = .logout
+//                            showAlert = true
+//                        } label: {
+//                            Text("Log Out")
+//                                .font(.subheadline)
+//                                .foregroundColor(.red) // Text color for the button
+//                                .padding()
+//                                .background(Color.black.opacity(0.5)) // Button background color
+//                                .cornerRadius(20) // Rounded corners
+//                            
+//                        }
+//                        
+//                        
+//                        Spacer()
+//                        
+//                        
+//                        // Delete Account Button
+//                        Button(role: .destructive) {
+//                            alertType = .deleteAccount
+//                            showAlert = true
+//                        } label: {
+//                            Text("Delete Account")
+//                                .font(.subheadline)
+//                                .foregroundColor(.red) // Text color for the button
+//                                .padding()
+//                                .background(Color.black.opacity(0.5)) // Button background color
+//                                .cornerRadius(20) // Rounded corners
+//                        }
+//                    }
+//                    .padding()
+                    .alert(isPresented: $showAlert) {
                         switch alertType {
                         case .logout:
                             return Alert(
