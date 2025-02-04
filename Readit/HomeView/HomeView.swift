@@ -18,12 +18,12 @@ struct HomeView: View {
     // Define the grid layout with two columns.
     let gridItems = [GridItem(.flexible()), GridItem(.flexible())]
     
-//    @State var hideButton = false
+    //    @State var hideButton = false
     
-    @State private var showSheet = false 
+    @State private var showSheet = false
     @State public var showMenu = false
-
-
+    
+    
     
     
     var body: some View {
@@ -141,8 +141,10 @@ struct HomeView: View {
             
             Button("", systemImage: "line.3.horizontal") {
                 showMenu.toggle()
-            }.padding()
-
+            }
+            .padding(.bottom)
+            .padding(.top)
+            
             Text("Hello")
                 .font(.largeTitle)
                 .fontWeight(.bold)
@@ -160,18 +162,18 @@ struct HomeView: View {
                 .padding(.top)
             
             Spacer()
-                })
+        })
         .navigationBarItems(trailing: HStack {
             Button("", systemImage: "plus.circle") {
                 showSheet = true
             }
-//            Spacer()
-//            //History
-//            NavigationLink(destination: HistoryView()) {
-//                Image(systemName: "clock")
-//                    .foregroundColor(.white)
-//                    .padding()
-//            }
+            //            Spacer()
+            //            //History
+            //            NavigationLink(destination: HistoryView()) {
+            //                Image(systemName: "clock")
+            //                    .foregroundColor(.white)
+            //                    .padding()
+            //            }
         })
         .sheet(isPresented: $showSheet){
             SheetView()
