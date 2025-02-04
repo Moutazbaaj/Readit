@@ -20,7 +20,8 @@ struct HomeView: View {
     
 //    @State var hideButton = false
     
-    @State private var showSheet = false // Controls sheet visibility
+    @State private var showSheet = false 
+    @State private var showMenu = false
 
 
     
@@ -34,6 +35,8 @@ struct HomeView: View {
                 endPoint: .bottom
             )
             .edgesIgnoringSafeArea(.all)
+            
+            
             
             VStack {
                 
@@ -69,7 +72,7 @@ struct HomeView: View {
                                         $0.timestamp.dateValue() > $1.timestamp.dateValue()
                                     }).prefix(6)) { library in
                                         NavigationLink(destination: TextsListView(library: library)) {
-                                            HomeCard(library: library)
+                                            FavLibCard(library: library)
                                                 .frame(width: 110, height: 110)
                                         }
                                     }
@@ -127,58 +130,19 @@ struct HomeView: View {
                             }
                         }
                     }
-//                    Divider().hidden().padding(.bottom).padding()
                 }
                 Divider().hidden()
             }
-//            VStack {
-//                Spacer()
-//                if hideButton {
-//                    VStack {
-//                        // Navigation Buttons
-//                        NavigationLink(destination: TextToSpeechView()) {
-//                            VStack {
-//                                Image(systemName: "bubble.and.pencil")
-//                                    .font(.title)
-//                                    .foregroundColor(.white)
-//                                    .shadow(radius: 10)
-//                                Text("Text to Speech")
-//                                    .font(.caption)
-//                                    .foregroundColor(.white)
-//                            }
-//                            .padding()
-//                        }
-//                        NavigationLink(destination: ImageRecognitionView()) {
-//                            VStack {
-//                                Image(systemName: "photo.badge.plus.fill")
-//                                    .font(.title)
-//                                    .foregroundColor(.white)
-//                                    .shadow(radius: 10)
-//                                Text("Text Recognition")
-//                                    .font(.caption)
-//                                    .foregroundColor(.white)
-//                            }
-//                            .padding()
-//                        }
-//                    }
-//                    .transition(.scale) // Smooth animation when appearing/disappearing
-//                    .padding() // Space from the bottom
-//                    .background(
-//                        LinearGradient(
-//                            gradient: Gradient(colors: [Color.black.opacity(0.6), Color.black.opacity(0.7)]),
-//                            startPoint: .top,
-//                            endPoint: .bottom
-//                        )
-//                        .cornerRadius(30)
-//                        .padding()
-//                    )
-//                }
-//            }
+            
+//            SideMenuView(isShowing: $showMenu)
         }
-//        .onTapGesture {
-//            hideButton = false
-//        }
+        .toolbar(showMenu ? .hidden : .visible, for: .navigationBar)
         .navigationBarItems(leading: HStack {
+            
+            Button("", systemImage: "line.3.horizontal") {
+                showMenu.toggle()
+            }.padding()
+
             Text("Hello")
                 .font(.largeTitle)
                 .fontWeight(.bold)
@@ -194,26 +158,27 @@ struct HomeView: View {
                 }
                 .padding(.bottom)
                 .padding(.top)
+            
             Spacer()
                 })
-        .navigationBarItems(trailing: HStack {
-            Button("", systemImage: "plus.circle") {
-//                hideButton.toggle()
-                showSheet = true
-            }
-//            Spacer()
-//            //History
-//            NavigationLink(destination: HistoryView()) {
-//                Image(systemName: "clock")
-//                    .foregroundColor(.white)
-//                    .padding()
+//        .navigationBarItems(trailing: HStack {
+//            Button("", systemImage: "plus.circle") {
+//                showSheet = true
 //            }
-        })
-        .sheet(isPresented: $showSheet){
-            SheetView()
-                .presentationDetents([.large])
-                .presentationCornerRadius(30)
-        }
+////            Spacer()
+////            //History
+////            NavigationLink(destination: HistoryView()) {
+////                Image(systemName: "clock")
+////                    .foregroundColor(.white)
+////                    .padding()
+////            }
+//        })
+//        .sheet(isPresented: $showSheet){
+//            SheetView()
+//                .presentationDetents([.large])
+//                .presentationCornerRadius(30)
+//                .presentationDragIndicator(.visible)
+//        }
     }
 }
 

@@ -9,7 +9,7 @@
 
 import SwiftUI
 
-struct HomeCard: View {
+struct FavLibCard: View {
     let library: FireLibrary
     
     var body: some View {
