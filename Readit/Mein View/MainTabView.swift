@@ -11,13 +11,13 @@ struct MainTabView: View {
     //    @State var selected = 0
     //    @State var hideButton = false
     
-    @State private var showMenu = false
-    @State private var showSheet = false
+//    @State private var showMenu = false
+//    @State private var showSheet = false
 
     
     
     var body: some View {
-        NavigationStack{
+//        NavigationStack {
             ZStack {
                 TabView {
                     // Home Tab
@@ -52,41 +52,42 @@ struct MainTabView: View {
                         Label("More", systemImage: "ellipsis.circle")
                     }
                 }
+                .tint(.white)
                 
-                SideMenuView(isShowing: $showMenu)
+//                SideMenuView(isShowing: $showMenu)
                 
             }
-//            .toolbar(showMenu ? .hidden : .visible, for: .navigationBar)
-            .navigationBarItems(leading: HStack {
-                
-                Button("", systemImage: "line.3.horizontal") {
-                    showMenu.toggle()
-                }.padding()
-                
-                Spacer()
-            })
-            .navigationBarItems(trailing: HStack {
-                Button("", systemImage: "plus.circle") {
-                    showSheet = true
-                }
-    //            Spacer()
-    //            //History
-    //            NavigationLink(destination: HistoryView()) {
-    //                Image(systemName: "clock")
-    //                    .foregroundColor(.white)
-    //                    .padding()
-    //            }
-            })
-            .sheet(isPresented: $showSheet){
-                SheetView()
-                    .presentationDetents([.large])
-                    .presentationCornerRadius(30)
-                    .presentationDragIndicator(.visible)
-            }
+
+//            .navigationBarItems(leading: HStack {
+//                
+//                Button("", systemImage: "line.3.horizontal") {
+//                    showMenu.toggle()
+//                }.padding()
+//                
+//                Spacer()
+//            })
+//            .navigationBarItems(trailing: HStack {
+//                Button("", systemImage: "plus.circle") {
+//                    showSheet = true
+//                }
+//    //            Spacer()
+//    //            //History
+//    //            NavigationLink(destination: HistoryView()) {
+//    //                Image(systemName: "clock")
+//    //                    .foregroundColor(.white)
+//    //                    .padding()
+//    //            }
+//            })
+//            .sheet(isPresented: $showSheet){
+//                SheetView()
+//                    .presentationDetents([.large])
+//                    .presentationCornerRadius(30)
+//                    .presentationDragIndicator(.visible)
+//            }
 
 
-        }
-        .tint(.white)
+//        }
+//        .tint(.white)
     }
 }
 

@@ -21,7 +21,7 @@ struct HomeView: View {
 //    @State var hideButton = false
     
     @State private var showSheet = false 
-    @State private var showMenu = false
+    @State public var showMenu = false
 
 
     
@@ -134,9 +134,9 @@ struct HomeView: View {
                 Divider().hidden()
             }
             
-//            SideMenuView(isShowing: $showMenu)
+            SideMenuView(isShowing: $showMenu)
         }
-        .toolbar(showMenu ? .hidden : .visible, for: .navigationBar)
+        .toolbar(showMenu ? .hidden : .visible, for: .tabBar)
         .navigationBarItems(leading: HStack {
             
             Button("", systemImage: "line.3.horizontal") {
@@ -161,24 +161,24 @@ struct HomeView: View {
             
             Spacer()
                 })
-//        .navigationBarItems(trailing: HStack {
-//            Button("", systemImage: "plus.circle") {
-//                showSheet = true
+        .navigationBarItems(trailing: HStack {
+            Button("", systemImage: "plus.circle") {
+                showSheet = true
+            }
+//            Spacer()
+//            //History
+//            NavigationLink(destination: HistoryView()) {
+//                Image(systemName: "clock")
+//                    .foregroundColor(.white)
+//                    .padding()
 //            }
-////            Spacer()
-////            //History
-////            NavigationLink(destination: HistoryView()) {
-////                Image(systemName: "clock")
-////                    .foregroundColor(.white)
-////                    .padding()
-////            }
-//        })
-//        .sheet(isPresented: $showSheet){
-//            SheetView()
-//                .presentationDetents([.large])
-//                .presentationCornerRadius(30)
-//                .presentationDragIndicator(.visible)
-//        }
+        })
+        .sheet(isPresented: $showSheet){
+            SheetView()
+                .presentationDetents([.large])
+                .presentationCornerRadius(30)
+                .presentationDragIndicator(.visible)
+        }
     }
 }
 
