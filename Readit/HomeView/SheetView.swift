@@ -14,28 +14,28 @@ struct SheetView: View {
     
     var body: some View {
         NavigationStack {
-
-        ZStack{
+            
+            ZStack{
                 LinearGradient(
                     gradient: Gradient(colors: [Color.purple.opacity(0.3), Color.blue.opacity(0.3)]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
                 .edgesIgnoringSafeArea(.all)
-            
-            VStack {
-
-                Spacer()
                 
-                Image(systemName: "document.badge.plus")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 150, height: 150)
-                    .foregroundStyle(.white.opacity(0.5))
-                    .font(.title)
-                Text("chose a way to read")
-                
-                Spacer()
+                VStack {
+                    
+                    Spacer()
+                    
+                    Image(systemName: "document.badge.plus")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 150, height: 150)
+                        .foregroundStyle(.white.opacity(0.5))
+                        .font(.title)
+                    Text("chose a way to read")
+                    
+                    Spacer()
                     HStack {
                         NavigationLink(destination: TextToSpeechView()) {
                             VStack {
@@ -43,6 +43,7 @@ struct SheetView: View {
                                     .font(.title)
                                     .foregroundColor(.white)
                                     .shadow(radius: 10)
+                                    .padding()
                                 Text("Text to Speech")
                                     .font(.caption)
                                     .foregroundColor(.white)
@@ -56,18 +57,30 @@ struct SheetView: View {
                                     .font(.title)
                                     .foregroundColor(.white)
                                     .shadow(radius: 10)
-                                Text("Text Recognition")
+                                    .padding()
+                                Text("Text from Photo")
+                                    .font(.caption)
+                                    .foregroundColor(.white)
+                            }
+                            .padding()
+                        }
+                        
+                        NavigationLink(destination: CameraRecognitionView()) {
+                            VStack {
+                                Image(systemName: "scanner")
+                                    .font(.title)
+                                    .foregroundColor(.white)
+                                    .shadow(radius: 10)
+                                    .padding()
+                                Text("Scan document")
                                     .font(.caption)
                                     .foregroundColor(.white)
                             }
                             .padding()
                         }
                     }
-                    .padding()
-            }
-            .padding()
-            
-
+                    
+                }
             }
         }
     }
