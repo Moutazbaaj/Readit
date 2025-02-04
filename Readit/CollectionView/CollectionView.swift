@@ -42,7 +42,7 @@ struct CollectionView: View {
                 .edgesIgnoringSafeArea(.all)
                 
                 VStack {
-                    ScrollView {
+                    ScrollView(.vertical, showsIndicators: false) {
                         // Search bar
                         TextField("Search Collections...", text: $searchQuery)
                             .padding()

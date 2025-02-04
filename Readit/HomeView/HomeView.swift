@@ -192,7 +192,8 @@ struct HomeView: View {
                         animateText = true
                     }
                 }
-                .padding()
+                .padding(.bottom)
+                .padding(.top)
             Spacer()
                 })
         .navigationBarItems(trailing: HStack {
@@ -210,7 +211,7 @@ struct HomeView: View {
         })
         .sheet(isPresented: $showSheet){
             SheetView()
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.large])
                 .presentationCornerRadius(30)
         }
     }
