@@ -72,7 +72,7 @@ struct HomeView: View {
                                         $0.timestamp.dateValue() > $1.timestamp.dateValue()
                                     }).prefix(6)) { library in
                                         NavigationLink(destination: TextsListView(library: library)) {
-                                            FavLibCard(library: library)
+                                            LastInCard(library: library)
                                                 .frame(width: 110, height: 110)
                                         }
                                     }
@@ -114,19 +114,14 @@ struct HomeView: View {
                                 Spacer()
                                 
                             } else {
-                                
                                 Divider().hidden()
-                                LazyVGrid(columns: gridItems, spacing: 20) {
                                     ForEach(viewModel.favLibreries.sorted(by: {
                                         $0.editTimestamp?.dateValue() ?? Date() > $1.editTimestamp?.dateValue() ?? Date()
                                     })) { library in
                                         NavigationLink(destination: TextsListView(library: library)) {
-                                            CollectionCard(library: library)
-                                                .frame(width: 175, height: 170)
+                                            FavCollectionCard(library: library)
                                         }
                                     }
-                                }
-                                
                             }
                         }
                     }
@@ -165,16 +160,9 @@ struct HomeView: View {
             Spacer()
         })
         .navigationBarItems(trailing: HStack {
-            Button("", systemImage: "plus.circle") {
+            Button("", systemImage: "plus") {
                 showSheet = true
             }
-            //            Spacer()
-            //            //History
-            //            NavigationLink(destination: HistoryView()) {
-            //                Image(systemName: "clock")
-            //                    .foregroundColor(.white)
-            //                    .padding()
-            //            }
         })
         .sheet(isPresented: $showSheet){
             SheetView()

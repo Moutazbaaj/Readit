@@ -1,5 +1,5 @@
 //
-//  HomeCard.swift
+//  LastInCard.swift
 //  Readit
 //
 //  Created by Moutaz Baaj on 17.01.25.
@@ -9,7 +9,7 @@
 
 import SwiftUI
 
-struct FavLibCard: View {
+struct LastInCard: View {
     let library: FireLibrary
     
     var body: some View {
