@@ -6,72 +6,108 @@
 //
 
 import SwiftUI
-
+import FirebaseCore
 
 struct CollectionCard: View {
-    
     let library: FireLibrary
     
     var body: some View {
-        VStack() {
-            
+        VStack(alignment: .leading, spacing: 8) {
+            // Title
             Text(library.libraryTitle)
-                .font(.callout)
+                .font(.subheadline)
+                .fontWeight(.semibold)
                 .foregroundColor(.white)
-                .padding(.top, 5)
-                .padding(.bottom, 2)
-                .padding(.horizontal)
+                .lineLimit(1)
+                .padding(.top, 12)
+                .padding(.horizontal, 16)
             
-            HStack {
-                
-                Text("Created:")
-                    .font(.caption2)
-                    .foregroundColor(.white)
-                
-                Text(library.timestamp.dateValue(), style: .time)
-                    .font(.caption2)
-                    .foregroundColor(.white)
-                
+            // Divider
+            Divider()
+                .background(Color.white.opacity(0.3))
+                .padding(.horizontal, 16)
+            
+            // Creation Date and Time
+            VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        Image(systemName: "calendar")
+                            .font(.caption)
+                            .foregroundColor(.white.opacity(0.8))
+                        
+                        Text("Created:")
+                            .font(.caption)
+                            .foregroundColor(.white.opacity(0.8))
+                        Spacer()
+                    }
+                 VStack {
+                        Text(library.timestamp.dateValue(), style: .date)
+                            .font(.caption2)
+                            .foregroundColor(.white)
+                    }
+                }
+                Spacer()
+                HStack {
+                    Image(systemName: "clock")
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.8))
+                    
+                    Text(library.timestamp.dateValue(), style: .time)
+                        .font(.caption)
+                        .foregroundColor(.white)
+                }
+                VStack{
+                    Text(library.timestamp.dateValue(), style: .relative)
+                        .font(.caption2)
+                        .foregroundColor(.white)
+                }
             }
+            .padding(.horizontal, 16)
             
-            Text(library.timestamp.dateValue(), style: .date)
-                .font(.caption2)
-                .foregroundColor(.white)
-                .foregroundColor(.white.opacity(0.8))
+            Spacer()
             
+            // Pages and Favorites
             HStack {
-                
-                Text("Pages: \(library.textIds!.count)")
-                    .font(.caption2)
-                    .foregroundColor(.white.opacity(0.7))
-                    .padding()
+                HStack {
+                    Image(systemName: "book")
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.8))
+                    
+                    Text("Pages: \(library.textIds?.count ?? 0)")
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.8))
+                }
                 
                 Spacer()
                 
-                if (library.isFavorites) {
-                    Image(systemName: "star")
-                        .font(.callout)
-                        .foregroundColor(.white.opacity(0.8))
-                        .padding()
-                    
+                if library.isFavorites {
+                    Image(systemName: "star.fill")
+                        .font(.caption)
+                        .foregroundColor(.yellow)
+                        .shadow(color: .yellow, radius: 2, x: 0, y: 0)
                 }
-
             }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 12)
         }
-        .frame(width: 175 , height : 170)
+        .frame(width: 175, height: 170)
         .background(
             LinearGradient(
-                gradient: Gradient(colors: [Color.gray.opacity(0.2), .gray.opacity(0.5)]),
-                startPoint: .top,
-                endPoint: .bottom
+                gradient: Gradient(colors: [Color.blue.opacity(0.6), Color.purple.opacity(0.3)]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .overlay(
+                Color.black.opacity(0.3) // Adds a dark overlay for better text readability
             )
         )
-        .cornerRadius(30)
+        .cornerRadius(20)
         .overlay(
-            RoundedRectangle(cornerRadius: 30)
-                .stroke(Color.white.opacity(0.3), lineWidth: 2) // Add a subtle border to highlight the edges
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(Color.white.opacity(0.3), lineWidth: 1)
         )
-        .shadow(color: Color.black.opacity(0.4), radius: 15, x: 0, y: 10) // Deep shadow for floating effect
+        .shadow(color: Color.black.opacity(0.4), radius: 10, x: 0, y: 5)
+        .padding(.vertical, 8)
     }
 }
 
