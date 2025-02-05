@@ -10,6 +10,8 @@ import PhotosUI
 
 struct SideMenuView: View {
     @Binding var isShowing: Bool
+    @Binding var isShowingLast: Bool
+    @Binding var isShowingFav: Bool
     
     
     @StateObject var profileViewModel = ProfileViewModel.shared
@@ -58,6 +60,7 @@ struct SideMenuView: View {
                             VStack {
                                 //mein Stack
                                 VStack {
+                                    //profile
                                     HStack {
                                         // Profile Image Section
                                         VStack {
@@ -117,7 +120,7 @@ struct SideMenuView: View {
                                     
                                     Divider()
                                     
-                                    Spacer()
+                                    Divider().padding().hidden()
                                     
                                     //Option Stack
                                     VStack {
@@ -138,7 +141,7 @@ struct SideMenuView: View {
                                             //Language
                                             HStack {
                                                 Text("Language:")
-                                                    .font(.subheadline)
+                                                    .font(.caption2)
                                                     .foregroundStyle(.gray)
                                                 Spacer()
                                                 Button(action: {
@@ -156,7 +159,7 @@ struct SideMenuView: View {
                                             //Voice
                                             HStack {
                                                 Text("Voice:")
-                                                    .font(.subheadline)
+                                                    .font(.caption2)
                                                     .foregroundStyle(.gray)
                                                 Spacer()
                                                 Button(action: {
@@ -174,9 +177,38 @@ struct SideMenuView: View {
                                         Divider()
                                     }
                                     
-                                    Spacer()
+                                    Divider().padding().hidden()
+                                    
+                                    //UI settings
+                                    VStack {
+                                        
+                                        HStack {
+                                            Text("Home:")
+                                                .font(.subheadline)
+                                                .foregroundStyle(.gray)
+                                            
+                                            Spacer()
+                                        }
+                                        
+                                        Divider()
+                                        
+                                        Toggle("Show Last Collection", isOn: $isShowingLast)
+                                            .font(.caption2)
+                                            .foregroundStyle(.gray)
+                                            .toggleStyle(SwitchToggleStyle()) // Default switch style
+                                        
+                                        Divider()
+                                            Toggle("Show Favorites", isOn: $isShowingFav)
+                                                .font(.caption2)
+                                                .foregroundStyle(.gray)
+                                                .toggleStyle(SwitchToggleStyle()) // Default switch style
+                                    }
+                                    
+                                    Divider()
+                                    
                                     Spacer()
                                     
+                                    //Logout deletAcc
                                     HStack {
                                         // Logout Button
                                         Button(role: .destructive) {
@@ -184,8 +216,8 @@ struct SideMenuView: View {
                                             showAlert = true
                                         } label: {
                                             Text("Log Out")
-                                                .font(.subheadline)
-                                                .foregroundColor(.red) // Text color for the button
+                                                .font(.caption2)
+                                                .foregroundColor(.white) // Text color for the button
                                                 .padding()
                                                 .background(Color.black.opacity(0.5)) // Button background color
                                                 .cornerRadius(20) // Rounded corners
@@ -202,14 +234,14 @@ struct SideMenuView: View {
                                             showAlert = true
                                         } label: {
                                             Text("Delete Account")
-                                                .font(.subheadline)
+                                                .font(.caption2)
                                                 .foregroundColor(.red) // Text color for the button
                                                 .padding()
                                                 .background(Color.black.opacity(0.5)) // Button background color
                                                 .cornerRadius(20) // Rounded corners
                                         }
                                     }
-
+                                    
                                     
                                 }
                                 .sheet(isPresented: $showSettingSheet) {
@@ -348,5 +380,7 @@ struct SideMenuView: View {
 }
 
 #Preview {
-    SideMenuView(isShowing: .constant(true))
+    SideMenuView(isShowing: .constant(true),
+                 isShowingLast: .constant(true),
+                 isShowingFav: .constant(true))
 }
