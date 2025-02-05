@@ -73,7 +73,7 @@ struct FavCollectionCard: View {
                     .padding(.trailing, 12)
             }
         }
-        .frame(height: 80) // Wider but shorter
+        .frame(height: 80)
         .background(
             LinearGradient(
                 gradient: Gradient(colors: [Color.blue.opacity(0.6), Color.purple.opacity(0.3)]),
@@ -81,7 +81,7 @@ struct FavCollectionCard: View {
                 endPoint: .bottomTrailing
             )
             .overlay(
-                Color.black.opacity(0.3) // Adds a dark overlay for better text readability
+                Color.black.opacity(0.3)
             )
         )
         .cornerRadius(15)
@@ -90,6 +90,6 @@ struct FavCollectionCard: View {
                 .stroke(Color.white.opacity(0.3), lineWidth: 1)
         )
         .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 5)
-        .padding(.horizontal, 8) // Padding between cards
+        .padding(6) // Padding between cards
     }
 }
