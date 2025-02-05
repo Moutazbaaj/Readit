@@ -1,3 +1,22 @@
+//
+//  EditTextView.swift
+//  Readit
+//
+//  Created by Moutaz Baaj on 05.02.25.
+//
+
+import SwiftUI
+
+struct EditTextView: View {
+    
+    @Binding var showEditTextSheet: Bool
+    @Binding var editingTextContent: String
+    @StateObject private var viewModel = CollectionViewModel.shared
+    
+    var textItem: FireText?
+    
+    var body: some View {
+        ZStack{
             VStack {
                 Text("Edit Text")
                     .font(.headline)
@@ -13,9 +32,8 @@
                     )
                 
                 Button(action: {
-                    if !editingTextContent.isEmpty {
-                        viewModel.editText(withId: textItem?.id ?? " ", newText: editingTextContent)
-                        editingTextContent = ""
+                    if !editingTextContent.isEmpty, let textID = textItem?.id {
+                        viewModel.editText(withId: textID, newText: editingTextContent)
                         showEditTextSheet = false
                     }
                 }) {
@@ -23,7 +41,7 @@
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.blue)
+                        .background(editingTextContent.isEmpty ? Color.gray : Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
@@ -31,3 +49,18 @@
                 
                 Spacer()
             }
+            .padding()
+            .background(
+                LinearGradient(
+                    gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .edgesIgnoringSafeArea(.all)
+            )
+            .presentationDetents([.medium, .large]) // Adaptive sheet height
+            .presentationCornerRadius(30)
+        }
+        .background(.black)
+    }
+}
