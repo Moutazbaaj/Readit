@@ -13,7 +13,7 @@ struct AddTextView: View {
     @Binding var newTextContent: String
     @StateObject private var viewModel = CollectionViewModel.shared
 
-    var library: FireLibrary?
+     var library: FireLibrary?
     
     var body: some View {
         ZStack {
