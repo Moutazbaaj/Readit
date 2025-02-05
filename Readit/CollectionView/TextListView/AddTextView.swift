@@ -1,3 +1,22 @@
+//
+//  AddTextView.swift
+//  Readit
+//
+//  Created by Moutaz Baaj on 05.02.25.
+//
+
+import SwiftUI
+
+struct AddTextView: View {
+    
+    @Binding var showAddTextSheet: Bool
+    @Binding var newTextContent: String
+    @StateObject private var viewModel = CollectionViewModel.shared
+
+    var library: FireLibrary?
+    
+    var body: some View {
+        ZStack {
             VStack {
                 Text("Add New Text")
                     .font(.headline)
@@ -13,8 +32,8 @@
                     )
                 
                 Button(action: {
-                    if !newTextContent.isEmpty {
-                        viewModel.createText(text: newTextContent, libraryId: library.id ?? "")
+                    if !newTextContent.isEmpty, let libraryID = library?.id {
+                        viewModel.createText(text: newTextContent, libraryId: libraryID)
                         newTextContent = ""
                         showAddTextSheet = false
                     }
@@ -23,11 +42,11 @@
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.blue)
+                        .background(newTextContent.isEmpty ? Color.gray : Color.blue) // Gray out when empty
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
-                .disabled(newTextContent.isEmpty)
+                .disabled(newTextContent.isEmpty) // Disable when text is empty
                 
                 Spacer()
             }
@@ -38,6 +57,11 @@
                     startPoint: .top,
                     endPoint: .bottom
                 )
-                .edgesIgnoringSafeArea(.all))
-            .presentationDetents([.medium, .large])
+                .edgesIgnoringSafeArea(.all)
+            )
+            .presentationDetents([.medium, .large]) // Adaptive sheet height
             .presentationCornerRadius(30)
+        }
+        .background(.black)
+    }
+}
