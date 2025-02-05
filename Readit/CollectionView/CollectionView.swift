@@ -153,50 +153,50 @@ struct CollectionView: View {
             
         }
         .sheet(isPresented: $showEditSheet) {
-            // Implement editing sheet logic here.
-            VStack {
-                Text("Edit Library title")
-                    .font(.headline)
-                    .padding()
-                
-                TextEditor(text: $editingTextContent)
-                    .padding()
-                    .frame(maxHeight: .infinity)
-                    .cornerRadius(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.gray, lineWidth: 1)
-                    )
-                
-                Button(action: {
-                    if !editingTextContent.isEmpty {
-                        viewModel.editLibrary(libraryId: libraryItem?.id, newTitle: editingTextContent)
-                        editingTextContent = ""
-                        showEditSheet = false
-                    }
-                }) {
-                    Text("Done")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-                .disabled(editingTextContent.isEmpty)
-                
-                Spacer()
-            }
-            .padding()
-            .background(
-                LinearGradient(
-                gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .edgesIgnoringSafeArea(.all))
-            .presentationDetents([.medium, .large])
-            .presentationCornerRadius(30)
+//                VStack {
+//                    Text("Edit Library title")
+//                        .font(.headline)
+//                        .padding()
+//                    
+//                    TextEditor(text: $editingTextContent)
+//                        .padding()
+//                        .frame(maxHeight: .infinity)
+//                        .cornerRadius(10)
+//                        .overlay(
+//                            RoundedRectangle(cornerRadius: 10)
+//                                .stroke(Color.gray, lineWidth: 1)
+//                        )
+//                    
+//                    Button(action: {
+//                        if !editingTextContent.isEmpty {
+//                            viewModel.editLibrary(libraryId: libraryItem?.id, newTitle: editingTextContent)
+//                            editingTextContent = ""
+//                            showEditSheet = false
+//                        }
+//                    }) {
+//                        Text("Done")
+//                            .font(.headline)
+//                            .frame(maxWidth: .infinity)
+//                            .padding()
+//                            .background(Color.blue)
+//                            .foregroundColor(.white)
+//                            .cornerRadius(10)
+//                    }
+//                    .disabled(editingTextContent.isEmpty)
+//                    
+//                    Spacer()
+//                }
+//            .padding()
+//            .background(
+//                LinearGradient(
+//                    gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
+//                    startPoint: .top,
+//                    endPoint: .bottom
+//                )
+//                .edgesIgnoringSafeArea(.all))
+//            .presentationDetents([.medium, .large])
+//            .presentationCornerRadius(30)
+            CollaectionEditView(showEditSheet: $showEditSheet, editingTextContent: $editingTextContent)
         }
         .onAppear {
             viewModel.fetchLibraries()

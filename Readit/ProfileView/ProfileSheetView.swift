@@ -205,6 +205,8 @@ struct ProfileSheetView: View {
                     }
                 }
             }
+            .background(.black.opacity(0.9))
+
         }
         .presentationDetents([.medium, .large])
         .presentationCornerRadius(50)

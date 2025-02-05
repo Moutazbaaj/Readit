@@ -58,6 +58,7 @@ struct SheetView: View {
                     Spacer()
                 }
             }
+            .background(.black.opacity(0.9))
         }
     }
 }

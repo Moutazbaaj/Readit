@@ -136,6 +136,7 @@ struct HomeView: View {
             
             SideMenuView(isShowing: $showMenu)
         }
+        .background(.black.opacity(0.9))
         .toolbar(showMenu ? .hidden : .visible, for: .tabBar)
         .navigationBarItems(leading: HStack {
             

@@ -59,6 +59,7 @@ struct VoiceListPickerView: View {
                 .presentationDetents([.medium])
                 .presentationCornerRadius(30)
             }
+            .background(.black.opacity(0.9))
         }
     }
 }

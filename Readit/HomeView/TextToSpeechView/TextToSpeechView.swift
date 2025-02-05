@@ -19,19 +19,19 @@ struct TextToSpeechView: View {
         
         ZStack {
             LinearGradient(
-                gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
+                gradient: Gradient(colors: [.purple.opacity(0.3), .blue.opacity(0.3)]),
                 startPoint: .top,
                 endPoint: .bottom
             )
             .edgesIgnoringSafeArea(.all)
-
+            
             
             VStack() {
                 // Input text area
                 VStack {
-//                    Text("Enter Text:")
-//                        .font(.headline)
-//                        .padding(.horizontal)
+                    //                    Text("Enter Text:")
+                    //                        .font(.headline)
+                    //                        .padding(.horizontal)
                     
                     TextEditor(text: $textViewModel.inputText)
                         .padding()
@@ -43,20 +43,20 @@ struct TextToSpeechView: View {
                 }
                 
                 // Language selection
-//                HStack {
-//                    Text("Language:")
-//                        .font(.subheadline)
-//                        .padding()
-//
-//                    Spacer()
-//                    Text(selectedLanguage.displayName)
-//                        .foregroundColor(.blue)
-//                        .onTapGesture {
-//                            showLanguagePicker = true
-//                        }
-//                        .padding()
-//                    
-//                }
+                //                HStack {
+                //                    Text("Language:")
+                //                        .font(.subheadline)
+                //                        .padding()
+                //
+                //                    Spacer()
+                //                    Text(selectedLanguage.displayName)
+                //                        .foregroundColor(.blue)
+                //                        .onTapGesture {
+                //                            showLanguagePicker = true
+                //                        }
+                //                        .padding()
+                //                    
+                //                }
                 
                 // Action buttons
                 HStack {
@@ -84,23 +84,23 @@ struct TextToSpeechView: View {
                             .cornerRadius(10)
                     }
                 }
-//                Divider().hidden()
+                //                Divider().hidden()
             }
             .padding()
             .navigationTitle("Text to Speech")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            showLanguagePicker = true // Show the language picker sheet
-                        }) {
-                            HStack{
-                                Text(selectedLanguage.displayTag)
-                                Image(systemName: "globe")
-                            }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        showLanguagePicker = true // Show the language picker sheet
+                    }) {
+                        HStack{
+                            Text(selectedLanguage.displayTag)
+                            Image(systemName: "globe")
                         }
                     }
                 }
+            }
             .sheet(isPresented: $showLanguagePicker) {
                 LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
             }
@@ -112,6 +112,8 @@ struct TextToSpeechView: View {
                 textViewModel.inputText = ""
             }
         }
+        .background(.black.opacity(0.9))
+
     }
 }
 

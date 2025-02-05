@@ -22,32 +22,34 @@ struct VoicePickerView: View {
                 endPoint: .bottom
             )
             .edgesIgnoringSafeArea(.all)
-        VStack {
-            Text("Select Voice")
+            VStack {
+                Text("Select Voice")
+                    .font(.headline)
+                    .padding()
+                
+                Picker("Voice", selection: $selectedVoice) {
+                    ForEach(Voice.voices(for: language.rawValue), id: \.identifier) { voice in
+                        Text(voice.displayName).tag(voice)
+                    }
+                }
+                .pickerStyle(WheelPickerStyle())
+                .frame(height: 200)
+                
+                Button("Done") {
+                    isPresented = false
+                }
                 .font(.headline)
                 .padding()
-            
-            Picker("Voice", selection: $selectedVoice) {
-                ForEach(Voice.voices(for: language.rawValue), id: \.identifier) { voice in
-                    Text(voice.displayName).tag(voice)
-                }
+                .frame(maxWidth: .infinity)
+                .background(Color.black.opacity(0.6))
+                .foregroundColor(.white)
+                .cornerRadius(20)
+                .padding()
             }
-            .pickerStyle(WheelPickerStyle())
-            .frame(height: 200)
-            
-            Button("Done") {
-                isPresented = false
-            }
-            .font(.headline)
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.black.opacity(0.6))
-            .foregroundColor(.white)
-            .cornerRadius(20)
-            .padding()
+            .presentationDetents([.medium])
+            .presentationCornerRadius(30)
         }
-        .presentationDetents([.medium])
-        .presentationCornerRadius(30)
+        .background(.black.opacity(0.9))
+        
     }
-}
 }

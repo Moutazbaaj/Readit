@@ -246,31 +246,6 @@ struct TextsListView: View {
         .navigationBarItems(trailing: HStack {
             Text(textToSpeechManager.preferences.first?.selectedLanguageName ?? "English")
             Image(systemName: "globe")
-            //            Menu {
-            //                Button("Add New Text") {
-            //                    showAddTextSheet = true
-            //                }
-            //                Button("Scan a Document") {
-            //                    capturedImage = nil
-            //                    showCameraCaptureView = true
-            //                }
-            //                .onChange(of: capturedImage) { _, newImage in
-            //                    if let newImage = newImage {
-            //                        viewModel.selectedImage = newImage
-            //                        viewModel.processImage(image: newImage)
-            //                        guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
-            //                            return
-            //                        }
-            //                        viewModel.createText(text: extractedText, libraryId: library.id ?? "")
-            //                        viewModel.fetchTexts(forLibraryId: library.id ?? "")
-            //
-            //                    }
-            //                }
-            //
-            //            } label: {
-            //                Image(systemName: "ellipsis.circle")
-            //                    .font(.title2)
-            //            }
         })
         .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhoto, matching: .images, photoLibrary: .shared()) // Auto-open the picker
         .onChange(of: capturedImage) { _, newImage in
@@ -306,99 +281,11 @@ struct TextsListView: View {
             
         }
         .sheet(isPresented: $showAddTextSheet) {
-            VStack {
-                Text("Add New Text")
-                    .font(.headline)
-                    .padding()
-                
-                TextEditor(text: $newTextContent)
-                    .padding()
-                    .frame(maxHeight: .infinity)
-                    .cornerRadius(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.gray, lineWidth: 1)
-                    )
-                
-                Button(action: {
-                    if !newTextContent.isEmpty {
-                        viewModel.createText(text: newTextContent, libraryId: library.id ?? "")
-                        newTextContent = ""
-                        showAddTextSheet = false
-                    }
-                }) {
-                    Text("Add Text")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-                .disabled(newTextContent.isEmpty)
-                
-                Spacer()
-            }
-            .padding()
-            .background(
-                LinearGradient(
-                    gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .edgesIgnoringSafeArea(.all))
-            .presentationDetents([.medium, .large])
-            .presentationCornerRadius(30)
-            
+            AddTextView(showAddTextSheet: $showAddTextSheet, newTextContent: $newTextContent)
         }
         .sheet(isPresented: $showEditTextSheet) {
-            VStack {
-                Text("Edit Text")
-                    .font(.headline)
-                    .padding()
-                
-                TextEditor(text: $editingTextContent)
-                    .padding()
-                    .frame(maxHeight: .infinity)
-                    .cornerRadius(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.gray, lineWidth: 1)
-                    )
-                
-                Button(action: {
-                    if !editingTextContent.isEmpty {
-                        viewModel.editText(withId: textItem?.id ?? " ", newText: editingTextContent)
-                        editingTextContent = ""
-                        showEditTextSheet = false
-                    }
-                }) {
-                    Text("Done")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-                .disabled(editingTextContent.isEmpty)
-                
-                Spacer()
-            }
-            
-            .padding()
-            .background(
-                LinearGradient(
-                    gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .edgesIgnoringSafeArea(.all))
-            .presentationDetents([.medium, .large])
-            .presentationCornerRadius(30)
-            
+            EditTextView(showEditTextSheet: $showEditTextSheet, editingTextContent: $editingTextContent)
         }
-        .background(.black.opacity(0.9))
         .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("Confirm Delete"),
