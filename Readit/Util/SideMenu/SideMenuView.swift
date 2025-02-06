@@ -82,7 +82,7 @@ struct SideMenuView: View {
                                                     Image(systemName: "person.circle.fill")
                                                         .resizable()
                                                         .scaledToFit()
-                                                        .frame(width: 100, height: 100)
+                                                        .frame(width: 50, height: 50)
                                                         .foregroundColor(.gray)
                                                         .padding()
                                                 }
@@ -359,7 +359,7 @@ struct SideMenuView: View {
                     .frame(maxWidth: 270, alignment: .leading)
                     .background(
                         LinearGradient(
-                            gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
+                            gradient: Gradient(colors: [.purple.opacity(0.3), .blue.opacity(0.3)]),
                             startPoint: .top,
                             endPoint: .bottom
                         )
