@@ -272,7 +272,7 @@ struct HomeView: View {
                         NavigationLink(destination: CameraRecognitionView()) {
                             FeatureButton(iconName: "scanner", title: "Scan document")
                         }
-                    }
+                    }.padding(.horizontal, -10)
                 }
     }
     
@@ -315,6 +315,8 @@ struct HomeView: View {
                 .frame(height: 160)
                 .padding(.horizontal, 2)
             }
+                Divider().padding(.horizontal)
+                .frame(width: 300)
         }
     }
     
