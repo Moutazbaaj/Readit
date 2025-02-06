@@ -27,6 +27,22 @@ struct HomeView: View {
     @AppStorage("showLast") var showLast: Bool = true
     @AppStorage("showFav") var showFav: Bool = true
     
+    @State private var libraryItem: FireLibrary? // Selected library for actions (edit/delete)
+    @State private var editingTextContent = ""
+    @State private var showAlert = false
+    @State private var showEditSheet = false
+
+    @State private var searchQuery = "" // State for search input
+
+    private var filteredLibraries: [FireLibrary] {
+        if searchQuery.isEmpty {
+            return viewModel.libreries
+        } else {
+            return viewModel.libreries.filter { $0.libraryTitle.localizedCaseInsensitiveContains(searchQuery) }
+        }
+    }
+
+    
     
     var body: some View {
         ZStack {
@@ -39,10 +55,22 @@ struct HomeView: View {
             .edgesIgnoringSafeArea(.all)
             
             VStack {
-                if !showLast && !showFav {
+                
+                // Search bar
+                TextField("Search Collections...", text: $searchQuery)
+                    .padding()
+                    .background(Color.black.opacity(0.4))
+                    .cornerRadius(10)
+                    .shadow(radius: 2)
+                    .padding(4)
+                    .padding(.top)
+                Spacer()
+                
+                if searchQuery.isEmpty {
+                    if !showLast && !showFav {
                     ScrollView {
-                                LastCollectionsSection().hidden()
-                                EmptyStateView()
+                        LastCollectionsSection().hidden()
+                        EmptyStateView()
                     }
                     Divider().hidden()
                     
@@ -53,7 +81,7 @@ struct HomeView: View {
                         EmptyStateView()
                     }
                     Divider().hidden()
-
+                    
                 } else {
                     // Case 2: At least one toggle is on
                     ScrollView(.vertical, showsIndicators: false) {
@@ -71,6 +99,88 @@ struct HomeView: View {
                     }
                     Divider().hidden()
                 }
+                } else {
+                    VStack {
+                        ScrollView(.vertical, showsIndicators: false) {
+
+
+                            Spacer()
+                            
+                            HStack {
+                                
+                                Spacer()
+                                
+                                Text("\(filteredLibraries.count) items ")
+                                    .font(.caption)
+                                    .padding(.top, 2)
+                                    .padding(.bottom, 4)
+                                    .padding(.horizontal)
+                            }
+                            
+                            
+                            if viewModel.libreries.isEmpty {
+                                Image(systemName: "tray")
+                                    .font(.largeTitle)
+                                    .foregroundColor(.gray)
+                                    .padding()
+                                Text("You have No Collections yet")
+                                    .font(.headline)
+                                    .foregroundColor(.gray)
+                                Text("Click on the Plus (+) button to start")
+                                    .font(.headline)
+                                    .foregroundColor(.gray)
+                                
+                            } else {
+                                if filteredLibraries.isEmpty {
+                                    VStack {
+                                        Text("No results found")
+                                            .font(.headline)
+                                            .foregroundColor(.gray)
+                                            .padding()
+                                        Spacer()
+                                    }
+                                } else {
+                                    LazyVGrid(columns: gridItems, spacing: 20) {
+                                        ForEach(filteredLibraries.sorted {
+                                            $0.timestamp.dateValue() > $1.timestamp.dateValue()
+                                        }) { library in
+                                            NavigationLink(destination: TextsListView(library: library)) {
+                                                CollectionCard(library: library)
+                                            }
+                                            .contextMenu {
+                                                Button(library.isFavorites ? "Unfavorite" : "Favorite") {
+                                                    if let libraryId = library.id {
+                                                        viewModel.addLibraryToFav(withId: libraryId, isFavorites: !library.isFavorites)
+                                                    } else {
+                                                        print("Error: Library ID is missing")
+                                                    }
+                                                }
+                                                
+                                                // Edit button
+                                                Button("Edit") {
+                                                    libraryItem = library
+                                                    editingTextContent = library.libraryTitle
+                                                    showEditSheet = true
+                                                }
+                                                
+                                                // Delete button
+                                                Button(role: .destructive) {
+                                                    libraryItem = library
+                                                    showAlert = true
+                                                } label: {
+                                                    Text("Delete")
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                            }
+                        }
+                        Divider().hidden()
+                    }
+                }
+            
             }
             
             // Side Menu
@@ -115,6 +225,22 @@ struct HomeView: View {
                 .presentationCornerRadius(30)
                 .presentationDragIndicator(.visible)
         }
+        .sheet(isPresented: $showEditSheet) {
+            CollaectionEditView(showEditSheet: $showEditSheet, editingTextContent: $editingTextContent)
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("Confirm Delete"),
+                message: Text("Are you sure you want to delete this library?"),
+                primaryButton: .destructive(Text("Delete")) {
+                    if let library = libraryItem {
+                        viewModel.deleteLibrary(withId: library.id)
+                    }
+                },
+                secondaryButton: .cancel()
+            )
+        }
+
     }
     
     

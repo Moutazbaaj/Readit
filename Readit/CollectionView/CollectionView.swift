@@ -15,7 +15,7 @@ struct CollectionView: View {
     @State private var newLibraryTitle = "" // Stores the new library title
     @State private var libraryItem: FireLibrary? // Selected library for actions (edit/delete)
     @State private var searchQuery = "" // State for search input
-    @State private var editingTextContent = "" // State for search input
+    @State private var editingTextContent = "" 
     
     
     private var filteredLibraries: [FireLibrary] {
@@ -50,6 +50,8 @@ struct CollectionView: View {
                             .cornerRadius(10)
                             .shadow(radius: 2)
                             .padding(4)
+                            .padding(.top)
+
                         Spacer()
                         
                         HStack {
@@ -153,49 +155,6 @@ struct CollectionView: View {
             
         }
         .sheet(isPresented: $showEditSheet) {
-//                VStack {
-//                    Text("Edit Library title")
-//                        .font(.headline)
-//                        .padding()
-//                    
-//                    TextEditor(text: $editingTextContent)
-//                        .padding()
-//                        .frame(maxHeight: .infinity)
-//                        .cornerRadius(10)
-//                        .overlay(
-//                            RoundedRectangle(cornerRadius: 10)
-//                                .stroke(Color.gray, lineWidth: 1)
-//                        )
-//                    
-//                    Button(action: {
-//                        if !editingTextContent.isEmpty {
-//                            viewModel.editLibrary(libraryId: libraryItem?.id, newTitle: editingTextContent)
-//                            editingTextContent = ""
-//                            showEditSheet = false
-//                        }
-//                    }) {
-//                        Text("Done")
-//                            .font(.headline)
-//                            .frame(maxWidth: .infinity)
-//                            .padding()
-//                            .background(Color.blue)
-//                            .foregroundColor(.white)
-//                            .cornerRadius(10)
-//                    }
-//                    .disabled(editingTextContent.isEmpty)
-//                    
-//                    Spacer()
-//                }
-//            .padding()
-//            .background(
-//                LinearGradient(
-//                    gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
-//                    startPoint: .top,
-//                    endPoint: .bottom
-//                )
-//                .edgesIgnoringSafeArea(.all))
-//            .presentationDetents([.medium, .large])
-//            .presentationCornerRadius(30)
             CollaectionEditView(showEditSheet: $showEditSheet, editingTextContent: $editingTextContent)
         }
         .onAppear {
