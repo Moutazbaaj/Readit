@@ -91,7 +91,7 @@ struct ProfileSheetView: View {
                             // User Details Section
                             TextField("Username", text: $newUsername)
                                 .padding()
-                                .background(Color.black.opacity(0.7))
+                                .background(Color.gray.opacity(0.5))
                                 .cornerRadius(20)
                                 .foregroundColor(.white)
                                 .padding(.vertical)
@@ -129,7 +129,7 @@ struct ProfileSheetView: View {
                                 }) {
                                     Text("Save Changes")
                                         .padding()
-                                        .background(Color.black.opacity(0.6))
+                                        .background(Color.gray.opacity(0.5))
                                         .cornerRadius(20)
                                 }
                                 Spacer()

@@ -151,7 +151,7 @@ struct SideMenuView: View {
                                                         .font(.caption2)
                                                         .foregroundColor(.white) // Text color for the button
                                                         .padding()
-                                                        .background(Color.black.opacity(0.5)) // Button background color
+                                                        .background(Color.gray.opacity(0.5)) // Button background color
                                                         .cornerRadius(20) // Rounded corners
                                                 }
                                             }
@@ -169,7 +169,7 @@ struct SideMenuView: View {
                                                         .font(.caption2)
                                                         .foregroundColor(.white) // Text color for the button
                                                         .padding()
-                                                        .background(Color.black.opacity(0.5)) // Button background color
+                                                        .background(Color.gray.opacity(0.5)) // Button background color
                                                         .cornerRadius(20) // Rounded corners
                                                 }
                                             }
@@ -219,7 +219,7 @@ struct SideMenuView: View {
                                                 .font(.caption2)
                                                 .foregroundColor(.white) // Text color for the button
                                                 .padding()
-                                                .background(Color.black.opacity(0.5)) // Button background color
+                                                .background(Color.gray.opacity(0.5)) // Button background color
                                                 .cornerRadius(20) // Rounded corners
                                             
                                         }
@@ -237,7 +237,7 @@ struct SideMenuView: View {
                                                 .font(.caption2)
                                                 .foregroundColor(.red) // Text color for the button
                                                 .padding()
-                                                .background(Color.black.opacity(0.5)) // Button background color
+                                                .background(Color.gray.opacity(0.5)) // Button background color
                                                 .cornerRadius(20) // Rounded corners
                                         }
                                     }

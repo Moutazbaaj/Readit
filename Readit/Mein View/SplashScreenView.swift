@@ -21,8 +21,8 @@ struct SplashScreenView: View {
                         .stroke(lineWidth: 2) // Adjust the thickness of the circle
                         .foregroundColor(.blue) // The color of the circle
                         .shadow(color: .white, radius: 10) // White shadow to create the "raised" effect
-                        .frame(width: 110, height: 110)
-                    Image("beeLogo")
+                        .frame(width: 100, height: 100)
+                    Image(systemName: "book")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 100, height: 100)
