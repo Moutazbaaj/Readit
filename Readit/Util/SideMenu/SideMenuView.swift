@@ -57,7 +57,7 @@ struct SideMenuView: View {
                 HStack {
                     VStack(alignment: .leading) {
                         VStack(alignment: .leading) {
-                            VStack {
+                            ScrollView(.vertical, showsIndicators: false) {
                                 //mein Stack
                                 VStack {
                                     //profile
@@ -133,7 +133,6 @@ struct SideMenuView: View {
                                         }
                                         
                                         Divider()
-                                            .padding(.horizontal)
                                         
                                         if isLoadingPreferences {
                                             ProgressView("Loading preferences...")
@@ -155,7 +154,7 @@ struct SideMenuView: View {
                                                         .cornerRadius(20) // Rounded corners
                                                 }
                                             }
-                                            
+                                            Divider()
                                             //Voice
                                             HStack {
                                                 Text("Voice:")
@@ -202,47 +201,9 @@ struct SideMenuView: View {
                                                 .font(.caption2)
                                                 .foregroundStyle(.gray)
                                                 .toggleStyle(SwitchToggleStyle()) // Default switch style
-                                    }
+                                    }.padding(.horizontal, 2)
                                     
                                     Divider()
-                                    
-                                    Spacer()
-                                    
-                                    //Logout deletAcc
-                                    HStack {
-                                        // Logout Button
-                                        Button(role: .destructive) {
-                                            alertType = .logout
-                                            showAlert = true
-                                        } label: {
-                                            Text("Log Out")
-                                                .font(.caption2)
-                                                .foregroundColor(.white) // Text color for the button
-                                                .padding()
-                                                .background(Color.gray.opacity(0.5)) // Button background color
-                                                .cornerRadius(20) // Rounded corners
-                                            
-                                        }
-                                        
-                                        
-                                        Spacer()
-                                        
-                                        
-                                        // Delete Account Button
-                                        Button(role: .destructive) {
-                                            alertType = .deleteAccount
-                                            showAlert = true
-                                        } label: {
-                                            Text("Delete Account")
-                                                .font(.caption2)
-                                                .foregroundColor(.red) // Text color for the button
-                                                .padding()
-                                                .background(Color.gray.opacity(0.5)) // Button background color
-                                                .cornerRadius(20) // Rounded corners
-                                        }
-                                    }
-                                    
-                                    
                                 }
                                 .sheet(isPresented: $showSettingSheet) {
                                     ProfileSheetView(
@@ -353,6 +314,43 @@ struct SideMenuView: View {
                                 profileViewModel.loadProfileImage()
                             }
                             
+                            Spacer()
+                            
+                            Divider()
+                            
+                            //Logout deletAcc
+                            HStack {
+                                // Logout Button
+                                Button(role: .destructive) {
+                                    alertType = .logout
+                                    showAlert = true
+                                } label: {
+                                    Text("Log Out")
+                                        .font(.caption2)
+                                        .foregroundColor(.white) // Text color for the button
+                                        .padding()
+                                        .background(Color.gray.opacity(0.5)) // Button background color
+                                        .cornerRadius(20) // Rounded corners
+                                    
+                                }
+                                
+                                
+                                Spacer()
+                                
+                                
+                                // Delete Account Button
+                                Button(role: .destructive) {
+                                    alertType = .deleteAccount
+                                    showAlert = true
+                                } label: {
+                                    Text("Delete Account")
+                                        .font(.caption2)
+                                        .foregroundColor(.red) // Text color for the button
+                                        .padding()
+                                        .background(Color.gray.opacity(0.5)) // Button background color
+                                        .cornerRadius(20) // Rounded corners
+                                }
+                            }
                         }
                     }
                     .padding()

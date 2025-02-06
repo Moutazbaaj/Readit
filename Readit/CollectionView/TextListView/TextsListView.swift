@@ -71,7 +71,7 @@ struct TextsListView: View {
                                 let highlightedTextView = viewModel.highlightedText(text.text)
                                 
                                 highlightedTextView
-                                    .font(.headline)
+                                    .font(.subheadline)
                                     .padding()
                                     .frame(maxWidth: .infinity , alignment: .leading)
                                     .background(Color.white.opacity(0.2))
@@ -79,7 +79,7 @@ struct TextsListView: View {
                                     .shadow(radius: 5)
                                 
                                 Text(text.timestamp.dateValue(), style: .date)
-                                    .font(.subheadline)
+                                    .font(.caption2)
                                     .foregroundColor(.gray)
                             }
                             .padding(.bottom)

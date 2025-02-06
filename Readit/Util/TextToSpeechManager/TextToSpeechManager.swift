@@ -144,7 +144,7 @@ class TextToSpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         let highlighted = String(fullText[textRange])
         let after = String(fullText[textRange.upperBound...])
 
-        return Text(before) + Text(highlighted).bold().foregroundColor(.blue).fontWeight(.heavy) + Text(after)
+        return Text(before) + Text(highlighted).foregroundColor(.blue).font(.subheadline) + Text(after)
     }
     
     // MARK: - Firestore Methods

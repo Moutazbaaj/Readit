@@ -41,10 +41,10 @@ struct HistoryView: View {
                                 HStack() {
                                     
                                     Text(text.timestamp.dateValue(), style: .date)
-                                        .font(.callout)
+                                        .font(.caption2)
                                     
                                     Text(text.timestamp.dateValue(), style: .time)
-                                        .font(.callout)
+                                        .font(.caption2)
                                     
                                     Spacer()
                                     
@@ -73,16 +73,16 @@ struct HistoryView: View {
                                     .padding()
                                     
                                 }
-                                VStack {
+                                VStack(alignment: .leading) {
                                     // Text display
                                     let highlightedTextView = viewModel.highlightedText(text.text)
                                     
                                     highlightedTextView
-                                        .font(.headline)
+                                        .font(.subheadline)
                                         .padding()
-                                        .frame(maxWidth: .infinity)
+                                        .frame(maxWidth: .infinity , alignment: .leading)
                                         .background(Color.white.opacity(0.2))
-                                        .cornerRadius(20)
+                                        .cornerRadius(15)
                                         .shadow(radius: 5)
                                 }
                                 .contextMenu{
@@ -113,18 +113,18 @@ struct HistoryView: View {
         }
         .navigationTitle("History")
         .navigationBarTitleDisplayMode(.inline)
-//        .toolbar {
-//            ToolbarItem(placement: .navigationBarTrailing) {
-////                Button(action: {
-//////                    showLanguagePicker = true // Show the language picker sheet
-////                }) {
-//                    HStack{
-//                        let language = TextToSpeechManager.shared.preferences.first?.selectedLanguage. ?? "en-US"
-//                        Text(language)
-//                        Image(systemName: "globe")
-//                    }
-//                }
-//            }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+//                Button(action: {
+////                    showLanguagePicker = true // Show the language picker sheet
+//                }) {
+                    HStack{
+                        let language = TextToSpeechManager.shared.preferences.first?.selectedLanguage
+                        Text(language ?? ("en-US"))
+                        Image(systemName: "globe")
+                    }
+                }
+            }
 //        }
 //        .sheet(isPresented: $showLanguagePicker) {
 //            LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)

@@ -187,6 +187,7 @@ struct HomeView: View {
         .background(.black.opacity(0.9))
         .toolbar(showMenu ? .hidden : .visible, for: .tabBar)
         .navigationBarItems(leading: HStack {
+            if !showMenu {
             Button("", systemImage: "line.3.horizontal") {
                 showMenu.toggle()
             }
@@ -209,6 +210,7 @@ struct HomeView: View {
                 .padding(.top)
             
             Spacer()
+        }
         })
         .navigationBarItems(trailing: HStack {
             if !showMenu {
