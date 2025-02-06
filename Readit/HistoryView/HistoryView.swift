@@ -12,6 +12,8 @@ struct HistoryView: View {
     
     @State private var showAlert = false
     @State private var textItem: FireText?
+    @State private var isAnimating = false
+
     
 //    @State private var selectedLanguage: Language = .englishUS
 //    @State private var selectedVoice = Voice.allCases.first ?? .custom(identifier: "", language: "en-US", name: "") // Selected voice
@@ -42,9 +44,18 @@ struct HistoryView: View {
                                     
                                     Text(text.timestamp.dateValue(), style: .date)
                                         .font(.caption2)
+                                        .foregroundStyle(.gray)
+
                                     
                                     Text(text.timestamp.dateValue(), style: .time)
                                         .font(.caption2)
+                                        .foregroundStyle(.gray)
+                                    
+                                    Spacer()
+                                    
+                                    if TextToSpeechManager.shared.isSpeaking(text: text.text) {
+                                        SpeakingIndicator(isAnimating: $isAnimating)
+                                    }
                                     
                                     Spacer()
                                     
@@ -92,7 +103,6 @@ struct HistoryView: View {
                                     } label: {
                                         Label("Delete", systemImage: "trash")
                                     }
-                                    .tint(.red)
                                 }
                             }
                         }

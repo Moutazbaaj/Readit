@@ -27,7 +27,8 @@ struct TextsListView: View {
     @State private var selectedPhoto: PhotosPickerItem? // For the selected image from the picker
     @State private var showPhotoPicker: Bool = false  // State to trigger the picker automatically
     @State private var isLoading: Bool = false  // NEW: Controls loading state
-    
+    @State private var isAnimating = false
+
     
     @State private var selected =  0
     @State private var expand = false
@@ -61,96 +62,88 @@ struct TextsListView: View {
                             .foregroundColor(.gray)
                             .padding()
                     } else {
-                        List(viewModel.texts.sorted(by: {
-                            $0.timestamp.dateValue() > $1.timestamp.dateValue()
-                        })) { text in
-                            VStack(alignment: .leading) {
-                                
-                                // Text display
-                                let highlightedTextView = viewModel.highlightedText(text.text)
-                                
-                                HStack {
-                                    
-                                    Text(text.timestamp.dateValue(), style: .date)
-                                        .font(.caption2)
-                                        .foregroundColor(.gray)
-                                    
-                                    Spacer()
-                                    if textToSpeechManager.isSpeaking(text: text.text) {
-                                        SpeakingIndicator()
-                                    }
+                        ScrollView {
+                            ForEach(viewModel.texts.sorted(by: { $0.timestamp.dateValue() > $1.timestamp.dateValue() })) { text in
+                                VStack(alignment: .leading) {
+                                    // Date and time display
                                     Divider()
-                                    
-                                    Button {
-                                        viewModel.stopSpeaking()
-                                        textItem = text
-                                        viewModel.readTextAloud(form: text.text)
-                                    } label: {
-                                        Label("", systemImage: "speaker.wave.2")
-                                            .font(.caption)
+                                    HStack() {
+                                        
+                                        Text(text.timestamp.dateValue(), style: .date)
+                                            .font(.caption2)
+                                            .foregroundStyle(.gray)
+                                        
+                                        Text(text.timestamp.dateValue(), style: .time)
+                                            .font(.caption2)
+                                            .foregroundStyle(.gray)
+                                        
+                                        
+                                        Spacer()
+                                        
+                                        if textToSpeechManager.isSpeaking(text: text.text) {
+                                            SpeakingIndicator(isAnimating: $isAnimating)
+                                        }
+                                        
+                                        Divider()
+                                            .padding()
+                                        // Read text button
+                                        Button(action: {
+                                            viewModel.stopSpeaking()
+                                        }) {
+                                            Image(systemName: "stop")
+                                        }
+                                        .padding()
+                                        
+                                        Divider()
+                                            .padding()
+                                        
+                                        // Read text button
+                                        Button(action: {
+                                            viewModel.stopSpeaking()
+                                            textItem = text
+                                            viewModel.readTextAloud(form: textItem?.text ?? "no text")
+                                        }) {
+                                            Image(systemName: "speaker.wave.2")
+                                        }
+                                        .padding()
+                                        
                                     }
-                                }
-                                .padding(.bottom)
-                                
-                                highlightedTextView
-                                    .font(.subheadline)
-                                    .padding()
-                                    .frame(maxWidth: .infinity , alignment: .leading)
-                                    .background(Color.white.opacity(0.2))
-                                    .cornerRadius(15)
-                                    .shadow(radius: 5)
+                                    VStack(alignment: .leading) {
+                                        // Text display
+                                        let highlightedTextView = viewModel.highlightedText(text.text)
+                                        
+                                        highlightedTextView
+                                            .font(.subheadline)
+                                            .padding()
+                                            .frame(maxWidth: .infinity , alignment: .leading)
+                                            .background(Color.white.opacity(0.2))
+                                            .cornerRadius(15)
+                                            .shadow(radius: 5)
+                                    }
+                                    .contextMenu{
+                                        Button {
+                                            textItem = text
+                                            editingTextContent = text.text
+                                            showEditTextSheet = true
+                                        } label: {
+                                            Label("Edit", systemImage: "pencil")
+                                        }
+                                        Button(role: .destructive) {
+                                            textItem = text
+                                            showAlert = true
+                                        } label: {
+                                            Label("Delete", systemImage: "trash")
+                                        }
+                                    }
+                                }.padding()
                             }
-                            .padding(.bottom)
-                            .contextMenu{
-                                Button {
-                                    textItem = text
-                                    editingTextContent = text.text
-                                    showEditTextSheet = true
-                                } label: {
-                                    Label("Edit", systemImage: "pencil")
-                                }
-                                .tint(.blue)
-                                Button(role: .destructive) {
-                                    textItem = text
-                                    showAlert = true
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
-                                .tint(.red)
-                            }
-                            .background(Color.clear) // Clear background for the row
-                            .listRowBackground(Color.clear) // Ensure no opaque row background
-                            .cornerRadius(15)
-                            //                            .swipeActions {
-                            //                                Button(role: .destructive) {
-                            //                                    textItem = text
-                            //                                    showAlert = true
-                            //                                } label: {
-                            //                                    Label("Delete", systemImage: "trash")
-                            //                                }
-                            //                                .tint(.red)
-                            //                                Button {
-                            //                                    textItem = text
-                            //                                    editingTextContent = text.text
-                            //                                    showEditTextSheet = true
-                            //                                } label: {
-                            //                                    Label("Edit", systemImage: "pencil")
-                            //                                }
-                            //                                .tint(.blue)
-                            //                                Button {
-                            //                                    viewModel.stopSpeaking()
-                            //                                    textItem = text
-                            //                                    viewModel.readTextAloud(form: text.text)
-                            //                                } label: {
-                            //                                    Label("Read", systemImage: "speaker.wave.2")
-                            //                                }
-                            //                                .tint(.yellow)
-                            //                            }
+                            Text("Space holder").hidden()
+                            
+                            
                         }
-                        .listStyle(.plain)
-                        .background(Color.clear) // Transparent list background
+                        Divider().padding().hidden()
+                        
                     }
-                    Divider().hidden()
                 }
                 
                 //floting tab bar
@@ -237,6 +230,7 @@ struct TextsListView: View {
                 }.padding(.horizontal, 4)
                 
             }
+            
             if isLoading {
                 ZStack {
                     Color.black.opacity(0.5).edgesIgnoringSafeArea(.all)
@@ -363,203 +357,5 @@ struct TextsListView: View {
             viewModel.stopSpeaking()
             capturedImage = nil
         }
-    }
-    
-    //    private func FloatingActionMenu() -> some View {
-    //        HStack {
-    //            Spacer()
-    //            HStack(spacing: expand ? 20 : 0) {
-    //                Button(action: { withAnimation { expand.toggle() } }) {
-    //                    Image(systemName: expand ? "xmark" : "plus")
-    //                        .font(.system(size: 20, weight: .bold))
-    //                        .frame(width: 50, height: 50)
-    //                        .clipShape(Circle())
-    //                        .rotationEffect(expand ? .degrees(45) : .zero)
-    //                }
-    //
-    //                if expand {
-    //                    ActionButton(icon: "speaker.wave.2", color: .blue) {
-    //                        selected = 0
-    //                        viewModel.readTextAloudForLibrary(from: library)
-    //                    }
-    //
-    //                    ActionButton(icon: "stop", color: .red) {
-    //                        selected = 1
-    //                        viewModel.stopSpeaking()
-    //                    }
-    //
-    //                    ActionButton(icon: "plus", color: .green) {
-    //                        selected = 2
-    //                        showAddTextSheet = true
-    //                    }
-    //
-    //                    ActionButton(icon: "photo", color: .purple) {
-    //                        selected = 3
-    //                        showPhotoPicker = true
-    //                    }
-    //
-    //                    ActionButton(icon: "scanner", color: .orange) {
-    //                        selected = 4
-    //                        showCameraCaptureView = true
-    //                    }
-    //                }
-    //            }
-    //            .padding(.horizontal, expand ? 20 : 0)
-    //            .padding(.vertical, 16)
-    //    //            .background(BlurView(style: .systemUltraThinMaterial))
-    //            .clipShape(Capsule())
-    //            .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
-    //            .padding()
-    //        }
-    //    }
-    //
-    //    private func ActionButton(icon: String, color: Color, action: @escaping () -> Void) -> some View {
-    //        Button(action: action) {
-    //            Image(systemName: icon)
-    //                .font(.system(size: 18))
-    //                .frame(width: 40, height: 40)
-    //                .background(color.opacity(0.2))
-    //                .foregroundColor(color)
-    //                .clipShape(Circle())
-    //        }
-    //        .transition(.scale.combined(with: .opacity))
-    //    }
-    //
-    //    private func ContextMenuItems(for text: FireText) -> some View {
-    //        Group {
-    //            Button {
-    //                viewModel.stopSpeaking()
-    //                textItem = text
-    //                viewModel.readTextAloud(form: text.text)
-    //            } label: {
-    //                Label("Read", systemImage: "speaker.wave.2")
-    //            }
-    //
-    //            Button {
-    //                textItem = text
-    //                editingTextContent = text.text
-    //                showEditTextSheet = true
-    //            } label: {
-    //                Label("Edit", systemImage: "pencil")
-    //            }
-    //
-    //            Button(role: .destructive) {
-    //                textItem = text
-    //                showAlert = true
-    //            } label: {
-    //                Label("Delete", systemImage: "trash")
-    //            }
-    //        }
-    //    }
-    //
-    //    private func SwipeActions(for text: FireText) -> some View {
-    //        Group {
-    //            Button(role: .destructive) {
-    //                textItem = text
-    //                showAlert = true
-    //            } label: {
-    //                Label("Delete", systemImage: "trash.fill")
-    //            }
-    //            .tint(.red)
-    //
-    //            Button {
-    //                textItem = text
-    //                editingTextContent = text.text
-    //                showEditTextSheet = true
-    //            } label: {
-    //                Label("Edit", systemImage: "pencil.circle.fill")
-    //            }
-    //            .tint(.blue)
-    //
-    //            Button {
-    //                viewModel.stopSpeaking()
-    //                textItem = text
-    //                viewModel.readTextAloud(form: text.text)
-    //            } label: {
-    //                Label("Read", systemImage: "speaker.wave.2.circle.fill")
-    //            }
-    //            .tint(.green)
-    //        }
-    //    }
-    //
-    //    private func LanguageIndicator() -> some View {
-    //        HStack(spacing: 6) {
-    //            Text(textToSpeechManager.preferences.first?.selectedLanguageName ?? "English")
-    //                .font(.caption)
-    //
-    //            Image(systemName: "globe")
-    //                .font(.caption)
-    //        }
-    //        .foregroundColor(.white)
-    //        .padding(8)
-    //    //        .background(BlurView(style: .systemUltraThinMaterial))
-    //        .cornerRadius(8)
-    //    }
-    //
-    //    private func LoadingOverlay() -> some View {
-    //        ZStack {
-    //    //            BlurView(style: .systemUltraThinMaterialDark)
-    //    //                .ignoresSafeArea()
-    //
-    //            VStack(spacing: 20) {
-    //                ProgressView()
-    //                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-    //                    .scaleEffect(1.5)
-    //
-    //                Text("Processing Image...")
-    //                    .font(.subheadline)
-    //                    .foregroundColor(.white)
-    //            }
-    //            .padding(30)
-    //    //            .background(BlurView(style: .systemUltraThinMaterialDark))
-    //            .cornerRadius(20)
-    //        }
-    //    }
-    
-}
-
-
-// Helper Views
-//struct AnimatedGradient: View {
-//    let colors: [Color]
-//    @State private var start = UnitPoint(x: 0, y: 0)
-//    @State private var end = UnitPoint(x: 1, y: 1)
-//
-//    var body: some View {
-//        LinearGradient(
-//            gradient: Gradient(colors: colors),
-//            startPoint: start,
-//            endPoint: end
-//        )
-//        .animation(
-//            Animation.easeInOut(duration: 8)
-//                .repeatForever(autoreverses: true),
-//            value: [start, end]
-//        )
-//        .onAppear {
-//            start = UnitPoint(x: -1, y: -1)
-//            end = UnitPoint(x: 2, y: 2)
-//        }
-//    }
-//}
-
-struct SpeakingIndicator: View {
-    @State private var isAnimating = false
-    
-    var body: some View {
-        HStack(spacing: 3) {
-            ForEach(0..<3) { i in
-                Capsule()
-                    .frame(width: 3, height: isAnimating ? 10 : 5)
-                    .animation(
-                        Animation.easeInOut(duration: 0.6)
-                            .repeatForever()
-                            .delay(Double(i) * 0.2),
-                        value: isAnimating
-                    )
-            }
-        }
-        .onAppear { isAnimating = true }
-        .foregroundColor(.white.opacity(0.7))
     }
 }
