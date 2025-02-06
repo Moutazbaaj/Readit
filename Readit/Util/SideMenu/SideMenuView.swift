@@ -151,7 +151,7 @@ struct SideMenuView: View {
                                                         .foregroundColor(.white) // Text color for the button
                                                         .padding()
                                                         .background(Color.gray.opacity(0.5)) // Button background color
-                                                        .cornerRadius(20) // Rounded corners
+                                                        .cornerRadius(15) // Rounded corners
                                                 }
                                             }
                                             Divider()
@@ -169,7 +169,7 @@ struct SideMenuView: View {
                                                         .foregroundColor(.white) // Text color for the button
                                                         .padding()
                                                         .background(Color.gray.opacity(0.5)) // Button background color
-                                                        .cornerRadius(20) // Rounded corners
+                                                        .cornerRadius(15) // Rounded corners
                                                 }
                                             }
                                         }
@@ -330,7 +330,7 @@ struct SideMenuView: View {
                                         .foregroundColor(.white) // Text color for the button
                                         .padding()
                                         .background(Color.gray.opacity(0.5)) // Button background color
-                                        .cornerRadius(20) // Rounded corners
+                                        .cornerRadius(15) // Rounded corners
                                     
                                 }
                                 
@@ -348,7 +348,7 @@ struct SideMenuView: View {
                                         .foregroundColor(.red) // Text color for the button
                                         .padding()
                                         .background(Color.gray.opacity(0.5)) // Button background color
-                                        .cornerRadius(20) // Rounded corners
+                                        .cornerRadius(15) // Rounded corners
                                 }
                             }
                         }
