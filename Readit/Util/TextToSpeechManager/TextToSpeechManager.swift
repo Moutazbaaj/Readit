@@ -43,6 +43,8 @@ class TextToSpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         DispatchQueue.main.async {
             self.currentWordRange = nil
+            self.currentText = nil // Clear current text when finished
+
         }
     }
     
@@ -130,7 +132,13 @@ class TextToSpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     func stopSpeaking() {
         if synthesizer.isSpeaking {
             synthesizer.stopSpeaking(at: .immediate)
+            currentText = nil // Clear the current text
+
         }
+    }
+    
+    func isSpeaking(text: String) -> Bool {
+        return synthesizer.isSpeaking && currentText == text
     }
     
     func highlightedText(_ fullText: String) -> Text {

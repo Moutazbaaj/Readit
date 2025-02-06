@@ -440,4 +440,5 @@ class CollectionViewModel: ObservableObject {
     func highlightedText(_ fullText: String) -> Text {
         return textToSpeechManager.highlightedText(fullText)
     }
+    
 }
