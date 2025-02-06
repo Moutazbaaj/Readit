@@ -220,7 +220,7 @@ struct TextsListView: View {
                             endPoint: .trailing
                         )
                     )
-                    .clipShape(Capsule())
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
                     .padding(.bottom)
                     .padding()
                     .animation(.interactiveSpring(response: 0.6, dampingFraction: 0.6, blendDuration: 0.6), value: expand)

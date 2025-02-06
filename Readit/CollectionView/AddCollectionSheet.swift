@@ -37,19 +37,36 @@ struct AddCollectionSheet: View {
                     .font(.caption)
                     .foregroundColor(newLibraryTitle.count > 50 ? .red : .gray)
                 
-                Button("Add") {
+                
+                Button(action: {
                     if !newLibraryTitle.isEmpty {
                         viewModel.createLibrary(libraryTitle: newLibraryTitle)
                         newLibraryTitle = ""
                         dismiss()
                     }
+                }) {
+                    Text("Add")
+                        .frame(maxWidth: .infinity) // Expands the tap area
+                        .padding()
+                        .background(newLibraryTitle.isEmpty || newLibraryTitle.count > 50 ? Color.gray : Color.black.opacity(0.6))
+                        .foregroundColor(.white)
+                        .cornerRadius(15)
                 }
                 .disabled(newLibraryTitle.isEmpty || newLibraryTitle.count > 50)
                 .padding()
-                .frame(maxWidth: .infinity)
-                .background(newLibraryTitle.isEmpty || newLibraryTitle.count > 50 ? Color.gray : Color.black.opacity(0.6))
-                .foregroundColor(.white)
-                .cornerRadius(30)
+//                Button("Add") {
+//                    if !newLibraryTitle.isEmpty {
+//                        viewModel.createLibrary(libraryTitle: newLibraryTitle)
+//                        newLibraryTitle = ""
+//                        dismiss()
+//                    }
+//                }
+//                .disabled(newLibraryTitle.isEmpty || newLibraryTitle.count > 50)
+//                .padding()
+//                .frame(maxWidth: .infinity)
+//                .background(newLibraryTitle.isEmpty || newLibraryTitle.count > 50 ? Color.gray : Color.black.opacity(0.6))
+//                .foregroundColor(.white)
+//                .cornerRadius(15)
             }
             .padding()
         }

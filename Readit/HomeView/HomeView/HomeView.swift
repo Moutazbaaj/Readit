@@ -187,10 +187,10 @@ struct HomeView: View {
         .background(.black.opacity(0.9))
         .toolbar(showMenu ? .hidden : .visible, for: .tabBar)
         .navigationBarItems(leading: HStack {
-            if !showMenu {
+//            if !showMenu {
             Button("", systemImage: "line.3.horizontal") {
                 showMenu.toggle()
-            }
+            }.disabled(showMenu)
             .padding(.bottom)
             .padding(.top)
             
@@ -198,7 +198,7 @@ struct HomeView: View {
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .lineLimit(1)
-                .foregroundColor(.white)
+                .foregroundColor(showMenu ? .gray : .white)
                 .scaleEffect(animateText ? 1 : 0.3)
                 .opacity(animateText ? 1 : 0)
                 .onAppear {
@@ -210,7 +210,7 @@ struct HomeView: View {
                 .padding(.top)
             
             Spacer()
-        }
+//            }
         })
         .navigationBarItems(trailing: HStack {
             if !showMenu {
