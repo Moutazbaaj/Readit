@@ -53,19 +53,19 @@ struct ProfileSheetView: View {
                                         .stroke(lineWidth: 5)
                                         .foregroundColor(.blue)
                                         .shadow(color: .white, radius: 10)
-                                        .frame(width: 220, height: 220)
+                                        .frame(width: 120, height: 120)
                                     
                                     Group {
                                         if let profileImage = profileViewModel.profileImage {
                                             Image(uiImage: profileImage)
                                                 .resizable()
                                                 .scaledToFill()
-                                                .frame(width: 200, height: 200)
+                                                .frame(width: 100, height: 100)
                                                 .clipShape(Circle())
                                         } else {
                                             Image(systemName: "person.circle.fill")
                                                 .resizable()
-                                                .frame(width: 200, height: 200)
+                                                .frame(width: 100, height: 100)
                                                 .clipShape(Circle())
                                         }
                                     }
@@ -76,7 +76,7 @@ struct ProfileSheetView: View {
                                     Image(systemName: "pencil")
                                         .resizable()
                                         .frame(width: 24, height: 24)
-                                        .padding(8)
+                                        .padding(10)
                                         .background(Color.black)
                                         .foregroundStyle(.blue)
                                         .clipShape(Circle())
@@ -90,11 +90,11 @@ struct ProfileSheetView: View {
                             
                             // User Details Section
                             TextField("Username", text: $newUsername)
+                                .font(.caption)
                                 .padding()
                                 .background(Color.gray.opacity(0.5))
-                                .cornerRadius(20)
+                                .cornerRadius(15)
                                 .foregroundColor(.white)
-                                .padding(.vertical)
                                 .submitLabel(.done)
                                 .onChange(of: newUsername) { _, newValue in
                                     if newValue.count > 20 {
@@ -109,16 +109,16 @@ struct ProfileSheetView: View {
                                         dismissButton: .default(Text("OK"))
                                     )
                                 }
-                            
+                            VStack {
                             DatePicker("Birthday:", selection: $newBirthday, in: ...Date(), displayedComponents: .date)
+                                .font(.caption)
                                 .datePickerStyle(.compact)
-                                .padding(.vertical)
                                 .foregroundColor(.white)
                             
                             ColorPicker("Profile Color Tag", selection: $selectedColor)
-                                .padding(.vertical)
+                                .font(.caption)
                                 .foregroundColor(.white)
-                            
+                            }.padding()
                             // Save Button
                             HStack {
                                 Spacer()
@@ -128,9 +128,10 @@ struct ProfileSheetView: View {
                                     showSettingSheet = false
                                 }) {
                                     Text("Save Changes")
+                                        .font(.caption)
                                         .padding()
                                         .background(Color.gray.opacity(0.5))
-                                        .cornerRadius(20)
+                                        .cornerRadius(15)
                                 }
                                 Spacer()
                             }
@@ -208,7 +209,7 @@ struct ProfileSheetView: View {
             .background(.black.opacity(0.9))
 
         }
-        .presentationDetents([.medium, .large])
+        .presentationDetents([.medium])
         .presentationCornerRadius(50)
     }
     
