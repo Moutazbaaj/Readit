@@ -37,13 +37,13 @@ struct MainTabView: View {
                 }
                 
 //                 Settings Tab
-                NavigationStack {
-//                    ProfileView()
-                    PDFToSpeechView()
-                }
-                .tabItem {
-                    Label("More", systemImage: "ellipsis.circle")
-                }
+//                NavigationStack {
+////                    ProfileView()
+//                    PDFToSpeechView()
+//                }
+//                .tabItem {
+//                    Label("More", systemImage: "ellipsis.circle")
+//                }
             }
             .tint(.white)
         }

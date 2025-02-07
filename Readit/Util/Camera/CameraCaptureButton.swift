@@ -19,7 +19,7 @@ struct CameraCaptureButton: View {
             capturedImage = nil // Reset the captured image
             showCamera = true
         }) {
-        Label("Retake", systemImage: "scanner")
+        Label("scan Text", systemImage: "camera")
                 .font(.headline)
                 .padding()
                 .frame(maxWidth: .infinity)

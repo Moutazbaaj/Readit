@@ -49,9 +49,14 @@ struct SheetView: View {
                             FeatureButton(iconName: "photo.badge.plus.fill", title: "Text from Photo")
                         }
                         
-                        NavigationLink(destination: CameraRecognitionView()) {
-                            FeatureButton(iconName: "scanner", title: "Scan document")
+//                        NavigationLink(destination: CameraRecognitionView()) {
+//                            FeatureButton(iconName: "scanner", title: "Scan document")
+//                        }
+                        
+                        NavigationLink(destination: PDFToSpeechView()) {
+                            FeatureButton(iconName: "document", title: "PDF To Speech")
                         }
+
                     }
                     .padding()
                     

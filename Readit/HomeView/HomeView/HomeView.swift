@@ -65,7 +65,7 @@ struct HomeView: View {
 //                Spacer()
 //                if searchQuery.isEmpty {
                     if !showLast && !showFav {
-                    ScrollView {
+                        ScrollView(.vertical, showsIndicators: false) {
                         LastCollectionsSection().hidden()
                         EmptyStateView()
                     }
@@ -73,7 +73,7 @@ struct HomeView: View {
                     
                 } else if showLast && !showFav {
                     
-                    ScrollView {
+                    ScrollView(.vertical, showsIndicators: false) {
                         LastCollectionsSection()
                         EmptyStateView()
                     }
@@ -263,17 +263,24 @@ struct HomeView: View {
                         .padding()
         
                     HStack {
-                        NavigationLink(destination: TextToSpeechView()) {
-                            FeatureButton(iconName: "bubble.left.and.bubble.right", title: "Text to Speech")
-                        }
-        
-                        NavigationLink(destination: ImageRecognitionView()) {
-                            FeatureButton(iconName: "photo.badge.plus.fill", title: "Text from Photo")
-                        }
-        
-                        NavigationLink(destination: CameraRecognitionView()) {
-                            FeatureButton(iconName: "scanner", title: "Scan document")
-                        }
+//                        HStack {
+                            NavigationLink(destination: TextToSpeechView()) {
+                                FeatureButton(iconName: "bubble.left.and.bubble.right", title: "Text to Speech")
+                            }
+                            NavigationLink(destination: ImageRecognitionView()) {
+                                FeatureButton(iconName: "photo.badge.plus.fill", title: "Text from Photo")
+                            }
+//                        }
+                        
+//                        HStack {
+//                            NavigationLink(destination: CameraRecognitionView()) {
+//                                FeatureButton(iconName: "scanner", title: "Scan Document")
+//                            }
+                            
+                            NavigationLink(destination: PDFToSpeechView()) {
+                                FeatureButton(iconName: "document", title: "PDF To Speech")
+                            }
+//                        }
                     }.padding(.horizontal, -10)
                 }
     }

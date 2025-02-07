@@ -15,24 +15,22 @@ struct ImageRecognitionView: View {
     @StateObject private var libViewModel = CollectionViewModel.shared
     
     
-    @State private var selectedPhoto: PhotosPickerItem? // For the selected image from the picker
-    @State private var showPhotoPicker: Bool = false  // State to trigger the picker automatically
-    
+    @State private var selectedItem: PhotosPickerItem? // For the selected image from the picker
     @State private var showLanguagePicker: Bool = false
     @State private var selectedLanguage: Language = .englishUS
-    
+//    @State private var showCamera: Bool = false // To trigger the camera
+    @State private var capturedImage: UIImage? // To hold the captured image
     
     
     var body: some View {
         
         ZStack {
             LinearGradient(
-                gradient: Gradient(colors: [.purple.opacity(0.3), .blue.opacity(0.3)]),
+                gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
                 startPoint: .top,
                 endPoint: .bottom
             )
             .edgesIgnoringSafeArea(.all)
-            
             
             VStack() {
                 Spacer()
@@ -48,7 +46,24 @@ struct ImageRecognitionView: View {
                             RoundedRectangle(cornerRadius: 20)
                                 .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                         )
+                } else if let capturedImage = capturedImage {
+                    Image(uiImage: capturedImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: 300, maxHeight: 300)
+                        .cornerRadius(20)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                        )
+                        .onAppear {
+                            // Process the captured image
+                            viewModel.selectedImage = capturedImage
+                            viewModel.processImage(image: capturedImage)
+                        }
+                    
                 }
+                
                 
                 if let extractedText = viewModel.extractedText {
                     Text("Extracted Text:")
@@ -68,7 +83,7 @@ struct ImageRecognitionView: View {
                                 RoundedRectangle(cornerRadius: 20)
                                     .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                             )
-                        
+
                     } else {
                         ScrollView {
                             Text(extractedText)
@@ -83,6 +98,22 @@ struct ImageRecognitionView: View {
                         
                     }
                 }
+                
+                // Language selection
+//                HStack {
+//                    Text("Language:")
+//                        .font(.subheadline)
+//                        .padding()
+//
+//                    Spacer()
+//                    Text(selectedLanguage.displayName)
+//                        .foregroundColor(.blue)
+//                        .onTapGesture {
+//                            showLanguagePicker = true
+//                        }
+//                        .padding()
+//
+//                }
                 
                 // Action buttons
                 HStack {
@@ -102,7 +133,7 @@ struct ImageRecognitionView: View {
                         viewModel.stopSpeaking()
                         viewModel.selectedImage = nil
                         viewModel.extractedText = nil
-                        //                                capturedImage = nil
+                        capturedImage = nil
                     }) {
                         Label("Clear", systemImage: "xmark.circle")
                             .font(.headline)
@@ -114,14 +145,15 @@ struct ImageRecognitionView: View {
                 }
                 
                 HStack {
+                    CameraCaptureButton(capturedImage: $capturedImage)
                     
                     // PhotosPicker to select an image
                     PhotosPicker(
-                        selection: $selectedPhoto,
+                        selection: $selectedItem,
                         matching: .images, // Show only images in the picker
                         photoLibrary: .shared()
                     ) {
-                        Label("Select another image", systemImage: "photo")
+                        Label("Select Photo", systemImage: "photo")
                         
                             .font(.headline)
                             .padding()
@@ -130,54 +162,65 @@ struct ImageRecognitionView: View {
                             .cornerRadius(10)
                     }
                 }
+                
+//                Divider().hidden()
+
             }
             .padding()
-        }
-        .background(.black.opacity(0.9))
-        .navigationTitle("Image Recognition")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    showLanguagePicker = true // Show the language picker sheet
-                }) {
-                    HStack{
-                        Text(selectedLanguage.displayTag)
-                        Image(systemName: "globe")
+            .navigationTitle("Image Recognition")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            showLanguagePicker = true // Show the language picker sheet
+                        }) {
+                            HStack{
+                                Text(selectedLanguage.displayTag)
+                                Image(systemName: "globe")
+                            }
+                        }
                     }
                 }
+            .sheet(isPresented: $showLanguagePicker) {
+                LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
             }
-        }
-        .sheet(isPresented: $showLanguagePicker) {
-            LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
-        }
-        .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhoto, matching: .images, photoLibrary: .shared()) // Auto-open the picker
-        .onAppear {
-            showPhotoPicker = true
-            viewModel.selectedImage = nil
-            viewModel.extractedText = nil
-        }
-        .onDisappear {
-            viewModel.stopSpeaking()
-            
-            guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
-                return
+            .onAppear {
+                viewModel.selectedImage = nil
+                viewModel.extractedText = nil
             }
-            
-            libViewModel.createText(text: extractedText, libraryId: " ")
-        }
-        .onChange(of: selectedPhoto) {_ , newItem in
-            Task {
-                if let data = try? await newItem?.loadTransferable(type: Data.self),
-                   let uiImage = UIImage(data: data) {
-                    viewModel.selectedImage = uiImage
-                    viewModel.processImage(image: uiImage)
-                    viewModel.stopSpeaking()
+            .onDisappear {
+                viewModel.stopSpeaking()
+                
+                guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
+                    return
+                }
+                
+                libViewModel.createText(text: extractedText, libraryId: " ")
+            }
+            .onChange(of: capturedImage) {_, newImage in
+                if let newImage = newImage {
+                    viewModel.selectedImage = newImage
+                    viewModel.processImage(image: newImage)
                     guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
                         return
                     }
                     
                     libViewModel.createText(text: extractedText, libraryId: " ")
+                }
+            }
+            .onChange(of: selectedItem) {_ , newItem in
+                Task {
+                    if let data = try? await newItem?.loadTransferable(type: Data.self),
+                       let uiImage = UIImage(data: data) {
+                        viewModel.selectedImage = uiImage
+                        viewModel.processImage(image: uiImage)
+                        viewModel.stopSpeaking()
+                        guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
+                            return
+                        }
+                        
+                        libViewModel.createText(text: extractedText, libraryId: " ")
+                    }
                 }
             }
         }
@@ -187,4 +230,3 @@ struct ImageRecognitionView: View {
 #Preview {
     ImageRecognitionView()
 }
-
