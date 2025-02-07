@@ -4,6 +4,24 @@ Readit - Text to Speech & OCR App
 Readit is a mobile application designed to help users convert text into speech, extract text from photos, and scan documents. The app is particularly useful for individuals who have difficulty reading or speaking, providing an accessible way to interact with text.
 
 
+
+## Screenshots 📸
+
+Here are some screenshots of the Readit app:
+
+<table>
+  <tr>
+    <td><img src="IMG/Simulator%20Screenshot%20-%20iPhone%2016%20Pro%20-%202025-02-07%20at%2011.52.08.png" width="250"></td>
+    <td><img src="IMG/Simulator%20Screenshot%20-%20iPhone%2016%20Pro%20-%202025-02-06%20at%2023.27.23.png" width="250"></td>
+    <td><img src="IMG/Simulator%20Screenshot%20-%20iPhone%2016%20Pro%20-%202025-02-07%20at%2011.52.17.png" width="250"></td>
+  </tr>
+  <tr>
+    <td><img src="IMG/Simulator%20Screenshot%20-%20iPhone%2016%20Pro%20-%202025-02-07%20at%2011.52.24.png" width="250"></td>
+    <td><img src="IMG/Simulator%20Screenshot%20-%20iPhone%2016%20Pro%20-%202025-02-07%20at%2011.52.35.png" width="250"></td>
+    <td><img src="IMG/Simulator%20Screenshot%20-%20iPhone%2016%20Pro%20-%202025-02-07%20at%2011.52.44.png" width="250"></td>
+  </tr>
+</table>
+
 Features
 
 Text to Speech: Convert any text into spoken words using iOS-native APIs.
