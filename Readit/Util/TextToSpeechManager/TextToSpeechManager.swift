@@ -10,6 +10,8 @@ import AVFoundation
 import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
+import PDFKit
+import UniformTypeIdentifiers
 
 class TextToSpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelegate {
     
@@ -163,6 +165,42 @@ class TextToSpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
 
         return Text(before) + Text(highlighted).foregroundColor(.blue).font(.subheadline) + Text(after)
     }
+    
+    
+    // MARK: - PDF Text Extraction
+    func extractText(from pdfURL: URL) async throws -> String {
+        guard let pdfDocument = PDFDocument(url: pdfURL) else {
+            throw NSError(domain: "PDFError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to load PDF document."])
+        }
+
+        var extractedText = ""
+
+        for pageIndex in 0..<pdfDocument.pageCount {
+            if let page = pdfDocument.page(at: pageIndex), let pageText = page.string {
+                extractedText += pageText + "\n" // Add newline between pages
+            }
+        }
+
+        guard !extractedText.isEmpty else {
+            throw NSError(domain: "PDFError", code: 2, userInfo: [NSLocalizedDescriptionKey: "No text found in PDF."])
+        }
+
+        return extractedText
+    }
+
+    func readTextFromPDF(pdfURL: URL) {
+        Task {
+            do {
+                let extractedText = try await extractText(from: pdfURL)
+                await MainActor.run {
+                    self.readTextAloud(from: extractedText)
+                }
+            } catch {
+                print("Error extracting text: \(error.localizedDescription)")
+            }
+        }
+    }
+
     
     // MARK: - Firestore Methods
     

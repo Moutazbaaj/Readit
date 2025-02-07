@@ -36,13 +36,14 @@ struct MainTabView: View {
                     Label("History", systemImage: "document.viewfinder.fill")
                 }
                 
-                // Settings Tab
-//                NavigationStack {
+//                 Settings Tab
+                NavigationStack {
 //                    ProfileView()
-//                }
-//                .tabItem {
-//                    Label("More", systemImage: "ellipsis.circle")
-//                }
+                    PDFToSpeechView()
+                }
+                .tabItem {
+                    Label("More", systemImage: "ellipsis.circle")
+                }
             }
             .tint(.white)
         }
