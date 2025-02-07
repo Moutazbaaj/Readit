@@ -24,6 +24,7 @@ struct SpeakingIndicator: View {
             }
         }
         .onAppear { isAnimating = true }
+        .onDisappear { isAnimating = false }
         .foregroundColor(.white.opacity(0.7))
     }
 }

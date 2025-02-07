@@ -39,6 +39,8 @@ class CollectionViewModel: ObservableObject {
     
     private let synthesizer = AVSpeechSynthesizer()
     
+    @Published var isPaused: Bool = false
+    
     
     init() {
         self.fetchLibraries()
@@ -203,14 +205,14 @@ class CollectionViewModel: ObservableObject {
                 self.favLibreries = libraries
             }
     }
-         
+    
     // Edit text.
     func editText(withId id: String, newText: String) {
         let text = firebaseFirestore.collection("texts").document(id)
         
         text.updateData(["text": newText,
-                              "editTimestamp": Timestamp()
-                             ]) { error in
+                         "editTimestamp": Timestamp()
+                        ]) { error in
             if let error = error {
                 print("Error updating document: \(error.localizedDescription)")
             } else {
@@ -265,8 +267,8 @@ class CollectionViewModel: ObservableObject {
         let library = firebaseFirestore.collection("Librarys").document(id)
         
         library.updateData(["isFavorites": isFavorites,
-                              "editTimestamp": Timestamp()
-                             ]) { error in
+                            "editTimestamp": Timestamp()
+                           ]) { error in
             if let error = error {
                 print("Error updating document: \(error.localizedDescription)")
             } else {
@@ -320,27 +322,27 @@ class CollectionViewModel: ObservableObject {
     
     func processImage(image: UIImage?) async -> String? {
         guard let image = image, let cgImage = image.cgImage else { return nil }
-
+        
         return await withCheckedContinuation { continuation in
             Task.detached {
                 let request = VNRecognizeTextRequest()
                 request.recognitionLanguages = ["en", "ar", "ja", "zh-Hans", "zh-Hant"]
                 request.usesLanguageCorrection = true
-
+                
                 let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-
+                
                 do {
                     try handler.perform([request])
-
+                    
                     let recognizedText = (request.results)?
                         .compactMap { $0.topCandidates(1).first?.string }
                         .joined(separator: " ") ?? ""
-
+                    
                     await MainActor.run {
                         self.extractedText = recognizedText
                         continuation.resume(returning: recognizedText)
                     }
-
+                    
                 } catch {
                     print("Text recognition failed: \(error.localizedDescription)")
                     await MainActor.run {
@@ -349,88 +351,96 @@ class CollectionViewModel: ObservableObject {
                 }
             }
         }
-    }//        guard let image = image, let cgImage = image.cgImage else { return }
-//
-//        // Specify the languages you want to recognize
-//        let request = VNRecognizeTextRequest { request, error in
-//            if let error = error {
-//                print("Text recognition failed with error: \(error.localizedDescription)")
-//                return
-//            }
-//            
-//            if let results = request.results as? [VNRecognizedTextObservation] {
-//                let recognizedText = results.compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
-//                DispatchQueue.main.async {
-//                    self.extractedText = recognizedText
-//                }
-//            }
-//        }
-//        
-//        // Set recognition languages
-//        request.recognitionLanguages = ["en", "ar", "ja", "zh-Hans", "zh-Hant"] // English, Arabic, Japanese, Simplified and Traditional Chinese
-//        
-//        // Fallback to automatic language detection if needed
-//        request.usesLanguageCorrection = true
-//
-//        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-//        DispatchQueue.global(qos: .userInitiated).async {
-//            try? handler.perform([request])
-//        }
-//    }
+    }
+    //        guard let image = image, let cgImage = image.cgImage else { return }
+    //
+    //        // Specify the languages you want to recognize
+    //        let request = VNRecognizeTextRequest { request, error in
+    //            if let error = error {
+    //                print("Text recognition failed with error: \(error.localizedDescription)")
+    //                return
+    //            }
+    //
+    //            if let results = request.results as? [VNRecognizedTextObservation] {
+    //                let recognizedText = results.compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+    //                DispatchQueue.main.async {
+    //                    self.extractedText = recognizedText
+    //                }
+    //            }
+    //        }
+    //
+    //        // Set recognition languages
+    //        request.recognitionLanguages = ["en", "ar", "ja", "zh-Hans", "zh-Hant"] // English, Arabic, Japanese, Simplified and Traditional Chinese
+    //
+    //        // Fallback to automatic language detection if needed
+    //        request.usesLanguageCorrection = true
+    //
+    //        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+    //        DispatchQueue.global(qos: .userInitiated).async {
+    //            try? handler.perform([request])
+    //        }
+    //    }
     
-//    func readTextAloudForLibrary(from library: FireLibrary, in language: Language, using voice: Voice) {
-//        guard !texts.isEmpty else {
-//            print("No texts available to read aloud.")
-//            return
-//        }
-//
-//        // Filter and prepare texts to read
-//        let textsToRead = texts
-//            .filter { $0.libraryId == library.id } // Ensure the texts belong to the specified library
-//            .sorted(by: {
-//                $0.timestamp.dateValue() < $1.timestamp.dateValue() // Sort by timestamp in ascending order
-//            })
-//            .enumerated() // Enumerate to get both index and content
-//            .map { index, text in
-//                "\(language.pageTranslation) \(index + 1). \(text.text)" // Add "Page X" prefix before each text
-//            }
-//            .joined(separator: ". ") // Concatenate texts with a separator
-//
-//        let utterance = AVSpeechUtterance(string: textsToRead)
-//        
-//        // Configure voice
-//        if let customVoice = AVSpeechSynthesisVoice(identifier: voice.identifier) {
-//            utterance.voice = customVoice
-//        } else {
-//            utterance.voice = AVSpeechSynthesisVoice(language: language.rawValue) // Fallback to language-based voice
-//        }
-//
-//        // Configure audio session
-//        do {
-//            let audioSession = AVAudioSession.sharedInstance()
-//            try audioSession.setCategory(.playback, mode: .default, options: [])
-//            try audioSession.setActive(true)
-//        } catch {
-//            print("Failed to configure audio session: \(error.localizedDescription)")
-//        }
-//
-//        synthesizer.speak(utterance)
-//    }
+    //    func readTextAloudForLibrary(from library: FireLibrary, in language: Language, using voice: Voice) {
+    //        guard !texts.isEmpty else {
+    //            print("No texts available to read aloud.")
+    //            return
+    //        }
+    //
+    //        // Filter and prepare texts to read
+    //        let textsToRead = texts
+    //            .filter { $0.libraryId == library.id } // Ensure the texts belong to the specified library
+    //            .sorted(by: {
+    //                $0.timestamp.dateValue() < $1.timestamp.dateValue() // Sort by timestamp in ascending order
+    //            })
+    //            .enumerated() // Enumerate to get both index and content
+    //            .map { index, text in
+    //                "\(language.pageTranslation) \(index + 1). \(text.text)" // Add "Page X" prefix before each text
+    //            }
+    //            .joined(separator: ". ") // Concatenate texts with a separator
+    //
+    //        let utterance = AVSpeechUtterance(string: textsToRead)
+    //
+    //        // Configure voice
+    //        if let customVoice = AVSpeechSynthesisVoice(identifier: voice.identifier) {
+    //            utterance.voice = customVoice
+    //        } else {
+    //            utterance.voice = AVSpeechSynthesisVoice(language: language.rawValue) // Fallback to language-based voice
+    //        }
+    //
+    //        // Configure audio session
+    //        do {
+    //            let audioSession = AVAudioSession.sharedInstance()
+    //            try audioSession.setCategory(.playback, mode: .default, options: [])
+    //            try audioSession.setActive(true)
+    //        } catch {
+    //            print("Failed to configure audio session: \(error.localizedDescription)")
+    //        }
+    //
+    //        synthesizer.speak(utterance)
+    //    }
     
-//    func stopSpeaking() {
-//        if synthesizer.isSpeaking {
-//            synthesizer.stopSpeaking(at: .immediate)
-//        }
-//    }
+    //    func stopSpeaking() {
+    //        if synthesizer.isSpeaking {
+    //            synthesizer.stopSpeaking(at: .immediate)
+    //        }
+    //    }
     
     
     func readTextAloud(form text: String) {
         textToSpeechManager.readTextAloud(from: text)
     }
-
     
     func readTextAloudForLibrary(from library: FireLibrary) {
         textToSpeechManager.readTextAloudForLibrary(from: library, from: texts)
+    }
+    
+    func pauseSpeaking() {
+        textToSpeechManager.pauseSpeaking()
+    }
+    
+    func resumeSpeaking() {
+        textToSpeechManager.resumeSpeaking()
     }
     
     func stopSpeaking() {

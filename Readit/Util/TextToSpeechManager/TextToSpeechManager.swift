@@ -20,6 +20,8 @@ class TextToSpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
     @Published var preferences: [FirePreference] = []
     @Published var currentWordRange: NSRange? = nil
     @Published var currentText: String? = nil
+    @Published private var pausedPosition: AVSpeechBoundary = .immediate // Track paused position
+
     
     private var synthesizer = AVSpeechSynthesizer()
     private var listener: ListenerRegistration?
@@ -44,43 +46,13 @@ class TextToSpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         DispatchQueue.main.async {
             self.currentWordRange = nil
             self.currentText = nil // Clear current text when finished
+            self.pausedPosition = .immediate // Reset paused position
+
 
         }
     }
     
     // MARK: - Speech Control Methods
-
-    func readTextAloud(from inputText: String) {
-        guard !inputText.isEmpty else {
-            print("No text provided for reading.")
-            return
-        }
-        
-        currentText = inputText
-        
-        let utterance = AVSpeechUtterance(string: inputText)
-        
-        if let voice = preferences.first?.selectedVoice {
-            if let customVoice = AVSpeechSynthesisVoice(identifier: voice.identifier) {
-                utterance.voice = customVoice
-            } else {
-                utterance.voice = AVSpeechSynthesisVoice(language: voice.language)
-            }
-        } else {
-            utterance.voice = AVSpeechSynthesisVoice(language: Language.englishUS.rawValue) // Default to English
-        }
-
-        // Configure audio session
-        do {
-            let audioSession = AVAudioSession.sharedInstance()
-            try audioSession.setCategory(.playback, mode: .default, options: [])
-            try audioSession.setActive(true)
-        } catch {
-            print("Failed to configure audio session: \(error.localizedDescription)")
-        }
-
-        synthesizer.speak(utterance)
-    }
     
     func readTextAloudForLibrary(from library: FireLibrary, from texts: [FireText]) {
         guard !texts.isEmpty else {
@@ -123,9 +95,47 @@ class TextToSpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         synthesizer.speak(utterance)
     }
     
+    func readTextAloud(from inputText: String) {
+        guard !inputText.isEmpty else {
+            print("No text provided for reading.")
+            return
+        }
+        
+        currentText = inputText
+        
+        let utterance = AVSpeechUtterance(string: inputText)
+        
+        if let voice = preferences.first?.selectedVoice {
+            if let customVoice = AVSpeechSynthesisVoice(identifier: voice.identifier) {
+                utterance.voice = customVoice
+            } else {
+                utterance.voice = AVSpeechSynthesisVoice(language: voice.language)
+            }
+        } else {
+            utterance.voice = AVSpeechSynthesisVoice(language: Language.englishUS.rawValue) // Default to English
+        }
+
+        // Configure audio session
+        do {
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setCategory(.playback, mode: .default, options: [])
+            try audioSession.setActive(true)
+        } catch {
+            print("Failed to configure audio session: \(error.localizedDescription)")
+        }
+
+        synthesizer.speak(utterance)
+    }
+    
     func pauseSpeaking() {
         if synthesizer.isSpeaking {
-            synthesizer.pauseSpeaking(at: .immediate)
+            synthesizer.pauseSpeaking(at: .word) // Pause at the current word
+        }
+    }
+    
+    func resumeSpeaking() {
+        if synthesizer.isPaused {
+            synthesizer.continueSpeaking() // Resume from the paused position
         }
     }
     
@@ -133,7 +143,6 @@ class TextToSpeechManager: NSObject, ObservableObject, AVSpeechSynthesizerDelega
         if synthesizer.isSpeaking {
             synthesizer.stopSpeaking(at: .immediate)
             currentText = nil // Clear the current text
-
         }
     }
     

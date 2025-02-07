@@ -28,7 +28,14 @@ struct TextsListView: View {
     @State private var showPhotoPicker: Bool = false  // State to trigger the picker automatically
     @State private var isLoading: Bool = false  // NEW: Controls loading state
     @State private var isAnimating = false
-
+    
+    
+    @State private var isPlay = false
+    @State private var isPause = false
+    @State private var isResume = false
+    @State private var isStop = false
+    
+    
     
     @State private var selected =  0
     @State private var expand = false
@@ -77,37 +84,106 @@ struct TextsListView: View {
                                             .font(.caption2)
                                             .foregroundStyle(.gray)
                                         
-                                        
                                         Spacer()
                                         
                                         if textToSpeechManager.isSpeaking(text: text.text) {
                                             SpeakingIndicator(isAnimating: $isAnimating)
+                                            Divider()
+                                                .padding()
+                                            
                                         }
                                         
-                                        Divider()
-                                            .padding()
-                                        // Read text button
-                                        Button(action: {
-                                            viewModel.stopSpeaking()
-                                        }) {
-                                            Image(systemName: "stop")
-                                        }
-                                        .padding()
+                                        //                                        Button(action: {
+                                        //                                            viewModel.pauseSpeaking()
+                                        //                                        }) {
+                                        //                                            Image(systemName: "pause")
+                                        //                                        }
+                                        //
+                                        //                                        Divider()
+                                        //                                            .padding()
+                                        //
+                                        //                                        Button(action: {
+                                        //                                            viewModel.resumeSpeaking()
+                                        //                                        }) {
+                                        //                                            Image(systemName: "play")
+                                        //                                        }
+                                        //
+                                        //                                        Divider()
+                                        //                                            .padding()
                                         
-                                        Divider()
-                                            .padding()
+                                        
                                         
                                         // Read text button
                                         Button(action: {
                                             viewModel.stopSpeaking()
                                             textItem = text
                                             viewModel.readTextAloud(form: textItem?.text ?? "no text")
+                                            viewModel.stopSpeaking()
                                         }) {
-                                            Image(systemName: "speaker.wave.2")
+                                            Image(systemName: "play")
+//                                            Image(systemName: "speaker.wave.2")
                                         }
-                                        .padding()
+                                        
+                                        
+                                        Divider()
+                                            .padding()
+                                        
+                                        
+                                        // stpo Read text button
+                                        Button(action: {
+                                            viewModel.stopSpeaking()
+                                        }) {
+                                            Image(systemName: "stop")
+                                        }
                                         
                                     }
+                                    
+                                    
+                                    //                                    HStack {
+                                    //                                        // Timestamp
+                                    //                                        Group {
+                                    //                                            Text(text.timestamp.dateValue(), style: .date)
+                                    //                                            Text(text.timestamp.dateValue(), style: .time)
+                                    //                                        }
+                                    //                                        .font(.caption2)
+                                    //                                        .foregroundStyle(.gray)
+                                    //
+                                    //                                        Spacer()
+                                    //
+                                    //                                        // Speaking Indicator
+                                    //                                        if textToSpeechManager.isSpeaking(text: text.text) {
+                                    //                                            SpeakingIndicator(isAnimating: $isAnimating)
+                                    //                                        }
+                                    //
+                                    //                                        // Play/Pause Toggle Button
+                                    //                                        Button(action: {
+                                    //                                            if textToSpeechManager.isSpeaking(text: text.text) {
+                                    //                                                // Toggle between play/pause if already speaking
+                                    //                                                if viewModel.isPaused {
+                                    //                                                    viewModel.resumeSpeaking()
+                                    //                                                } else {
+                                    //                                                    viewModel.pauseSpeaking()
+                                    //                                                }
+                                    //                                            } else {
+                                    //                                                // Start reading if not speaking
+                                    //                                                textItem = text
+                                    //                                                viewModel.readTextAloud(form: textItem?.text ?? "no text")
+                                    //                                            }
+                                    //                                        }) {
+                                    //                                            Image(systemName:
+                                    //                                                textToSpeechManager.isSpeaking(text: text.text)
+                                    //                                                ? (viewModel.isPaused ? "play" : "pause")
+                                    //                                                : "speaker.wave.2"
+                                    //                                            )
+                                    //                                        }
+                                    //
+                                    //                                        // Stop Button
+                                    //                                        Button(action: {
+                                    //                                            viewModel.stopSpeaking()
+                                    //                                        }) {
+                                    //                                            Image(systemName: "stop")
+                                    //                                        }
+                                    //                                    }
                                     VStack(alignment: .leading) {
                                         // Text display
                                         let highlightedTextView = viewModel.highlightedText(text.text)
