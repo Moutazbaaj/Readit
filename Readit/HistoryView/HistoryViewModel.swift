@@ -134,10 +134,17 @@ class HistoryViewModel: ObservableObject {
         textToSpeechManager.readTextAloud(from: text)
     }
     
+    func pauseSpeaking() {
+        textToSpeechManager.pauseSpeaking()
+    }
+    
+    func resumeSpeaking() {
+        textToSpeechManager.resumeSpeaking()
+    }
+    
     func stopSpeaking() {
         textToSpeechManager.stopSpeaking()
     }
-    
     func highlightedText(_ fullText: String) -> Text {
         return textToSpeechManager.highlightedText(fullText)
     }

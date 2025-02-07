@@ -13,7 +13,12 @@ struct HistoryView: View {
     @State private var showAlert = false
     @State private var textItem: FireText?
     @State private var isAnimating = false
-
+    
+    
+    @State private var isPlay = false
+    @State private var isPause = false
+    @State private var isResume = false
+    @State private var isStop = true
     
 //    @State private var selectedLanguage: Language = .englishUS
 //    @State private var selectedVoice = Voice.allCases.first ?? .custom(identifier: "", language: "en-US", name: "") // Selected voice
@@ -40,50 +45,100 @@ struct HistoryView: View {
                             VStack(alignment: .leading) {
                                 // Date and time display
                                 Divider()
+                                
+                                
                                 HStack() {
                                     
                                     Text(text.timestamp.dateValue(), style: .date)
                                         .font(.caption2)
                                         .foregroundStyle(.gray)
-
                                     
                                     Text(text.timestamp.dateValue(), style: .time)
                                         .font(.caption2)
                                         .foregroundStyle(.gray)
                                     
                                     Spacer()
-                                    
                                     if TextToSpeechManager.shared.isSpeaking(text: text.text) {
                                         SpeakingIndicator(isAnimating: $isAnimating)
-                                    }
+                                            .frame(width: 25)
+                                            .opacity(isPlay ? 1 : 0)
                                     
                                     Spacer()
-                                    
-                                    Divider()
-                                        .padding()
-                                    // Read text button
-                                    Button(action: {
-                                        viewModel.stopSpeaking()
-                                    }) {
-                                        Image(systemName: "stop")
+                                    if isPlay {
+                                        Button(action: {
+                                            isPause = true
+                                            isPlay = false
+                                            
+                                            viewModel.pauseSpeaking()
+                                        }) {
+                                            Image(systemName: "pause")
+                                                .frame(width: 25)  // Ensure consistent space
+                                                .opacity(isPlay ? 1 : 0) // Hides without affecting layout
+                                            
+                                        }.padding()
+                                        
                                     }
-                                    .padding()
                                     
-                                    Divider()
-                                        .padding()
-                                    
-                                    // Read text button
-                                    Button(action: {
-                                        viewModel.stopSpeaking()
-                                        textItem = text
-                                        //                                        viewModel.readTextAloud(in: selectedLanguage, with: selectedVoice, form: textItem?.text ?? "no text")
-                                        viewModel.readTextAloud(form: textItem?.text ?? "no text")
-                                    }) {
-                                        Image(systemName: "speaker.wave.2")
+                                    if isPause {
+                                        
+                                        Button(action: {
+                                            isPause = false
+                                            isPlay = true
+                                            
+                                            viewModel.resumeSpeaking()
+                                        }) {
+                                            Image(systemName: "play")
+                                                .frame(width: 25)  // Ensure consistent space
+                                                .opacity(isPause ? 1 : 0) // Hides without affecting layout
+                                            
+                                        }.padding()
+                                        
                                     }
-                                    .padding()
+                                        
+                                    }
+
+                                    if isStop {
+                                        Divider()
+                                            .padding()
+                                        
+                                        // Read text button
+                                        Button(action: {
+                                            isPlay = true
+                                            isResume = true
+                                            isStop = false
+                                            
+                                            viewModel.stopSpeaking()
+                                            textItem = text
+                                            viewModel.readTextAloud(form: textItem?.text ?? "no text")
+                                            viewModel.stopSpeaking()
+                                        }) {
+                                            Image(systemName: "speaker.wave.2")
+                                                .frame(width: 25 , height: 25)  // Ensure consistent space
+                                        }.padding()
+                                        
+                                    }
                                     
+                                    if isResume {
+                                        Divider()
+                                            .padding()
+                                        
+                                        // stpo Read text button
+                                        Button(action: {
+                                            isPause = false
+                                            isPlay = false
+                                            isResume = false
+                                            isStop = true
+                                            
+                                            viewModel.stopSpeaking()
+                                        }) {
+                                            Image(systemName: "stop")
+                                                .frame(width: 25 , height: 25)  // Ensure consistent space
+                                        }.padding()
+                                    }
+                                        
+
                                 }
+                                
                                 VStack(alignment: .leading) {
                                     // Text display
                                     let highlightedTextView = viewModel.highlightedText(text.text)

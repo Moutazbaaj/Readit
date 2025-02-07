@@ -86,10 +86,11 @@ struct TextsListView: View {
                                             .foregroundStyle(.gray)
                                         
                                         Spacer()
+                                        if textToSpeechManager.isSpeaking(text: text.text) {
+                                            SpeakingIndicator(isAnimating: $isAnimating)
+                                                .frame(width: 25)
+                                                .opacity(isPlay ? 1 : 0)
                                         
-                                        SpeakingIndicator(isAnimating: $isAnimating)
-                                            .frame(width: 25)
-                                            .opacity(isPlay ? 1 : 0)
                                         Spacer()
                                         if isPlay {
                                             Button(action: {
@@ -121,7 +122,9 @@ struct TextsListView: View {
                                             }.padding()
                                             
                                         }
-                                        
+                                            
+                                        }
+
                                         if isStop {
                                             Divider()
                                                 .padding()
@@ -137,7 +140,6 @@ struct TextsListView: View {
                                                 viewModel.readTextAloud(form: textItem?.text ?? "no text")
                                                 viewModel.stopSpeaking()
                                             }) {
-                                                //                                                Image(systemName: "play")
                                                 Image(systemName: "speaker.wave.2")
                                                     .frame(width: 25 , height: 25)  // Ensure consistent space
                                             }.padding()
@@ -161,8 +163,10 @@ struct TextsListView: View {
                                                     .frame(width: 25 , height: 25)  // Ensure consistent space
                                             }.padding()
                                         }
+                                            
+
                                     }
-                                    
+
                                     
                                     VStack(alignment: .leading) {
                                         // Text display
