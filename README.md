@@ -44,7 +44,7 @@ The app will extract and display the text.
 
 Technologies Used
 
-Frontend: SwiftUI or UIKit (native iOS frameworks)
+Frontend: SwiftUI (native iOS frameworks)
 Text-to-Speech: AVSpeechSynthesizer (iOS-native API)
 OCR: Vision Framework (iOS-native OCR)
 Document Scanning: VisionKit (iOS-native document scanner)
