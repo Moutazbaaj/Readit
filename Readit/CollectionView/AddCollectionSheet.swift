@@ -48,7 +48,7 @@ struct AddCollectionSheet: View {
                     Text("Add")
                         .frame(maxWidth: .infinity) // Expands the tap area
                         .padding()
-                        .background(newLibraryTitle.isEmpty || newLibraryTitle.count > 50 ? Color.gray : Color.black.opacity(0.6))
+                        .background(newLibraryTitle.isEmpty || newLibraryTitle.count > 50 ? Color.black.opacity(0.6) : Color.gray.opacity(0.6))
                         .foregroundColor(.white)
                         .cornerRadius(15)
                 }
