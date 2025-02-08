@@ -34,6 +34,7 @@ struct TextToSpeechView: View {
                     //                        .padding(.horizontal)
                     
                     TextEditor(text: $textViewModel.inputText)
+                        .font(.subheadline)
                         .padding()
                         .cornerRadius(10)
                         .overlay(

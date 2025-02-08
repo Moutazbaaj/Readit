@@ -75,6 +75,7 @@ struct ImageRecognitionView: View {
                     
                     if extractedText.isEmpty {
                         Text("Error: No Text found")
+                            .font(.subheadline)
                             .padding()
                             .foregroundColor(.red)
                             .background(Color.gray.opacity(0.1))
@@ -87,6 +88,7 @@ struct ImageRecognitionView: View {
                     } else {
                         ScrollView {
                             Text(extractedText)
+                                .font(.subheadline)
                                 .padding()
                                 .padding(.horizontal)
                         }
@@ -98,23 +100,6 @@ struct ImageRecognitionView: View {
                         
                     }
                 }
-                
-                // Language selection
-//                HStack {
-//                    Text("Language:")
-//                        .font(.subheadline)
-//                        .padding()
-//
-//                    Spacer()
-//                    Text(selectedLanguage.displayName)
-//                        .foregroundColor(.blue)
-//                        .onTapGesture {
-//                            showLanguagePicker = true
-//                        }
-//                        .padding()
-//
-//                }
-                
                 // Action buttons
                 HStack {
                     Button(action: {

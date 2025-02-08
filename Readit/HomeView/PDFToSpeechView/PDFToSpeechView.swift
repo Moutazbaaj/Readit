@@ -52,7 +52,6 @@ struct PDFToSpeechView: View {
             
             
             VStack() {
-                Spacer()
                 if let extractedText = viewModel.extractedText {
                     Text("Extracted Text:")
                         .padding()
@@ -63,20 +62,10 @@ struct PDFToSpeechView: View {
                     
                     Spacer()
                     
-                    if extractedText.isEmpty {
-                        Text("Error: No Text found")
-                            .padding()
-                            .foregroundColor(.red)
-                            .background(Color.gray.opacity(0.1))
-                            .cornerRadius(20)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 20)
-                                    .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                            )
-                        
-                    } else {
+                    if !extractedText.isEmpty {
                         ScrollView {
                             Text(extractedText)
+                                .font(.subheadline)
                                 .padding()
                                 .padding(.horizontal)
                         }
@@ -86,6 +75,17 @@ struct PDFToSpeechView: View {
                         )
                         .frame(maxHeight: .infinity)
                         
+                    } else {
+                        Text("No Text found")
+                            .font(.subheadline)
+                            .padding()
+                            .foregroundColor(.red)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(20)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                            )
                     }
                 }
                 
