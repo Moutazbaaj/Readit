@@ -42,9 +42,9 @@ struct AddTextView: View {
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(newTextContent.isEmpty ? Color.gray : Color.blue) // Gray out when empty
+                        .background(newTextContent.isEmpty || newTextContent.count > 50 ? Color.black.opacity(0.6) : Color.gray.opacity(0.6))
                         .foregroundColor(.white)
-                        .cornerRadius(10)
+                        .cornerRadius(15)
                 }
                 .disabled(newTextContent.isEmpty) // Disable when text is empty
                 
