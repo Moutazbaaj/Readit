@@ -17,7 +17,7 @@ struct CollectionEditView: View {
     var body: some View {
         ZStack {
             VStack {
-                Text("Edit Library title")
+                Text("Edit Collection title")
                     .font(.headline)
                     .padding()
                 
