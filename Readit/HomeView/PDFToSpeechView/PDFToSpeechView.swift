@@ -9,25 +9,8 @@ import SwiftUI
 import SwiftUI
 import FirebaseCore
 
+
 struct PDFToSpeechView: View {
-    
-    //    var body: some View {
-    //        VStack {
-    //            Button("Select PDF to Read") {
-    //                showDocumentPicker = true
-    //            }
-    //            .padding()
-    //            .background(Color.blue)
-    //            .foregroundColor(.white)
-    //            .cornerRadius(10)
-    //        }
-    //        .sheet(isPresented: $showDocumentPicker) {
-    //            DocumentPicker { url in
-    //                TextToSpeechManager.shared.readTextFromPDF(pdfURL: url)
-    //            }
-    //        }
-    //    }
-    //}
     
     
     @StateObject private var viewModel = PDFToSpeechViewModel.shared
@@ -37,7 +20,6 @@ struct PDFToSpeechView: View {
     @State private var selectedLanguage: Language = .englishUS
     @State private var showDocumentPicker = false
 
-    
     
     
     var body: some View {
@@ -155,24 +137,22 @@ struct PDFToSpeechView: View {
         .sheet(isPresented: $showLanguagePicker) {
             LanguagePickerView(selectedLanguage: $selectedLanguage, isPresented: $showLanguagePicker)
         }
+        .sheet(isPresented: $showDocumentPicker) {
+            DocumentPicker { url in
+                viewModel.readTextFromPDF(pdfURL: url) // Corrected reference
+            }
+        }
         .onAppear {
             viewModel.extractedText = ""
-            showDocumentPicker = true
-
+                showDocumentPicker = true
         }
         .onDisappear {
             viewModel.stopSpeaking()
-            
             guard let extractedText = viewModel.extractedText, !extractedText.isEmpty else {
                 return
             }
             
             libViewModel.createText(text: extractedText, libraryId: " ")
-        }
-        .sheet(isPresented: $showDocumentPicker) {
-            DocumentPicker { url in
-                viewModel.readTextFromPDF(pdfURL: url) // Corrected reference
-            }
         }
     }
 }
