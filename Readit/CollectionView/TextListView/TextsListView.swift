@@ -374,9 +374,9 @@ struct TextsListView: View {
                             .font(.headline)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(editingTextContent.isEmpty ? Color.gray : Color.blue)
+                            .background(editingTextContent.isEmpty ? Color.black.opacity(0.6) : Color.gray.opacity(0.6))
                             .foregroundColor(.white)
-                            .cornerRadius(10)
+                            .cornerRadius(15)
                     }
                     .disabled(editingTextContent.isEmpty)
                     

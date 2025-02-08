@@ -24,9 +24,9 @@ struct CollaectionEditView: View {
                 TextEditor(text: $editingTextContent)
                     .padding()
                     .frame(maxHeight: .infinity)
-                    .cornerRadius(10)
+                    .cornerRadius(15)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 10)
+                        RoundedRectangle(cornerRadius: 15)
                             .stroke(Color.gray, lineWidth: 1)
                     )
                 
@@ -41,9 +41,9 @@ struct CollaectionEditView: View {
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.blue)
+                        .background(editingTextContent.isEmpty ? Color.black.opacity(0.6) : Color.gray.opacity(0.6))
                         .foregroundColor(.white)
-                        .cornerRadius(10)
+                        .cornerRadius(15)
                 }
                 .disabled(editingTextContent.isEmpty)
                 
