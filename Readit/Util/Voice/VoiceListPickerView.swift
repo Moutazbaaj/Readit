@@ -21,7 +21,7 @@ struct VoiceListPickerView: View {
             ZStack {
                 // Background gradient
                 LinearGradient(
-                    gradient: Gradient(colors: [.purple.opacity(0.3), .blue.opacity(0.3)]),
+                    gradient: Gradient(colors: [.blue.opacity(0.3), .purple.opacity(0.3)]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
