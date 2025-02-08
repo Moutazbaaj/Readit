@@ -1,5 +1,5 @@
 //
-//  CollaectionEditView.swift
+//  CollectionEditView.swift
 //  Readit
 //
 //  Created by Moutaz Baaj on 05.02.25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CollaectionEditView: View {
+struct CollectionEditView: View {
     @Binding var showEditSheet: Bool
     @Binding var editingTextContent: String
     @StateObject private var viewModel = CollectionViewModel.shared

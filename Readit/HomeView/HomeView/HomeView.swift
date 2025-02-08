@@ -232,7 +232,7 @@ struct HomeView: View {
             viewModel.fetchFavLibraries()
         }
 //        .sheet(isPresented: $showEditSheet) {
-//            CollaectionEditView(showEditSheet: $showEditSheet, editingTextContent: $editingTextContent)
+//            CollectionEditView(showEditSheet: $showEditSheet, editingTextContent: $editingTextContent)
 //        }
 //        .alert(isPresented: $showAlert) {
 //            Alert(

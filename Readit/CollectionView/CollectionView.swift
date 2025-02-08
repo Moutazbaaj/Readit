@@ -155,7 +155,7 @@ struct CollectionView: View {
             
         }
         .sheet(isPresented: $showEditSheet) {
-            CollaectionEditView(showEditSheet: $showEditSheet, editingTextContent: $editingTextContent)
+            CollectionEditView(showEditSheet: $showEditSheet, editingTextContent: $editingTextContent)
         }
         .onAppear {
             viewModel.fetchLibraries()
