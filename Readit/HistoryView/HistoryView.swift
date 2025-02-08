@@ -206,6 +206,8 @@ struct HistoryView: View {
                 secondaryButton: .cancel()
             )
         }
+        .onAppear{AuthViewModel().checkAuth()
+            viewModel.fetchMyTexts()}
     }
 }
 

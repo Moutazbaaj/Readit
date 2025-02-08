@@ -227,6 +227,10 @@ struct HomeView: View {
                 .presentationCornerRadius(30)
                 .presentationDragIndicator(.visible)
         }
+        .onAppear{
+            viewModel.fetchLibraries()
+            viewModel.fetchFavLibraries()
+        }
 //        .sheet(isPresented: $showEditSheet) {
 //            CollaectionEditView(showEditSheet: $showEditSheet, editingTextContent: $editingTextContent)
 //        }
