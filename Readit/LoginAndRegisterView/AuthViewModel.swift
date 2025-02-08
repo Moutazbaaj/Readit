@@ -199,6 +199,7 @@ class AuthViewModel: ObservableObject {
         }
     }
 
+    
     func logout() {
         do {
             try firebaseAuthntication.signOut()
@@ -254,21 +255,21 @@ class AuthViewModel: ObservableObject {
         }
 
         dispatchGroup.enter()
-        deleteCollection(collectionPath: "comments") { error in
+        deleteCollection(collectionPath: "Librarys") { error in
             if let error = error {
-                print("Failed to delete comments: \(error.localizedDescription)")
+                print("Failed to delete Librarys: \(error.localizedDescription)")
             } else {
-                print("Comments successfully deleted.")
+                print("Librarys successfully deleted.")
             }
             dispatchGroup.leave()
         }
 
         dispatchGroup.enter()
-        deleteCollection(collectionPath: "reports") { error in
+        deleteCollection(collectionPath: "Prefrences") { error in
             if let error = error {
-                print("Failed to delete reports: \(error.localizedDescription)")
+                print("Failed to delete Prefrences: \(error.localizedDescription)")
             } else {
-                print("Reports successfully deleted.")
+                print("Prefrences successfully deleted.")
             }
             dispatchGroup.leave()
         }
@@ -284,11 +285,11 @@ class AuthViewModel: ObservableObject {
         }
 
         dispatchGroup.enter()
-        deleteCollection(collectionPath: "bees") { error in
+        deleteCollection(collectionPath: "texts") { error in
             if let error = error {
-                print("Failed to delete bees : \(error.localizedDescription)")
+                print("Failed to delete texts : \(error.localizedDescription)")
             } else {
-                print("bees successfully deleted.")
+                print("texts successfully deleted.")
             }
             dispatchGroup.leave()
         }
