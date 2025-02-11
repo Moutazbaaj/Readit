@@ -33,7 +33,7 @@ Collictions List: Create your own collection from text read them separate all al
 Usage
 
 Text to Speech:
-Enter text manually or scan it from a document/photo.
+Enter text manually or scan it from a document-PDF/photo.
 Tap "Read Text" to convert the text into speech.
 Text from Photo:
 Capture or upload a photo.
