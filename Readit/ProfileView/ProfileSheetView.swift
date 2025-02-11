@@ -40,7 +40,7 @@ struct ProfileSheetView: View {
                 )
                 .edgesIgnoringSafeArea(.all)
                 VStack {
-                    ScrollView {
+                    ScrollView(.vertical , showsIndicators: false) {
                         VStack {
                             
                             Divider()
