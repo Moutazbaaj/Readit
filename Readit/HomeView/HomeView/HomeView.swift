@@ -228,6 +228,7 @@ struct HomeView: View {
         VStack {
             HStack {
                 Text("Favorites")
+                    .padding(.top)
                 Spacer()
             }
             .padding(.horizontal)
