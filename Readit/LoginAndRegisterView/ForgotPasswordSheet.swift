@@ -21,48 +21,45 @@ struct ForgotPasswordSheet: View {
                     startPoint: .top,
                     endPoint: .bottom
                 )
-                .blur(radius: 7)
                 .edgesIgnoringSafeArea(.all)
                 
-                ScrollView {
+                VStack {
                     
-                    VStack {
-                        
-                        Spacer()
-                        
-                        Text("Recover Password")
-                            .font(.largeTitle)
-                            .bold()
-                            .foregroundColor(.black)
-                        
-                        Spacer()
-                        
-                        // Email TextField
-                        Text("Enter your email")
-                        
-                        TextField("", text: $forgotPasswordEmail)
-                            .padding()
-                            .background(Color.black)
-                            .cornerRadius(15)
-                            .foregroundColor(.white)
-                            .padding()
-                            .submitLabel(.done) // Shows 'OK' on the return key
-                        
-                        // Send Reset Email Button
-                        Button("Send Reset Email") {
-                            loginViewModel.recoverPassword(email: forgotPasswordEmail)
-                            dismiss()
-                        }
+                    Spacer()
+                    //                        
+                    //                        Text("Recover Password")
+                    //                            .font(.largeTitle)
+                    //                            .bold()
+                    //                            .foregroundColor(.black)
+                    
+                    Spacer()
+                    
+                    // Email TextField
+                    Text("Enter your email")
+                    
+                    TextField("", text: $forgotPasswordEmail)
                         .padding()
-                        .background(Color.black) // Button background color
-                        .foregroundColor(.blue) // Button text color
+                        .background(Color.black)
                         .cornerRadius(15)
-                        
-                        Spacer()
+                        .foregroundColor(.white)
+                        .padding()
+                        .submitLabel(.done) // Shows 'OK' on the return key
+                    
+                    // Send Reset Email Button
+                    Button("Send Reset Email") {
+                        loginViewModel.recoverPassword(email: forgotPasswordEmail)
+                        dismiss()
                     }
                     .padding()
+                    .background(Color.black.opacity(0.5))
+                    .cornerRadius(15)
+                    
+                    Spacer()
                 }
+                .padding()
             }
+            .background(Color.black.opacity(0.5))
+            
         }
         .navigationBarItems(trailing: Button("Cancel") {
             dismiss()
