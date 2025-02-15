@@ -31,7 +31,6 @@ struct LoginView: View {
                     startPoint: .top,
                     endPoint: .bottom
                 )
-                .blur(radius: 10)
                 .edgesIgnoringSafeArea(.all)
                 
                 ScrollView {
@@ -42,9 +41,8 @@ struct LoginView: View {
                         Text("Welcome")
                             .font(.largeTitle)
                             .bold()
-                            .foregroundColor(.black) // Text color
+                            .padding()
                         Text("login")
-                            .foregroundColor(.blue)
                             .padding(.bottom)
                         VStack {
                             ZStack {
@@ -86,14 +84,13 @@ struct LoginView: View {
                         // Email TextField
                         HStack {
                             Text("Email Address")
-                                .foregroundStyle(.black)
                                 .padding(.bottom, -50)
                                 .padding()
                             Spacer()
                         }
                         TextField("", text: $email)
                             .padding()
-                            .background(Color.black)
+                            .background(Color.black.opacity(0.5))
                             .cornerRadius(15)
                             .padding()
                             .submitLabel(.done) // Shows 'OK' on the return key
@@ -101,7 +98,6 @@ struct LoginView: View {
                         // Password Field
                         HStack {
                             Text("Password")
-                                .foregroundStyle(.black)
                                 .padding(.bottom, -50)
                                 .padding()
                             Spacer()
@@ -111,14 +107,14 @@ struct LoginView: View {
                             if hidePassword {
                                 SecureField("", text: $password)
                                     .padding()
-                                    .background(Color.black)
+                                    .background(Color.black.opacity(0.5))
                                     .cornerRadius(15)
                                     .padding()
                                     .submitLabel(.done) // Shows 'OK' on the return key
                             } else {
                                 TextField("", text: $password)
                                     .padding()
-                                    .background(Color.black)
+                                    .background(Color.black.opacity(0.5))
                                     .cornerRadius(15)
                                     .padding()
                                     .submitLabel(.done) // Shows 'OK' on the return key
@@ -130,7 +126,7 @@ struct LoginView: View {
                             }) {
                                 Image(systemName: hidePassword ? "eye.slash" : "eye")
                                     .font(.callout)
-                                    .foregroundColor(.black) // Icon color
+                                    .foregroundColor(.white) // Icon color
                                     .padding()
                             }
                         }
@@ -142,8 +138,7 @@ struct LoginView: View {
                             authViewModel.login(email: email, password: password)
                         }
                         .padding()
-                        .background(Color.black) // Button background color
-                        .foregroundColor(.blue) // Button text color
+                        .background(Color.black.opacity(0.5))
                         .cornerRadius(15)
                         
                         // Forgot Password Button
@@ -151,49 +146,45 @@ struct LoginView: View {
                             showForgotPasswordSheet = true
                         }
                         .padding()
-                        .background(Color.blue) // Button background color
-                        .foregroundColor(.black) // Button text color
+                        .background(Color.black.opacity(0.5))
                         .cornerRadius(15)
                         .padding(8)
-                        .foregroundColor(.blue) // Button text color
                         .sheet(isPresented: $showForgotPasswordSheet) {
                             ForgotPasswordSheet(forgotPasswordEmail: $forgotPasswxordEmail)
-                                .presentationDetents([.medium])
+                                .presentationDetents([.height(250)])
+                                .presentationCornerRadius(30)
                         }
                         
                         Divider()
                             .padding()
                         
                         Text("Don't have an account?")
-                            .foregroundColor(.blue)
                         Button("Register") {
                             showRegisterView.toggle()
                         }
                         .padding()
-                        .background(Color.black) // Button background color
-                        .foregroundColor(.blue) // Button text color
+                        .background(Color.black.opacity(0.5))
                         .cornerRadius(15)
                         .fullScreenCover(isPresented: $showRegisterView) {
                             RegisterView()
                         }
                         
-                        Divider()
-                        Button("Impressum") {
-                            showImpressumView.toggle()
-                        }
-                        .padding()
-                        .foregroundColor(.blue) // Button text color
-                        .cornerRadius(15)
-                        .sheet(isPresented: $showImpressumView) {
-                            ImpressumView()
-                                .presentationDetents([.medium, .large])
-                        }
+//                        Divider()
+//                        Button("Impressum") {
+//                            showImpressumView.toggle()
+//                        }
+//                        .padding()
+//                        .cornerRadius(15)
+//                        .sheet(isPresented: $showImpressumView) {
+//                            ImpressumView()
+//                                .presentationDetents([.medium, .large])
+//                        }
                     }
                     .padding()
                 }
             }
         }
-        .foregroundStyle(.blue)
+        .foregroundStyle(.white)
         
     }
 }
